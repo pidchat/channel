@@ -10,7 +10,6 @@ PidChat is a decentralized chat application built using modern blockchain techno
 [![Security](https://img.shields.io/badge/Security-OWASP-red.svg)](security)
 [![License](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
-**Enterprise-grade deflationary token with advanced vesting and staking system**
 
 [🌐 Website](https://pidchat.com) · [🐛 Issues](https://github.com/pidchat/channel/issues) · [💬 Discord](https://discord.gg/xB4rHApb)
 
