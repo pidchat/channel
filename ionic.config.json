@@ -1,0 +1,7 @@
+{
+  "name": "pidchat-chat",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "react-vite"
+}

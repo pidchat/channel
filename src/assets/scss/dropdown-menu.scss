@@ -1,0 +1,16 @@
+@use "sass:color"; // Importa o módulo de cores do Sass
+@use 'vars' as *;
+.dropdown-menu {
+	border-color: color.adjust(white, $lightness: -20%); // Substitui white - 20
+	box-shadow: rgba(0, 0, 0, 0.45) 0px 0px 20px -10px;
+	border-radius: 5px;
+
+	.dropdown-item {
+		font-size: $default-font-size;
+
+		&:focus, &:hover, &:active, &.active {
+			background-color: color.adjust(white, $lightness: -20%); // Substitui white - 20
+			color: black;
+		}
+	}
+}

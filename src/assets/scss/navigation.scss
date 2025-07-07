@@ -1,0 +1,33 @@
+@use 'sass:color';
+@use 'vars'as *;
+
+nav {
+	&.navigation {
+	
+		height: 100vh;
+		
+		.logo-container {
+			padding: 15px;
+			text-align: center;
+		}
+
+		.nav-group {
+			width: 70px;
+		}
+
+		.logo-container img {
+			width: 40px;
+			height: auto;
+		}
+
+		ion-tab-button.tab-selected {
+			background: rgba(var(--ion-color-primary-rgb), 0.3);			
+		}
+
+	}
+	color:#fff;
+	
+}
+.bt_dark_theme {
+	color: var(--ion-text-color);
+}
