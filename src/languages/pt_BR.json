@@ -98,5 +98,7 @@
   "TEXT_PERMISSIONS":"Permissões de acessos",
   "TEXT_ADDRESS_ACCOUNT":"Endereço da Conta",
   "TEXT_ACCESS_SAVE":"Acesso salvo com sucesso",
-  "TEXT_SEARCH_CHANNEL":"Pesquisar Canais"
+  "TEXT_SEARCH_CHANNEL":"Pesquisar Canais",
+  "TEXT_SUPPORT":"Suporte",
+  "TEXT_HELPING":"Sinta-se à vontade para enviar quaisquer problemas, questões ou sugestões para nosso grupo de suporte ou nos envie um e-mail para support@pidchat.com"
 }

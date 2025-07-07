@@ -98,5 +98,7 @@
   "TEXT_PERMISSIONS":"Access Permissions",
   "TEXT_ADDRESS_ACCOUNT":"Address Account",
   "TEXT_ACCESS_SAVE":"Access saved with success",
-  "TEXT_SEARCH_CHANNEL":"Search Channels"
+  "TEXT_SEARCH_CHANNEL":"Search Channels",
+  "TEXT_SUPPORT":"Support",
+  "TEXT_HELPING":"Feel free to send any problems, questions or suggestions to our support group or email us at support@pidchat.com"
 }

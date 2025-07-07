@@ -13,27 +13,41 @@ import {
   IonItem,
   IonToggle,
 } from "@ionic/react";
-import { linkOutline, walletOutline, powerOutline,diamondOutline,bugOutline  } from "ionicons/icons";
+import {
+  linkOutline,
+  walletOutline,
+  powerOutline,
+  diamondOutline,
+  bugOutline,
+} from "ionicons/icons";
 import { Redirect, Route } from "react-router";
 import Home from "../pages/Home";
 import Web3Auth from "../pages/Web3Auth";
 import { useTranslation } from "react-i18next";
+import SupportChannelModal from "./Modals/SupportChannelModal";
 const Navigation: React.FC = () => {
   const { t } = useTranslation();
   const { disconnectWallet } = useContract();
   const [modelWallet, setModelWallet] = useState(false);
   const toggleWalletModal = () => setModelWallet(!modelWallet);
   const [enableNavigation, setEnableNavigation] = useState(false);
-  const { setRouter, setMobileSidebar, router, account, isDarkMode, changeDark } =
-    useContext(UseProviderContext);
+  const [modelIssue, setModelIssue] = useState(false);
+  const toggleIssueModal = () => setModelIssue(!modelIssue);
+  const {
+    setRouter,
+    setMobileSidebar,
+    router,
+    account,
+    isDarkMode,
+    changeDark,
+  } = useContext(UseProviderContext);
 
-  const navigationItems = [  
+  const navigationItems = [
     {
       name: t("TEXT_CHANNEL"),
       icon: linkOutline,
       ref: "/channel",
     },
-    
   ];
   useEffect(() => {
     console.log("account", account);
@@ -72,14 +86,13 @@ const Navigation: React.FC = () => {
               <img src={Logo} alt="logo" className="logo" />
             </IonTabButton>
             <IonTabButton>
-              <IonItem>                
-                <IonToggle                  
+              <IonItem>
+                <IonToggle
                   justify="space-between"
                   title="Dark"
                   checked={isDarkMode}
                   onIonChange={(e) => changeDark(e.detail.checked)}
-                >
-                </IonToggle>
+                ></IonToggle>
               </IonItem>
             </IonTabButton>
             {navigationItems.map((item, i) => (
@@ -104,6 +117,14 @@ const Navigation: React.FC = () => {
               <IonLabel>{t("TEXT_WALLET")}</IonLabel>
             </IonTabButton>
             <IonTabButton
+              onClick={() => setModelIssue(true)}
+              tab="Issue"
+              className="bt_dark_theme"
+            >
+              <IonIcon icon={bugOutline} />
+              <IonLabel>{t("TEXT_SUPPORT")}</IonLabel>
+            </IonTabButton>
+            <IonTabButton
               onClick={handleLogout}
               tab="Logout"
               className="bt_dark_theme"
@@ -113,7 +134,7 @@ const Navigation: React.FC = () => {
             </IonTabButton>
           </IonTabBar>
 
-          <WalletModal modal={modelWallet} modalToggle={toggleWalletModal} />          
+          <WalletModal modal={modelWallet} modalToggle={toggleWalletModal} />
         </div>
       </nav>
     );
@@ -126,12 +147,13 @@ const Navigation: React.FC = () => {
         </Route>
         <Route exact path="/login">
           <Web3Auth />
-        </Route>        
+        </Route>
         <Route exact path="/">
           <Redirect to="/login" />
         </Route>
-      </IonRouterOutlet>   
+      </IonRouterOutlet>
       <div className="layout">{enableNavigation && NavigationComponent()}</div>
+      <SupportChannelModal modal={modelIssue} modalToggle={toggleIssueModal} />
     </IonTabs>
   );
 };
