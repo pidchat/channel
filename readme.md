@@ -2,6 +2,20 @@
 
 PidChat is a decentralized chat application built using modern blockchain technologies.
 
+<div align="center">
+
+[![Rust](https://img.shields.io/badge/Rust-1.75+-orange.svg)](https://www.rust-lang.org)
+[![Ink!](https://img.shields.io/badge/Ink!-5.1.1-blue.svg)](https://use.ink/)
+[![Tests](https://img.shields.io/badge/Tests-57%20Passing-brightgreen.svg)](tests)
+[![Security](https://img.shields.io/badge/Security-OWASP-red.svg)](security)
+[![License](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+
+**Enterprise-grade deflationary token with advanced vesting and staking system**
+
+[🌐 Website](https://pidchat.com) · [🐛 Issues](https://github.com/pidchat/channel/issues) · [💬 Discord](https://discord.gg/xB4rHApb)
+
+</div>
+
 ## Technologies Used
 
 - [Ink!](https://use.ink/) - Smart contract programming language
