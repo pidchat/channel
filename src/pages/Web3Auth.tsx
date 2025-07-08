@@ -11,6 +11,7 @@ import {
   IonFooter,
   useIonRouter,
   useIonAlert,
+  useIonViewWillEnter,
 } from "@ionic/react";
 import { UseProviderContext } from "../contexts/UseProvider";
 import Logo from "../assets/img/logo.svg";
@@ -31,7 +32,7 @@ const Web3Auth: React.FC = () => {
   const { t, i18n } = useTranslation();
   const router = useIonRouter();
   const [modal, setModal] = useState(false);
-  const { apiReady, api, account } = useContext(UseProviderContext);
+  const { apiReady, api, account, setMobileSidebar,setMenuBar } = useContext(UseProviderContext);
   const {
     addChannelLocal,
     verifyChannelLocalName,
@@ -40,10 +41,16 @@ const Web3Auth: React.FC = () => {
   const [passAlert] = useIonAlert();
   const location = useLocation();
   const modalToggle = () => setModal(!modal);
+
+  useIonViewWillEnter(() => {
+    setMenuBar(false);
+    setMobileSidebar(false);
+  });
+
   useEffect(() => {
     if (apiReady) {
       if (account) {
-        router.push("/channel");
+        router.push("/news");
       }
     }
     

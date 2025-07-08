@@ -385,6 +385,7 @@ export const useContract = () => {
         sessionStorage.setItem("PIDCHAT_session", password);
         setAccount(a.address);
         setPassword(password);
+        location.href = "/news"
         return true;
       } else {
         throw new Error(t("TEXT_ERROR_ACCESS"));

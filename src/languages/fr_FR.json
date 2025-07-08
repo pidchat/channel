@@ -100,5 +100,7 @@
   "TEXT_ACCESS_SAVE":"Accès enregistré avec succès",
   "TEXT_SEARCH_CHANNEL":"Rechercher des Canaux",
   "TEXT_SUPPORT":"Support",
-  "TEXT_HELPING":"N'hésitez pas à envoyer vos problèmes, questions ou suggestions à notre groupe de support ou envoyez-nous un e-mail à support@pidchat.com"
+  "TEXT_HELPING":"N'hésitez pas à envoyer vos problèmes, questions ou suggestions à notre groupe de support ou envoyez-nous un e-mail à support@pidchat.com",
+  "TEXT_FEED":"Actualités",
+  "TEXT_FEE_SAFE":"Frais de Garantie"
 }

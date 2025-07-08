@@ -1,4 +1,5 @@
-@use 'vars' as *;
+@use 'vars'as *;
+
 @media screen and (max-width: 1200px) {
 	body:not(.rtl) {
 		.sidebar-group {
@@ -11,6 +12,7 @@
 			box-shadow: 25px 0 30px 5px black;
 			visibility: hidden;
 			z-index: 9;
+
 			.sidebar {
 				width: 85% !important;
 				margin-left: 0 !important;
@@ -25,6 +27,7 @@
 			}
 		}
 	}
+
 	body.rtl {
 		.sidebar-group {
 			position: fixed;
@@ -50,10 +53,11 @@
 			}
 		}
 
-		.chat + .sidebar-group .sidebar {
+		.chat+.sidebar-group .sidebar {
 			margin-right: 0 !important;
 		}
 	}
+
 	body.modal-open {
 		.sidebar-group {
 			right: 0;
@@ -62,15 +66,16 @@
 }
 
 @media screen and (max-width: 992px) {
-	body:not(.rtl), body {
+
+	body:not(.rtl),
+	body {
 		.sidebar-group {
-			width: 45%;			
+			width: 45%;
 		}
 	}
-	nav.navigation {
-		ul {
 
-		}
+	nav.navigation {
+		ul {}
 	}
 }
 
@@ -88,7 +93,8 @@
 		}
 	}
 
-	body:not(.rtl), body {
+	body:not(.rtl),
+	body {
 		.sidebar-group {
 			width: 75%;
 
@@ -103,10 +109,11 @@
 	}
 
 	.content {
-		padding: 20px !important;		
-		
+		padding: 20px !important;
+
 		.chat {
-			right: 30px!important;
+			right: 30px !important;
+
 			.chat-header {
 				display: block !important;
 				padding-bottom: 15px !important;
@@ -115,8 +122,8 @@
 					h5 {
 						font-size: $default-font-size + 5 !important;
 						word-wrap: break-word;
-                        overflow-wrap: break-word;
-                        white-space: normal;
+						overflow-wrap: break-word;
+						white-space: normal;
 					}
 				}
 
@@ -129,19 +136,31 @@
 				.messages {
 					.message-item {
 						max-width: 100% !important;
-                        word-wrap: break-word;
-                        overflow-wrap: break-word;
-                        white-space: normal;
-                        box-sizing: border-box;
+						word-wrap: break-word;
+						overflow-wrap: break-word;
+						white-space: normal;
+						box-sizing: border-box;
 					}
 				}
 			}
 		}
 	}
+
+	.contentNews {
+		padding: 30px;
+		margin-left: 50px;
+		max-width: 100% !important;
+		word-wrap: break-word;
+		overflow-wrap: break-word;
+		white-space: normal;
+		box-sizing: border-box;
+	}
 }
 
 @media screen and (max-width: 576px) {
-	body:not(.rtl), body {
+
+	body:not(.rtl),
+	body {
 		.sidebar-group {
 			width: 100%;
 		}
@@ -158,4 +177,3 @@
 		}
 	}
 }
-

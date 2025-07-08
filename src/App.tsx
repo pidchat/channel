@@ -45,12 +45,12 @@ import { StatusBar, Style } from '@capacitor/status-bar';
 
 import "./i18n/index";
 setupIonicReact({
-  mode: 'ios',
+  mode: 'md',
   animated: true,
 });
 StatusBar.setOverlaysWebView({ overlay: false });
 StatusBar.setStyle({ style: Style.Dark });
-StatusBar.setBackgroundColor({ color: '#000' });
+StatusBar.setBackgroundColor({ color: '#fffff' });
 StatusBar.show();
 const queryClient = new QueryClient();
 

@@ -17,7 +17,7 @@ import {
   linkOutline,
   walletOutline,
   powerOutline,
-  diamondOutline,
+  globeOutline,
   bugOutline,
 } from "ionicons/icons";
 import { Redirect, Route } from "react-router";
@@ -25,12 +25,13 @@ import Home from "../pages/Home";
 import Web3Auth from "../pages/Web3Auth";
 import { useTranslation } from "react-i18next";
 import SupportChannelModal from "./Modals/SupportChannelModal";
+import News from "../pages/News";
 const Navigation: React.FC = () => {
   const { t } = useTranslation();
   const { disconnectWallet } = useContract();
   const [modelWallet, setModelWallet] = useState(false);
   const toggleWalletModal = () => setModelWallet(!modelWallet);
-  const [enableNavigation, setEnableNavigation] = useState(false);
+  
   const [modelIssue, setModelIssue] = useState(false);
   const toggleIssueModal = () => setModelIssue(!modelIssue);
   const {
@@ -40,25 +41,31 @@ const Navigation: React.FC = () => {
     account,
     isDarkMode,
     changeDark,
+    menuBar
   } = useContext(UseProviderContext);
-
+const [enableNavigation, setEnableNavigation] = useState(menuBar || false);
   const navigationItems = [
+    {
+      name: t("TEXT_FEED"),
+      icon: globeOutline,
+      ref: "/news",
+    },
     {
       name: t("TEXT_CHANNEL"),
       icon: linkOutline,
       ref: "/channel",
     },
   ];
+
   useEffect(() => {
-    console.log("account", account);
     if (account) {
-      console.log(account);
       setEnableNavigation(true);
     }
   }, [account]);
 
   const handleLogout = () => {
     disconnectWallet();
+    setEnableNavigation(false);
     window.location.href = "/";
   };
 
@@ -70,6 +77,28 @@ const Navigation: React.FC = () => {
     setRouter(name);
     setMobileSidebar(true);
   };
+// Handle Android back button event
+useEffect(() => {
+  const handleBackButton = (e: any) => {
+    e.preventDefault();
+    e.stopPropagation();
+    
+    // If on login page, allow default back behavior
+    if (window.location.pathname === '/login' || location.pathname == "/") {
+      setEnableNavigation(false);
+    }
+    
+    
+  };
+
+  window.addEventListener('popstate', handleBackButton);
+
+  return () => {
+    window.removeEventListener('popstate', handleBackButton);
+  };
+}, []);
+  
+   
   const NavigationComponent = () => {
     return (
       <nav className="navigation">
@@ -79,7 +108,7 @@ const Navigation: React.FC = () => {
             style={{
               flexDirection: "column",
               background: "transparent",
-              height: "100vh",
+              height: "650px",
             }}
           >
             <IonTabButton>
@@ -147,6 +176,9 @@ const Navigation: React.FC = () => {
         </Route>
         <Route exact path="/login">
           <Web3Auth />
+        </Route>
+        <Route exact path="/news">
+          <News />
         </Route>
         <Route exact path="/">
           <Redirect to="/login" />

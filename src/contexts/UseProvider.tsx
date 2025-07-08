@@ -28,6 +28,8 @@ interface IProvider {
   changeDark: (active: boolean) => void;
   password: string;
   setPassword: (password: string) => void;
+  menuBar:boolean;
+  setMenuBar: (value:boolean) => void;
 }
 
 const WS_PROVIDER: any =
@@ -107,6 +109,7 @@ const UseProvider = (props: IContextProviderProps) => {
   const [accountIdentity, setAccountIdentity] = useState<IInfoAccount | undefined>();
   const [isDarkMode, setIsDarkMode] = useState(false);
   const [password, setPassword] = useState("");
+  const [menuBar, setMenuBar] = useState<boolean>(false);
   useEffect(() => {
     
     const provider = new WsProvider(WS_PROVIDER);
@@ -120,6 +123,7 @@ const UseProvider = (props: IContextProviderProps) => {
     const session = sessionStorage.getItem("PIDCHAT_session");
     const path = window.location.pathname;
     if (!session && (path !== "/login" &&  window.location.pathname != "/")) {
+      setMenuBar(true);
       location.href = "/";
       return;
     }
@@ -184,7 +188,9 @@ const UseProvider = (props: IContextProviderProps) => {
         setIsDarkMode,
         changeDark,
         password,
-        setPassword
+        setPassword,
+        menuBar,
+        setMenuBar
       }}
     >
       {props.children}
