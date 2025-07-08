@@ -46,7 +46,11 @@ PidChat is a decentralized chat application built using modern blockchain techno
     ```bash
     npm run dev
     ```
-
+# Android 
+  npx cap open android
+  
+# iOS
+  npx cap open ios
 
 ## Contribuitions
 

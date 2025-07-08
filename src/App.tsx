@@ -41,8 +41,17 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Navigation from "./components/Navigation";
+import { StatusBar, Style } from '@capacitor/status-bar';
+
 import "./i18n/index";
-setupIonicReact();
+setupIonicReact({
+  mode: 'ios',
+  animated: true,
+});
+StatusBar.setOverlaysWebView({ overlay: false });
+StatusBar.setStyle({ style: Style.Dark });
+StatusBar.setBackgroundColor({ color: '#000' });
+StatusBar.show();
 const queryClient = new QueryClient();
 
 const App: React.FC = () => {

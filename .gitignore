@@ -1,44 +1,65 @@
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
-# dependencies
+# Dependencies
 /node_modules
 /.pnp
 .pnp.js
 
-# testing
+# Testing
 /coverage
 
-# production
+# Production & Build
 /dist
+/www
+/build
+/android/app/build
+/android/build
+/android/captures
+/android/gradle
+/android/.gradle
 
-# misc
+# Ionic/Capacitor specific
+/ios/App/build
+/ios/App/Pods
+/ios/App/App/public
+/ios/DerivedData
+/ios/Pods
+.ionic
+.capacitor
+
+# IDEs and editors
+/.idea
+/.vscode/*
+!/.vscode/extensions.json
+.project
+.classpath
+*.sublime-workspace
+*.sublime-project
+
+# System Files
 .DS_Store
+Thumbs.db
+
+# Environment Files
+.env*
 .env.local
 .env.development.local
 .env.test.local
 .env.production.local
-/.nx
-/.nx/cache
-/.vscode/*
-!/.vscode/extensions.json
-.idea
 
+# Logs
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+*.log
 
-# Optional eslint cache
+# Cache
 .eslintcache
-# Ignore build artifacts from the local tests sub-crate.
-target/
+.nx
+.nx/cache
 
-# Ignore backup files creates by cargo fmt.
-**/*.rs.bk
-
-# Remove Cargo.lock when creating an executable, leave it for libraries
-# More information here http://doc.crates.io/guide.html#cargotoml-vs-cargolock
-Cargo.lock
-.env
-.log
-#/types/
-#artifacts/
+# Platform specific
+*.apk
+*.aab
+*.ipa
+*.xcarchive
