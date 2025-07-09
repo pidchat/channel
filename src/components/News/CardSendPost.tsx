@@ -32,7 +32,6 @@ const CardSendPost: React.FC = () => {
       style={{
         maxWidth: "600px",
         margin: "auto",
-        top: "30px",
         backgroundColor: "transparent",
         width: "100%",
         color: isDarkMode?"#fff":""
@@ -65,7 +64,7 @@ const CardSendPost: React.FC = () => {
             }}
           />
         </IonItem>
-        <div style={{ display: "flex", gap: "12px", color: "#536471" }}>
+        <div style={{ display: "flex", gap: "12px" }}>
           <IonButton fill="clear" size="small">
             <IonIcon icon={imageOutline} slot="icon-only" title="Image" />
           </IonButton>

@@ -98,7 +98,7 @@ export interface IInfoAccountRegister {
     | undefined;
 }
 const UseProvider = (props: IContextProviderProps) => {
-  const [router, setRouter] = useState<string>("Channels");
+  const [router, setRouter] = useState<string>("news");
   const [mobileSidebar, setMobileSidebar] = useState<boolean>(false);
   const [api, setApi] = useState<ApiPromise | null>(null);
   const [apiReady, setApiReady] = useState(false);
