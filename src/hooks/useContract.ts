@@ -12,10 +12,10 @@ import { mnemonicGenerate, mnemonicValidate } from "@polkadot/util-crypto";
 import { ApiPromise, Keyring } from "@polkadot/api";
 import { ContractPromise } from "@polkadot/api-contract";
 import ABI_Channel from "../../artifacts/channel.json";
-import ABI_psp22 from "../../artifacts/pidchat_psp22.json";
+import ABI_psp22 from "../../artifacts/psp22_token.json";
 import Channel_factory from "../../types/constructors/channel";
 import Channel from "../../types/contracts/channel";
-import Token from "../../types/contracts/pidchat_psp22";
+import Token from "../../types/contracts/psp22_token";
 import CryptoJS from "crypto-js";
 import { calc_fee } from "../utils";
 import { useTranslation } from "react-i18next";
@@ -50,12 +50,7 @@ export const useContract = () => {
   const [balanceNativeAgent, setBalanceNativeAgent] = useState<number>(0);
   const [feeIdentityNetWork, setFeeIdentityNetWork] = useState<number>(0);
   useEffect(() => {
-    const session = sessionStorage.getItem("PIDCHAT_session");
-    const path = window.location.pathname;
-    if (!session && path !== "/login" && window.location.pathname != "/") {
-      location.href = "/";
-      return;
-    }
+    const session = sessionStorage.getItem("PIDCHAT_session");    
     setPassword(session || "");
     const savedAccount = localStorage.getItem("PIDCHAT_accountId");
     if (savedAccount && apiReady) {
@@ -101,7 +96,6 @@ export const useContract = () => {
       );
       const balanceToken = await token.query.balanceOf(account);
       const balanceNative = await api.query.system.account(account);
-      //console.log("Check Balance", balanceToken.value.ok);
       setBalanceToken(Number(balanceToken.value.ok || 0)/1000000000000000000);
       setBalanceNative(
         Number(balanceNative.data.free.toHuman().replace(/,/g, "") || 0) /

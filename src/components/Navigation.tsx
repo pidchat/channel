@@ -26,6 +26,7 @@ import Web3Auth from "../pages/Web3Auth";
 import { useTranslation } from "react-i18next";
 import SupportChannelModal from "./Modals/SupportChannelModal";
 import News from "../pages/News";
+import Post from "../pages/Post";
 const Navigation: React.FC = () => {
   const { t } = useTranslation();
   const { disconnectWallet } = useContract();
@@ -84,7 +85,7 @@ useEffect(() => {
     e.stopPropagation();
     
     // If on login page, allow default back behavior
-    if (window.location.pathname === '/login' || location.pathname == "/") {
+    if (window.location.pathname === '/login' || location.pathname == "/" || window.location.pathname === '/news' || window.location.pathname === '/post/:newsId' ) {
       setEnableNavigation(false);
     }
     
@@ -182,6 +183,9 @@ useEffect(() => {
         </Route>
         <Route exact path="/">
           <Redirect to="/login" />
+        </Route>
+        <Route exact path="/post/:newsId">
+          <Post />
         </Route>
       </IonRouterOutlet>
       <div className="layout">{enableNavigation && NavigationComponent()}</div>

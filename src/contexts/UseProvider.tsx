@@ -122,9 +122,7 @@ const UseProvider = (props: IContextProviderProps) => {
     }
     const session = sessionStorage.getItem("PIDCHAT_session");
     const path = window.location.pathname;
-    if (!session && (path !== "/login" &&  window.location.pathname != "/")) {
-      setMenuBar(true);
-      location.href = "/";
+    if (!session && (path !== "/login" &&  window.location.pathname != "/")) {    
       return;
     }
     setPassword(session || "");

@@ -13,8 +13,10 @@ import {
 } from "@ionic/react";
 import useContract from "../../hooks/useContract";
 import { globeOutline } from "ionicons/icons";
+import { useTranslation } from "react-i18next";
 
 const HeaderHome: React.FC = () => {
+  const { t } = useTranslation();
   const [searchText, setSearchText] = useState("");
   const { isDarkMode } = useContract();
   const handleSearchChange = (e: CustomEvent) => {
@@ -51,7 +53,7 @@ const HeaderHome: React.FC = () => {
                 gap: 5
               }}
             >
-              <IonTitle>Home</IonTitle>
+              <IonTitle>{t("TEXT_HOME")}</IonTitle>
             </IonCol>
             <IonCol 
               size="10"
@@ -65,7 +67,7 @@ const HeaderHome: React.FC = () => {
               <IonSearchbar
                 value={searchText}                
                 onIonChange={handleSearchChange}
-                placeholder="Search"
+                placeholder={t("TEXT_SEARCH_CHANNEL")}
                 style={{ width: "100%" }}
               />
             </IonCol>
