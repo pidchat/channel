@@ -108,8 +108,8 @@ useEffect(() => {
             mode="md"
             style={{
               flexDirection: "column",
-              background: "transparent",
-              height: "650px",
+              height: "100vh",
+              overflowY: "auto",
             }}
           >
             <IonTabButton>

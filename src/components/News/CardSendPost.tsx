@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   IonCard,
   IonCardContent,
@@ -7,35 +7,64 @@ import {
   IonIcon,
   IonItem,
   IonLabel,
-  IonRadio,
   IonTextarea,
 } from "@ionic/react";
-import {
-  imageOutline,
-  barChartOutline,
-  happyOutline,
-  calendarOutline,
-  addCircleOutline,
-} from "ionicons/icons";
-import ProfilePic from "../../assets/img/profile.jpg";
+import { imageOutline, happyOutline } from "ionicons/icons";
 import { useTranslation } from "react-i18next";
 import useContract from "../../hooks/useContract";
 import Identicon from "@polkadot/react-identicon";
 import { truncateText } from "../../utils";
-
+import useGovernance from "../../hooks/useGovernance";
+import { Input } from "reactstrap";
 const CardSendPost: React.FC = () => {
   const { t } = useTranslation();
-  const { account, accountIdentity, alert , isDarkMode} = useContract();
+  const { account, accountIdentity, alert,createChannel, isDarkMode, feeCreateChannel } =
+    useContract();
+  const { getPriceGuardian,addNewsChannel } = useGovernance();
+  const [feeChannel, setFeeChannel] = useState(0);
+  const [priceGuardian, setPriceGuardian] = useState(0);
+  const [description, setDescription] = useState("");
+  const [loading, setLoading] = useState(false);
+  useEffect(() => {
+    calcFeeContract();
+    console.log(feeChannel);
+  }, [description]);
+  const calcFeeContract = async () => {
+    const descriptionArray = description.split("\n");
+    const value = await feeCreateChannel(descriptionArray, "String");
+    setFeeChannel(value);
+  };
+  useEffect(() => {
+    getPriceGuardian().then((value) => setPriceGuardian(Number(value)));
+  }, []);
+  const handleCreate = async () => {
+   try {
+    if(description.length === 0){
+      alert("Please enter a description", "error");
+      return;
+    }
+    setLoading(true);
+    const descriptionArray = description.split("\n");
+    let name = "["+Math.random().toString(36).substring(2, 10)+"]"+new Date().getTime().toString(36);    
+    var addr = await createChannel(name, descriptionArray, "String", false);  
+    await addNewsChannel(addr,priceGuardian.toString());    
+    setDescription("");
+    setLoading(false);
+    alert("Channel published successfully", "success");
+   } catch (error:any) {
+    setLoading(false);
+    alert(error, "error");    
+   }
+    
+  };
   return (
     <IonCard
-    
       style={{
         maxWidth: "600px",
         margin: "auto",
         backgroundColor: "transparent",
         width: "100%",
-        color: isDarkMode?"#fff":""
-
+        color: isDarkMode ? "#fff" : "",
       }}
     >
       <IonCardContent>
@@ -43,34 +72,35 @@ const CardSendPost: React.FC = () => {
           <IonAvatar slot="start">
             <Identicon value={account} theme="substrate" size={32} />
           </IonAvatar>
-          <IonLabel
-            style={{ fontWeight: "bold", fontSize: "12px" }}
-          >
+          <IonLabel style={{ fontWeight: "bold", fontSize: "12px" }}>
             {accountIdentity?.name || truncateText(account || "", 7, 10, false)}
           </IonLabel>
         </IonItem>
-        <IonItem lines="none" style={{ fontSize: "12px"}}>
-          <IonTextarea
-            placeholder={t("TEXT_WRITE_MESSAGE")}
-            autoGrow={true}
+        <IonItem lines="none" style={{ fontSize: "12px" }}>
+          <Input
             style={{
               color: "#1d9bf0",
-              "--background": "transparent",
-              "--padding-start": "0",
-              "--padding-end": "0",
               fontSize: "inherit",
               maxHeight: "100px",
               overflowY: "auto",
             }}
+            value={description}
+            type="textarea"
+            name="email"
+            id="email"
+            onChange={(e) => setDescription(e.target.value)}
           />
         </IonItem>
         <div style={{ display: "flex", gap: "12px" }}>
-          <IonButton fill="clear" size="small">
+          {/**
+           <IonButton fill="clear" size="small">
             <IonIcon icon={imageOutline} slot="icon-only" title="Image" />
           </IonButton>
           <IonButton fill="clear" size="small">
             <IonIcon icon={happyOutline} slot="icon-only" title="Emoji" />
           </IonButton>
+           * 
+           */}
           <p
             style={{
               display: "flex",
@@ -79,7 +109,7 @@ const CardSendPost: React.FC = () => {
               marginLeft: "auto",
             }}
           >
-            {t("TEXT_FEE")} <b>{0}</b> LUNES
+            {t("TEXT_FEE")} <b>{feeChannel / 100000000}</b> LUNES
           </p>
         </div>
         <div
@@ -98,10 +128,11 @@ const CardSendPost: React.FC = () => {
               marginLeft: "auto",
             }}
           >
-            {t("TEXT_FEE_SAFE")} <b>{0}</b> PID
+            {t("TEXT_FEE_SAFE")} <b>{priceGuardian / 1000000000000000000}</b>{" "}
+            PID
           </p>
-          <IonButton color="primary" shape="round">
-            Send
+          <IonButton color="primary" shape="round" onClick={handleCreate}>
+            {loading ? "Publicando..." : "Publicar"}
           </IonButton>
         </div>
       </IonCardContent>

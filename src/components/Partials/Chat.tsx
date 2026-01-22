@@ -13,13 +13,13 @@ import { useTranslation } from "react-i18next";
 const CHUNK_SIZE = 10;
 const Chat: React.FC = () => {
   const { t } = useTranslation();
-  const { contractSelected, apiReady,password } = useContext(UseProviderContext);
+  const { contractSelected, apiReady, password } =
+    useContext(UseProviderContext);
   const [message, setMessage] = useState<IMessage[]>([]);
   const [gas, setGas] = useState<number>(0);
   const [idEdit, setIdEdit] = useState<number>(0);
   const [loading, setLoading] = useState(false);
   const [indexPage, setIndexPage] = useState(0);
-  const [scrollLast, setScrollLast] = useState(0);
   const [loadingMore, setLoadingMore] = useState(false);
   const {
     getMessages,
@@ -43,15 +43,12 @@ const Chat: React.FC = () => {
     addMessageListen();
   }, [listMessageEvent]);
   const addMessageListen = () => {
-    let updatedMessages = [...message];
-    setScrollLast(0);  
+    if(listMessageEvent.length == 0) return;
     getDataMessages();
-    setMessage(updatedMessages);
   };
 
   const getDataMessages = async () => {
     setIndexPage(0);
-    setScrollLast(0);
     if (!contractSelected) {
       setMessage([]);
       console.log(contractSelected);
@@ -81,7 +78,6 @@ const Chat: React.FC = () => {
       }
       count++;
     } while (index <= Number(totalMessages || 0));
-    messages = messages.sort((a, b) => a.id - b.id);
     setMessage(messages);
     setLoading(false);
     removeListenEventByAddress(contractSelected);
@@ -102,10 +98,10 @@ const Chat: React.FC = () => {
       return;
     }
     setLoadingMore(true);
-    let messages: IMessage[] = [];
+    let messages: IMessage[] = [...message];
     let index = indexPage;
     let count = 1;
-    do {
+     do {
       const m = await getMessages(contractSelected, index);
       if (!m) {
         setIndexPage(index);
@@ -124,10 +120,9 @@ const Chat: React.FC = () => {
 
       count++;
     } while (count > 0);
-    messages = messages.sort((a, b) => a.id - b.id);
     setLoadingMore(false);
     setIndexPage(index);
-    setMessage([...messages, ...message]);
+    setMessage(messages);
   };
   const handleEdit = (id: number, msg: string) => {
     setInputMsg(msg);
@@ -149,7 +144,7 @@ const Chat: React.FC = () => {
     if (password_local) {
       const decrypt_pass = CryptoJS.AES.decrypt(
         password_local,
-        password
+        password,
       ).toString(CryptoJS.enc.Utf8);
       const encrypt = CryptoJS.AES.encrypt(inputMsg, decrypt_pass).toString();
       msm = `0x:${encrypt}`;
@@ -162,6 +157,9 @@ const Chat: React.FC = () => {
         return;
       }
       await sendMessage(contractSelected, msm);
+       setTimeout(() => {
+        scrollEl.scrollTop = 0;
+      }, 100);
     } catch (error) {
     } finally {
       alert(t("TEXT_ALERT_SEND_MESSAGE"), "success");
@@ -175,22 +173,12 @@ const Chat: React.FC = () => {
     const resp = await getQueryChannel(
       contractSelected,
       "channelImpl::sendMessages",
-      { newValue }
+      { newValue },
     );
     if (resp?.storageDeposit) {
       setGas(resp?.storageDeposit);
     }
   };
-
-  useEffect(() => {
-    if (scrollEl && scrollLast == 0) {
-      setTimeout(() => {
-        scrollEl.scrollTop = scrollEl.scrollHeight;
-      }, 100);
-    } else if (scrollEl && scrollLast > 0) {
-      scrollEl.scrollTop = scrollEl.scrollHeight - scrollLast - 100;
-    }
-  }, [message]); 
 
   const MessagesView = (props: any) => {
     const { message } = props;
@@ -266,13 +254,13 @@ const Chat: React.FC = () => {
           )}
           <PerfectScrollbar
             containerRef={(ref) => setScrollEl(ref)}
-            onScroll={() => {
-              if (indexPage == 0) {
-                return;
-              }
-
-              if (scrollEl.scrollTop == 0) {
-                setScrollLast(scrollEl.scrollHeight);
+            onScroll={() => {             
+              const scrollBottom =
+                scrollEl.scrollHeight -
+                scrollEl.scrollTop -
+                scrollEl.clientHeight;
+                 console.log(scrollBottom);
+              if (scrollBottom == 0 && !loadingMore && indexPage > 0) {
                 getMore();
               }
             }}
@@ -319,7 +307,7 @@ const Chat: React.FC = () => {
           </div>
         </div>
       )}
-      <IonLoading isOpen={loading} message={t("TEXT_WAIT")} duration={5000} />
+      <IonLoading isOpen={loading} message={t("TEXT_WAIT")} duration={1000} />
     </div>
   );
 };

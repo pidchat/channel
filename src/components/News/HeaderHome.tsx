@@ -14,18 +14,16 @@ import {
 import useContract from "../../hooks/useContract";
 import { globeOutline } from "ionicons/icons";
 import { useTranslation } from "react-i18next";
-
-const HeaderHome: React.FC = () => {
+interface HeaderHomeProps {
+  handleSearch: (searchText: string) => void;
+  handleOwnerPostsClick: () => void;
+}
+const HeaderHome: React.FC<HeaderHomeProps> = ({ handleSearch, handleOwnerPostsClick }) => {
   const { t } = useTranslation();
   const [searchText, setSearchText] = useState("");
   const { isDarkMode } = useContract();
   const handleSearchChange = (e: CustomEvent) => {
     setSearchText(e.detail.value);
-  };
-
-  const handleOwnerPostsClick = () => {
-    // Implement the logic to filter posts by owner using searchText
-    console.log("Filter posts by owner with search text:", searchText);
   };
 
   return (
@@ -69,6 +67,11 @@ const HeaderHome: React.FC = () => {
                 onIonChange={handleSearchChange}
                 placeholder={t("TEXT_SEARCH_CHANNEL")}
                 style={{ width: "100%" }}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    handleSearch(searchText);
+                  }
+                }}
               />
             </IonCol>
             <IonCol 

@@ -103,5 +103,6 @@
   "TEXT_HELPING":"Feel free to send any problems, questions or suggestions to our support group or email us at support@pidchat.com",
   "TEXT_FEED":"News",
   "TEXT_FEE_SAFE":"Security Fee",
-  "TEXT_HOME":"Home"
+  "TEXT_HOME":"Home",
+  "TEXT_ALERT_ACCOUNT_NOT_FOUND":"Account not found"
 }

@@ -13,6 +13,7 @@ import { ApiPromise, Keyring } from "@polkadot/api";
 import { ContractPromise } from "@polkadot/api-contract";
 import ABI_Channel from "../../artifacts/channel.json";
 import ABI_psp22 from "../../artifacts/psp22_token.json";
+import ABI_Governance from "../../artifacts/governance.json";
 import Channel_factory from "../../types/constructors/channel";
 import Channel from "../../types/contracts/channel";
 import Token from "../../types/contracts/psp22_token";
@@ -568,6 +569,7 @@ export const useContract = () => {
         });
       });
     } catch (error: any) {
+      console.log(error);
       alert(error.message, "error");
       return null;
     }
@@ -624,6 +626,89 @@ export const useContract = () => {
         return;
       }
       const contracts = await getQueryToken(address, router, param);
+      if (!contracts) {
+        return;
+      }
+      const account_aux = getAccountAux();
+      if(!account_aux) return
+      await new Promise<string>((resolve, reject) => {
+        contracts.contract.tx[router](
+          {
+            gasLimit: contracts.gasRequired,
+            storageDepositLimit: null,
+          },
+          ...Object.values(param)
+        ).signAndSend(account_aux, async (res) => {
+          if (res.status.isInBlock) {
+            console.log("in a block");
+          }
+          if (res.status.isFinalized) {
+            console.log("finalized");
+            resolve(res.status.asFinalized.toString());
+          }
+          if (res.isError) {
+            console.log(`Error at blockHash ${res.isError}`);
+            reject("Error at blockHash");
+          }
+        });
+      });
+    } catch (error: any) {
+      alert(error.message, "error");
+      return null;
+    }
+  };
+
+  const getQueryGovernance = async (address: string, router: string, param: any) => {
+    try {
+      if (!api || !apiReady || !account) {
+        return;
+      }
+      let error = "";
+      const contract = new ContractPromise(api, ABI_Governance, address);
+      const gasLimit: any = getGasLimit(api);
+      const { storageDeposit, result, gasRequired, output }: any =
+        await contract.query[router](
+          account,
+          {
+            gasLimit,
+            storageDepositLimit: null,
+          },
+          ...Object.values(param)
+        );
+      if (result.isErr) {
+        if (result.asErr.isModule) {
+          const dispatchError = api.registry.findMetaError(
+            result.asErr.asModule
+          );
+          error = dispatchError.docs.length
+            ? dispatchError.docs.concat().toString()
+            : dispatchError.name;
+        } else {
+          error = result.asErr.toString();
+        }
+        throw new Error(error);
+      }
+      if (result.isOk) {
+        return {
+          contract,
+          storageDeposit: calc_fee(storageDeposit.toHuman().Charge),
+          gasRequired,
+          result,
+          output,
+        };
+      }
+    } catch (error: any) {
+      alert(error.message, "error");
+      return null;
+    }
+  };
+
+  const sendTXGovernance = async (address: string, router: string, param: any) => {
+    try {
+      if (!api || !apiReady || !account) {
+        return;
+      }
+      const contracts = await getQueryGovernance(address, router, param);
       if (!contracts) {
         return;
       }
@@ -1536,7 +1621,14 @@ export const useContract = () => {
     transferFromAgent,
     authenticate,
     createAccount,
-    password
+    password,
+    decryptMessage,
+    sendTXChannel,
+    getQueryGovernance,
+    sendTXGovernance,
+    getQueryToken,
+    sendTXToken,
+    getAccountCompleteInNetWork,
 
   };
 };

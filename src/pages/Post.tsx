@@ -1,78 +1,230 @@
-import React from 'react';
-import { 
-  IonContent, 
-  IonPage, 
-  IonHeader, 
-  IonToolbar, 
-  IonTitle, 
-  IonCard, 
-  IonCardHeader, 
-  IonCardTitle, 
-  IonCardSubtitle, 
-  IonCardContent, 
-  IonFooter, 
-  IonButtons, 
-  IonButton, 
-  IonIcon 
+import React, { useEffect, useState } from "react";
+import {
+  IonContent,
+  IonPage,
+  IonHeader,
+  IonToolbar,
+  IonTitle,
+  IonCard,
+  IonCardHeader,
+  IonCardTitle,
+  IonCardSubtitle,
+  IonCardContent,
+  IonFooter,
+  IonButton,
+  IonIcon,
 } from "@ionic/react";
-import { chatbubbleOutline, alertCircleOutline, flagOutline } from 'ionicons/icons';
+import {
+  chatbubbleOutline,
+  alertCircleOutline,
+  flagOutline,
+} from "ionicons/icons";
+import ModalChatPost from "../components/News/ModalChatPost";
+import useContract from "../hooks/useContract";
+import useGovernance, { ChannelInfo } from "../hooks/useGovernance";
+import { getDateView, truncateText } from "../utils";
+import Identicon from "@polkadot/react-identicon";
+import ShareChannelModal from "../components/Modals/ShareChannelModal";
 
 const Post: React.FC = () => {
+  const { account, apiReady, alert, isDarkMode } = useContract();
+  const { getMessageDefaultChannel, getChannelIdAccount, getNewsId } =
+    useGovernance();
+  const [details, setDetails] = useState<ChannelInfo>();
+  const [openMessagesModal, setOpenMessagesModal] = useState(false);
+  const [openReportPostModal, setOpenReportPostModal] = useState(false);
+  const [modal, setModal] = useState(false);
+  const [addressChannel, setAddressChannel] = useState("");
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [messages, setMessages] = useState<string[]>([]);
+  useEffect(() => {
+    if (apiReady) {
+      const params = window.location.pathname.split("/");
+      const id = params[params.length - 1];
+      setAddressChannel(id);
+    }
+  }, [apiReady]);
+  useEffect(() => {
+    if (!addressChannel) return;
+    getChannelIdAccount(addressChannel)
+      .then((res) => {
+        if (res) {
+          getNewsId(Number(res))
+            .then((res) => {
+              if (res) {
+                setDetails(res);
+              }
+            })
+            .catch((error) => {
+              alert(error.message, "error");
+            });
+        }
+      })
+      .catch((error) => {
+        alert(error.message, "error");
+      });
+  }, [addressChannel]);
+
+  useEffect(() => {
+    if (!addressChannel) return;
+    getMessageDefaultChannel(addressChannel).then((res) => {
+      if (res && res.length > 0) {
+        setMessages(res);
+      }
+    });
+  }, [addressChannel]);
+
   return (
     <IonPage>
-      <IonHeader>
-        <IonToolbar>
-          <IonTitle>Notícia</IonTitle>
-        </IonToolbar>
-      </IonHeader>
+      <div className={account ? "contentNews" : "contentFull"}>
+        <IonHeader
+        style={{
+           color: isDarkMode ? "#fff" : "",
+        }}
+        >
+          <div className="chat-header-user">
+            <div>
+              <p
+                onClick={() => {
+                  navigator.clipboard.writeText(addressChannel);
+                }}
+              >
+                <Identicon value={addressChannel} theme="substrate" size={32} />
+                {truncateText(addressChannel, 7, 10, false)}{" "}
+                <i className="ti ti-world"></i>{" "}
+              </p>
+            </div>
+            <div style={{display:"flex", alignItems:"center"}}>
+              <ul className="list-inline">
+                <li
+                  className="list-inline-item"
+                  data-toggle="tooltip"
+                  title="Share"
+                >
+                  <IonButton onClick={() => setModal(true)} size="small">
+                    <i className="ti ti-share"></i>
+                  </IonButton>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </IonHeader>
 
-      <IonContent fullscreen className="ion-padding">
-        <IonCard>
-          <img alt="News Banner" src="https://ionicframework.com/docs/img/demos/card-media.png" />
-          <IonCardHeader>
-            <IonCardTitle>Título da Notícia Importante</IonCardTitle>
-            <IonCardSubtitle>Categoria • 2 horas atrás</IonCardSubtitle>
-          </IonCardHeader>
+        <IonContent fullscreen>
+          <IonCard>
+            <IonCardHeader>
+              <IonCardTitle>
+                <div
+                  style={{
+                    fontSize: "12px",
+                    width: "100%",
+                    wordBreak: "break-word",
+                  }}
+                >
+                  {details?.info?.name && <span>| {details.info.name} </span>}
+                  {details?.info?.email && <span>| {details.info.email} </span>}
+                  {details?.info?.twitter && (
+                    <span>| {details.info.twitter} </span>
+                  )}
+                  {details?.info?.web && <span>| {details.info.web} </span>}
+                </div>
+              </IonCardTitle>
+              <IonCardSubtitle>
+                {getDateView(
+                  (
+                    Number(details?.dataCreate || 0) -
+                    86624000 * 10
+                  ).toString() || "",
+                )}
+              </IonCardSubtitle>
+            </IonCardHeader>
 
-          <IonCardContent>
-            <p className="ion-margin-bottom">
-              Aqui ficará o corpo do texto da notícia. Este é um exemplo de como o conteúdo será visualizado.
-              Utilizando componentes do Ionic, garantimos uma aparência nativa e responsiva em dispositivos móveis.
-            </p>
-            <p>
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. 
-              Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
-            </p>
-          </IonCardContent>
-        </IonCard>
-      </IonContent>
-
+            <IonCardContent
+              style={{
+                marginBottom: "50px",
+              }}
+            >
+              {messages.map((message, index) => (
+                <div key={index}>{message}</div>
+              ))}
+            </IonCardContent>
+          </IonCard>
+        </IonContent>
+      </div>
       <IonFooter>
         <IonToolbar>
-          <div style={{ display: 'flex', justifyContent: 'space-around', width: '100%' }}>
-            <IonButton fill="clear" color="medium">
-              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                <IonIcon icon={chatbubbleOutline} style={{ fontSize: '24px' }} />
-                <span style={{ fontSize: '10px', marginTop: '4px' }}>Comentário</span>
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              height: "100%",
+              justifyContent: "space-around",
+              marginLeft: account ? "50px" : "0",
+            }}
+          >
+            <IonButton
+              fill="clear"
+              color="medium"
+              onClick={() => setIsModalOpen(true)}
+            >
+              <div
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                }}
+              >
+                <IonIcon
+                  icon={chatbubbleOutline}
+                  style={{ fontSize: "24px" }}
+                />
+                <span style={{ fontSize: "10px", marginTop: "4px" }}>
+                  Comentário
+                </span>
               </div>
             </IonButton>
-            
+
             <IonButton fill="clear" color="warning">
-              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                <IonIcon icon={alertCircleOutline} style={{ fontSize: '24px' }} />
-                <span style={{ fontSize: '10px', marginTop: '4px' }}>Alerta</span>
+              <div
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                }}
+              >
+                <IonIcon
+                  icon={alertCircleOutline}
+                  style={{ fontSize: "24px" }}
+                />
+                <span style={{ fontSize: "10px", marginTop: "4px" }}>
+                  Alerta
+                </span>
               </div>
             </IonButton>
 
             <IonButton fill="clear" color="danger">
-              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                <IonIcon icon={flagOutline} style={{ fontSize: '24px' }} />
-                <span style={{ fontSize: '10px', marginTop: '4px' }}>Denunciar</span>
+              <div
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                }}
+              >
+                <IonIcon icon={flagOutline} style={{ fontSize: "24px" }} />
+                <span style={{ fontSize: "10px", marginTop: "4px" }}>
+                  Denunciar
+                </span>
               </div>
             </IonButton>
           </div>
         </IonToolbar>
       </IonFooter>
+      <ModalChatPost
+        modal={isModalOpen}
+        modalToggle={() => setIsModalOpen(!isModalOpen)}
+        addressChannel={addressChannel}
+      />
+       <ShareChannelModal address={addressChannel} modal={modal} modalToggle={() => setModal(!modal)} name={details?.info?.name || ""} />
     </IonPage>
   );
 };

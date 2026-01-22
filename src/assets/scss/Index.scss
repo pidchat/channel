@@ -28,6 +28,10 @@
 	color: black;
 	
 }
+.contentFull{
+	height: 100vh;
+	overflow-x: auto;
+}
 .content {
 	height: calc(var(--vh, 1vh) * 100);
 	height: 100vh;
@@ -35,6 +39,10 @@
 	padding: 30px;
 	display: flex;
 	flex: 1;
+}
+.contentNews {
+	height: calc(var(--vh, 1vh) * 100);	
+	margin-left: 70px;
 }
 .text-muted {
 	color: rgba(var(--ion-text-color), .40) !important;

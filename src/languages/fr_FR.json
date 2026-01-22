@@ -103,5 +103,6 @@
   "TEXT_HELPING":"N'hésitez pas à envoyer vos problèmes, questions ou suggestions à notre groupe de support ou envoyez-nous un e-mail à support@pidchat.com",
   "TEXT_FEED":"Actualités",
   "TEXT_FEE_SAFE":"Frais de Garantie",
-  "TEXT_HOME":"Accueil"
+  "TEXT_HOME":"Accueil",
+  "TEXT_ALERT_ACCOUNT_NOT_FOUND":"Compte non trouvé"
 }
