@@ -15,6 +15,10 @@ use super::data::GovError;
 
 /// Governance implementation trait that provides functionality for managing channels,
 /// voting on fake news, and handling token payments
+
+#[openbrush::wrapper]
+pub type GovernanceRef = dyn GovernanceImp;
+
 #[openbrush::trait_definition]
 pub trait GovernanceImp : Storage<Data> {
     

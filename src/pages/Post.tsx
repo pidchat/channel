@@ -13,6 +13,7 @@ import {
   IonFooter,
   IonButton,
   IonIcon,
+  IonSpinner,
 } from "@ionic/react";
 import {
   chatbubbleOutline,
@@ -77,79 +78,84 @@ const Post: React.FC = () => {
   return (
     <IonPage>
       <div className={account ? "contentNews" : "contentFull"}>
-        <IonHeader
-        style={{
-           color: isDarkMode ? "#fff" : "",
-        }}
-        >
-          <div className="chat-header-user">
-            <div>
-              <p
-                onClick={() => {
-                  navigator.clipboard.writeText(addressChannel);
-                }}
-              >
-                <Identicon value={addressChannel} theme="substrate" size={32} />
-                {truncateText(addressChannel, 7, 10, false)}{" "}
-                <i className="ti ti-world"></i>{" "}
-              </p>
-            </div>
-            <div style={{display:"flex", alignItems:"center"}}>
-              <ul className="list-inline">
-                <li
-                  className="list-inline-item"
-                  data-toggle="tooltip"
-                  title="Share"
-                >
-                  <IonButton onClick={() => setModal(true)} size="small">
-                    <i className="ti ti-share"></i>
-                  </IonButton>
-                </li>
-              </ul>
-            </div>
-          </div>
-        </IonHeader>
-
-        <IonContent fullscreen>
-          <IonCard>
-            <IonCardHeader>
-              <IonCardTitle>
-                <div
-                  style={{
-                    fontSize: "12px",
-                    width: "100%",
-                    wordBreak: "break-word",
-                  }}
-                >
-                  {details?.info?.name && <span>| {details.info.name} </span>}
-                  {details?.info?.email && <span>| {details.info.email} </span>}
-                  {details?.info?.twitter && (
-                    <span>| {details.info.twitter} </span>
-                  )}
-                  {details?.info?.web && <span>| {details.info.web} </span>}
-                </div>
-              </IonCardTitle>
-              <IonCardSubtitle>
-                {getDateView(
-                  (
-                    Number(details?.dataCreate || 0) -
-                    86624000 * 10
-                  ).toString() || "",
-                )}
-              </IonCardSubtitle>
-            </IonCardHeader>
-
-            <IonCardContent
+        {details ? (
+          <>
+            <IonHeader
               style={{
-                marginBottom: "50px",
+                color: isDarkMode ? "#fff" : "",
+                justifyContent: "center",
+                alignItems: "center",
               }}
             >
-              {messages.map((message, index) => (
-                <div key={index}>{message}</div>
-              ))}
-            </IonCardContent>
-          </IonCard>
-        </IonContent>
+              <div className="chat-header-user">
+                <div>
+                  <p
+                    onClick={() => {
+                      navigator.clipboard.writeText(addressChannel);
+                    }}
+                  >
+                    <Identicon
+                      value={addressChannel}
+                      theme="substrate"
+                      size={32}
+                    />
+                    {truncateText(addressChannel, 7, 10, false)}{" "}
+                    <IonButton onClick={() => setModal(true)} size="small">
+                      <i className="ti ti-share"></i>
+                    </IonButton>
+                  </p>
+                </div>
+              </div>
+            </IonHeader>
+
+            <IonContent fullscreen>
+              <IonCard>
+                <IonCardHeader>
+                  <IonCardTitle>
+                    <div
+                      style={{
+                        fontSize: "12px",
+                        width: "100%",
+                        wordBreak: "break-word",
+                      }}
+                    >
+                      {details?.info?.name && (
+                        <span>| {details.info.name} </span>
+                      )}
+                      {details?.info?.email && (
+                        <span>| {details.info.email} </span>
+                      )}
+                      {details?.info?.twitter && (
+                        <span>| {details.info.twitter} </span>
+                      )}
+                      {details?.info?.web && <span>| {details.info.web} </span>}
+                    </div>
+                  </IonCardTitle>
+                  <IonCardSubtitle>
+                    {getDateView(
+                      (
+                        Number(details?.dataCreate || 0) -
+                        86624000 * 10
+                      ).toString() || "",
+                    )}
+                  </IonCardSubtitle>
+                </IonCardHeader>
+
+                <IonCardContent
+                  style={{
+                    marginBottom: "50px",
+                  }}
+                >
+                  {messages.map((message, index) => (
+                    <div key={index}>{message}</div>
+                  ))}
+                </IonCardContent>
+              </IonCard>
+            </IonContent>
+          </>
+        ) : (
+          <IonSpinner name="dots"></IonSpinner>
+        )}
       </div>
       <IonFooter>
         <IonToolbar>
@@ -224,7 +230,13 @@ const Post: React.FC = () => {
         modalToggle={() => setIsModalOpen(!isModalOpen)}
         addressChannel={addressChannel}
       />
-       <ShareChannelModal address={addressChannel} modal={modal} modalToggle={() => setModal(!modal)} name={details?.info?.name || ""} />
+      <ShareChannelModal
+        address={addressChannel}
+        modal={modal}
+        modalToggle={() => setModal(!modal)}
+        name={details?.info?.name || ""}
+         patch={`post/${addressChannel}`}
+      />
     </IonPage>
   );
 };

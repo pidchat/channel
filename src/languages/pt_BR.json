@@ -104,6 +104,8 @@
   "TEXT_FEED":"Novidades",
   "TEXT_FEE_SAFE":"Taxa de Garantia",
   "TEXT_HOME":"Início",
-  "TEXT_ALERT_ACCOUNT_NOT_FOUND":"Conta não encontrada"
+  "TEXT_ALERT_ACCOUNT_NOT_FOUND":"Conta não encontrada",
+  "TEXT_ALERT_CHANNEL_NOT_FOUND":"Canal não encontrado"
+
   
 }

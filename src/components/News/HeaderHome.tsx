@@ -14,6 +14,10 @@ import {
 import useContract from "../../hooks/useContract";
 import { globeOutline } from "ionicons/icons";
 import { useTranslation } from "react-i18next";
+import {
+  
+  Input,
+} from "reactstrap";
 interface HeaderHomeProps {
   handleSearch: (searchText: string) => void;
   handleOwnerPostsClick: () => void;
@@ -22,9 +26,7 @@ const HeaderHome: React.FC<HeaderHomeProps> = ({ handleSearch, handleOwnerPostsC
   const { t } = useTranslation();
   const [searchText, setSearchText] = useState("");
   const { isDarkMode } = useContract();
-  const handleSearchChange = (e: CustomEvent) => {
-    setSearchText(e.detail.value);
-  };
+
 
   return (
     <IonCard
@@ -62,14 +64,15 @@ const HeaderHome: React.FC<HeaderHomeProps> = ({ handleSearch, handleOwnerPostsC
                 width: "100%"
               }}
             >
-              <IonSearchbar
+              <Input
                 value={searchText}                
-                onIonChange={handleSearchChange}
+                onChange={(e) => setSearchText(e.target.value || "")}
                 placeholder={t("TEXT_SEARCH_CHANNEL")}
                 style={{ width: "100%" }}
                 onKeyDown={(e) => {
                   if (e.key === "Enter") {
                     handleSearch(searchText);
+                    setSearchText("");
                   }
                 }}
               />

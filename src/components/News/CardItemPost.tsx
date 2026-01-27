@@ -8,6 +8,7 @@ import {
   IonIcon,
   IonButton,
   useIonRouter,
+  IonSpinner,
 } from "@ionic/react";
 import {
   chatbubbleOutline,
@@ -62,6 +63,12 @@ const CardItemPost: React.FC<CardItemPostProps> = ({ channelId }) => {
       }
     });
   };
+  if (!details)
+    return (
+      <div className="loading-more">
+        <IonSpinner name="dots"></IonSpinner>
+      </div>
+    );
   return (
     <IonCard
       style={{
@@ -145,7 +152,7 @@ const CardItemPost: React.FC<CardItemPostProps> = ({ channelId }) => {
               marginBottom: "8px",
             }}
             onClick={() => {
-              router.push(`/post/${details?.channelAddress}`)
+              router.push(`/post/${details?.channelAddress}`);
             }}
             onMouseEnter={(e) => {
               e.currentTarget.style.backgroundColor = isDarkMode

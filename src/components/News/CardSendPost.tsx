@@ -16,7 +16,10 @@ import Identicon from "@polkadot/react-identicon";
 import { truncateText } from "../../utils";
 import useGovernance from "../../hooks/useGovernance";
 import { Input } from "reactstrap";
-const CardSendPost: React.FC = () => {
+interface CardSendPostProp {
+  reload: () => void;
+}
+const CardSendPost: React.FC<CardSendPostProp> = ({ reload }) => {
   const { t } = useTranslation();
   const { account, accountIdentity, alert,createChannel, isDarkMode, feeCreateChannel } =
     useContract();
@@ -27,7 +30,6 @@ const CardSendPost: React.FC = () => {
   const [loading, setLoading] = useState(false);
   useEffect(() => {
     calcFeeContract();
-    console.log(feeChannel);
   }, [description]);
   const calcFeeContract = async () => {
     const descriptionArray = description.split("\n");
@@ -51,6 +53,7 @@ const CardSendPost: React.FC = () => {
     setDescription("");
     setLoading(false);
     alert("Channel published successfully", "success");
+    reload();
    } catch (error:any) {
     setLoading(false);
     alert(error, "error");    

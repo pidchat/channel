@@ -1,7 +1,6 @@
 import Identicon from "@polkadot/react-identicon";
 import React, { useEffect, useState } from "react";
 import {
-  Button,
   Modal,
   ModalHeader,
   ModalBody,
