@@ -9,7 +9,7 @@ pub mod channel {
                 only_owner,
             },
             reentrancy_guard,
-            traits::psp22::PSP22Error,
+            traits::psp22::{PSP22Ref, PSP22Error},
         },
         traits::{
             Storage, String
@@ -85,7 +85,46 @@ pub mod channel {
 
             // Terminate contract and transfer remaining balance to caller
             self.env().terminate_contract(self.env().caller())
-        }       
+        }  
+        /// Transfers owner Token and native balance
+    /// 
+    /// # Arguments
+    /// * `address_token` - Address of token contract
+    /// * `to` - Address to transfer to
+    /// * `type_transfer` - 0 for token, 1 for native
+    /// 
+    /// # Returns
+    /// * `Ok(())` if transfer was successful
+    /// * `Err` if transfer failed
+    #[ink(message)]
+    #[openbrush::modifiers(only_owner)]
+    pub fn transfer_balance(&mut self,address_token: Option<AccountId>, to: AccountId, type_transfer: u8) -> Result<(), PSP22Error> {
+        let caller = self.env().caller();
+
+        if type_transfer == 0 {
+            // balance available
+            let balance = self.env().balance();
+            let current_balance = balance
+                    .checked_sub(self.env().minimum_balance())
+                    .unwrap_or_default();
+            if current_balance == 0 {
+                return Err(PSP22Error::Custom(String::from("Balance not found")));
+            }    
+            self.env()
+                .transfer(to, current_balance)
+                .map_err(|_| PSP22Error::Custom(String::from("Transfer failed")))?;
+        } else {
+            if address_token.is_none() {
+                return Err(PSP22Error::Custom(String::from("Token not found")));
+            }
+            let balance_token = PSP22Ref::balance_of(&address_token.unwrap(), caller);
+            if balance_token == 0 {
+                return Err(PSP22Error::Custom(String::from("Token balance not found")));
+            }
+            PSP22Ref::transfer(&address_token.unwrap(), to, balance_token,Vec::new()).map_err(|_| PSP22Error::Custom(String::from("Transfer failed")))?;
+        }
+        Ok(())
+    }
     }
 
     #[cfg(test)]
@@ -198,3 +237,6 @@ pub mod channel {
         }
     }
 }
+
+#[cfg(feature = "ink-as-dependency")]
+pub use self::channel::*;

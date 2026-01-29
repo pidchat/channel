@@ -150,46 +150,7 @@ pub trait ChannelImpl: Storage<Data> + Storage<reentrancy_guard::Data> + Storage
         }
         self.data::<Data>().address_governance = Some(address_governance);
         Ok(())
-    }
-
-    /// Transfers owner Token and native balance
-    /// 
-    /// # Arguments
-    /// * `address_token` - Address of token contract
-    /// * `type_transfer` - 0 for token, 1 for native
-    /// 
-    /// # Returns
-    /// * `Ok(())` if transfer was successful
-    /// * `Err` if transfer failed
-    #[ink(message)]
-    #[openbrush::modifiers(only_owner)]
-    fn transferBalance(&mut self,address_token: Option<AccountId>, type_transfer: u8) -> Result<(), PSP22Error> {
-        let caller = Self::env().caller();
-
-        if type_transfer == 0 {
-            // balance available
-            let balance = Self::env().balance();
-            let current_balance = balance
-                    .checked_sub(Self::env().minimum_balance())
-                    .unwrap_or_default();
-            if current_balance == 0 {
-                return Err(PSP22Error::Custom(String::from("Balance not found")));
-            }    
-            Self::env()
-            .transfer(caller, current_balance)
-            .map_err(|_| PSP22Error::Custom(String::from("Transfer failed")))?;
-        } else {
-            if address_token.is_none() {
-                return Err(PSP22Error::Custom(String::from("Token not found")));
-            }
-            let balance_token = PSP22Ref::balance_of(&address_token.unwrap(), caller);
-            if balance_token == 0 {
-                return Err(PSP22Error::Custom(String::from("Token balance not found")));
-            }
-            PSP22Ref::transfer(&address_token.unwrap(), caller, balance_token,Vec::new()).map_err(|_| PSP22Error::Custom(String::from("Transfer failed")))?;
-        }
-        Ok(())
-    }
+    }   
 
     /// Gets the balance of a token
     /// 
@@ -199,7 +160,8 @@ pub trait ChannelImpl: Storage<Data> + Storage<reentrancy_guard::Data> + Storage
     /// # Returns
     /// * Token balance if found
     /// * Error if token not found
-    fn getBalanceToken(&self, address_token: AccountId) -> Result<u128, PSP22Error> {
+     #[ink(message)]
+    fn get_balance_token(&self, address_token: AccountId) -> Result<u128, PSP22Error> {
         Ok(PSP22Ref::balance_of(&address_token, Self::env().caller()))
     }
 

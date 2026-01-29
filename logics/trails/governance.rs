@@ -2,10 +2,11 @@ use openbrush::{
     contracts::psp22::PSP22Error,
     traits::{
         Balance, 
-        AccountId
+        AccountId,
+        String
     },
 };
-
+use ink_prelude::vec::Vec;
 /// Reference type for the Governance trait
 #[openbrush::wrapper]
 pub type GovernanceRef = dyn Governance;
@@ -23,7 +24,7 @@ pub trait Governance {
 
     /// Creates a new public channel with the given address
     #[ink(message)]
-    fn add_messages_public(&mut self, address_channel: AccountId) -> Result<u128, PSP22Error>;
+    fn add_messages_public(&mut self, default_message: Option<Vec<String>>,type_default_message_channel: String) -> Result<AccountId, PSP22Error>;
 
     /// Claims reward for correctly identifying fake news
     #[ink(message)]
@@ -95,4 +96,13 @@ pub trait Governance {
     /// Gets the current price per channel
     #[ink(message)]
     fn get_price_per_channel(&self) -> u128;
+
+    /// Transfers balance between token and native currency
+    #[ink(message)]
+    fn transfer_balance_channel(&mut self,address_token: Option<AccountId>, type_transfer: u8) -> Result<(), PSP22Error>;
+
+     
+    /// Checks if a channel is marked as fake news
+    #[ink(message)]
+    fn check_channel_fake(&self, channel_id: u128) -> Result<(), PSP22Error>;
 }

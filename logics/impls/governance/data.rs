@@ -6,6 +6,9 @@ use openbrush::{
         String
     },
 };
+use ink::{
+    primitives::Hash,
+};
 #[derive(Default, Debug)]
 #[openbrush::storage_item]
 pub struct Data {
@@ -40,12 +43,15 @@ pub struct Data {
     pub deadlines_fake:Mapping<u128,u64>,
     //Channel open in vote (id_channel_fake,id_channel)
     pub open_fake:Mapping<u128,u128>,
+    //Channel open in vote (id_channel, reason)
+    pub reason_fake:Mapping<u128,String>,
     //Feelers
     pub fee_receiver:Option<AccountId>,
     pub fee_balance : Balance,
     pub qtd_total_per_vote : u128,
     /// balance of auditor
     pub balance_of_auditor : Balance,
+    pub channel_contract_code_hash: Hash,
 }
 
 #[derive(Debug, PartialEq, Eq, scale::Encode, scale::Decode)]

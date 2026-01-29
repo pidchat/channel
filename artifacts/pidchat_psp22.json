@@ -1,11 +1,11 @@
 {
   "source": {
-    "hash": "0x9904224e71747192d21a4a7f98235bc29cc2b31da28cde55b83171a0259091ba",
+    "hash": "0x8c7bc122248c09ed39180ca310c2fca798c248ce5e738a2040d0e2cf4f538356",
     "language": "ink! 4.3.0",
-    "compiler": "rustc 1.86.0-nightly",
+    "compiler": "rustc 1.94.0-nightly",
     "build_info": {
-      "build_mode": "Release",
-      "cargo_contract_version": "5.0.2",
+      "build_mode": "Debug",
+      "cargo_contract_version": "5.0.3",
       "rust_toolchain": "nightly-x86_64-unknown-linux-gnu",
       "wasm_opt_settings": {
         "keep_debug_symbols": false,
@@ -295,6 +295,43 @@
       {
         "args": [
           {
+            "label": "owner",
+            "type": {
+              "displayName": [
+                "psp22_external",
+                "AllowanceInput1"
+              ],
+              "type": 8
+            }
+          },
+          {
+            "label": "spender",
+            "type": {
+              "displayName": [
+                "psp22_external",
+                "AllowanceInput2"
+              ],
+              "type": 8
+            }
+          }
+        ],
+        "default": false,
+        "docs": [],
+        "label": "PSP22::allowance",
+        "mutates": false,
+        "payable": false,
+        "returnType": {
+          "displayName": [
+            "ink",
+            "MessageResult"
+          ],
+          "type": 10
+        },
+        "selector": "0x4d47d921"
+      },
+      {
+        "args": [
+          {
             "label": "spender",
             "type": {
               "displayName": [
@@ -325,7 +362,7 @@
             "ink",
             "MessageResult"
           ],
-          "type": 10
+          "type": 11
         },
         "selector": "0x96d6b57a"
       },
@@ -368,7 +405,7 @@
                 "psp22_external",
                 "TransferFromInput4"
               ],
-              "type": 13
+              "type": 14
             }
           }
         ],
@@ -382,52 +419,9 @@
             "ink",
             "MessageResult"
           ],
-          "type": 10
+          "type": 11
         },
         "selector": "0x54b3c76e"
-      },
-      {
-        "args": [
-          {
-            "label": "owner",
-            "type": {
-              "displayName": [
-                "psp22_external",
-                "BalanceOfInput1"
-              ],
-              "type": 8
-            }
-          }
-        ],
-        "default": false,
-        "docs": [],
-        "label": "PSP22::balance_of",
-        "mutates": false,
-        "payable": false,
-        "returnType": {
-          "displayName": [
-            "ink",
-            "MessageResult"
-          ],
-          "type": 14
-        },
-        "selector": "0x6568382f"
-      },
-      {
-        "args": [],
-        "default": false,
-        "docs": [],
-        "label": "PSP22::total_supply",
-        "mutates": false,
-        "payable": false,
-        "returnType": {
-          "displayName": [
-            "ink",
-            "MessageResult"
-          ],
-          "type": 14
-        },
-        "selector": "0x162df8c2"
       },
       {
         "args": [
@@ -462,7 +456,7 @@
             "ink",
             "MessageResult"
           ],
-          "type": 10
+          "type": 11
         },
         "selector": "0xfecb57d5"
       },
@@ -473,17 +467,7 @@
             "type": {
               "displayName": [
                 "psp22_external",
-                "AllowanceInput1"
-              ],
-              "type": 8
-            }
-          },
-          {
-            "label": "spender",
-            "type": {
-              "displayName": [
-                "psp22_external",
-                "AllowanceInput2"
+                "BalanceOfInput1"
               ],
               "type": 8
             }
@@ -491,55 +475,8 @@
         ],
         "default": false,
         "docs": [],
-        "label": "PSP22::allowance",
+        "label": "PSP22::balance_of",
         "mutates": false,
-        "payable": false,
-        "returnType": {
-          "displayName": [
-            "ink",
-            "MessageResult"
-          ],
-          "type": 14
-        },
-        "selector": "0x4d47d921"
-      },
-      {
-        "args": [
-          {
-            "label": "to",
-            "type": {
-              "displayName": [
-                "psp22_external",
-                "TransferInput1"
-              ],
-              "type": 8
-            }
-          },
-          {
-            "label": "value",
-            "type": {
-              "displayName": [
-                "psp22_external",
-                "TransferInput2"
-              ],
-              "type": 0
-            }
-          },
-          {
-            "label": "data",
-            "type": {
-              "displayName": [
-                "psp22_external",
-                "TransferInput3"
-              ],
-              "type": 13
-            }
-          }
-        ],
-        "default": false,
-        "docs": [],
-        "label": "PSP22::transfer",
-        "mutates": true,
         "payable": false,
         "returnType": {
           "displayName": [
@@ -548,7 +485,7 @@
           ],
           "type": 10
         },
-        "selector": "0xdb20f9f5"
+        "selector": "0x6568382f"
       },
       {
         "args": [
@@ -583,7 +520,7 @@
             "ink",
             "MessageResult"
           ],
-          "type": 10
+          "type": 11
         },
         "selector": "0xb20f1bbd"
       },
@@ -591,7 +528,7 @@
         "args": [],
         "default": false,
         "docs": [],
-        "label": "PSP22Metadata::token_decimals",
+        "label": "PSP22::total_supply",
         "mutates": false,
         "payable": false,
         "returnType": {
@@ -599,9 +536,56 @@
             "ink",
             "MessageResult"
           ],
-          "type": 15
+          "type": 10
         },
-        "selector": "0x7271b782"
+        "selector": "0x162df8c2"
+      },
+      {
+        "args": [
+          {
+            "label": "to",
+            "type": {
+              "displayName": [
+                "psp22_external",
+                "TransferInput1"
+              ],
+              "type": 8
+            }
+          },
+          {
+            "label": "value",
+            "type": {
+              "displayName": [
+                "psp22_external",
+                "TransferInput2"
+              ],
+              "type": 0
+            }
+          },
+          {
+            "label": "data",
+            "type": {
+              "displayName": [
+                "psp22_external",
+                "TransferInput3"
+              ],
+              "type": 14
+            }
+          }
+        ],
+        "default": false,
+        "docs": [],
+        "label": "PSP22::transfer",
+        "mutates": true,
+        "payable": false,
+        "returnType": {
+          "displayName": [
+            "ink",
+            "MessageResult"
+          ],
+          "type": 11
+        },
+        "selector": "0xdb20f9f5"
       },
       {
         "args": [],
@@ -615,7 +599,7 @@
             "ink",
             "MessageResult"
           ],
-          "type": 16
+          "type": 15
         },
         "selector": "0x3d261bd4"
       },
@@ -631,9 +615,25 @@
             "ink",
             "MessageResult"
           ],
-          "type": 16
+          "type": 15
         },
         "selector": "0x34205be5"
+      },
+      {
+        "args": [],
+        "default": false,
+        "docs": [],
+        "label": "PSP22Metadata::token_decimals",
+        "mutates": false,
+        "payable": false,
+        "returnType": {
+          "displayName": [
+            "ink",
+            "MessageResult"
+          ],
+          "type": 16
+        },
+        "selector": "0x7271b782"
       }
     ]
   },
@@ -993,7 +993,7 @@
               {
                 "fields": [
                   {
-                    "type": 11
+                    "type": 0
                   }
                 ],
                 "index": 0,
@@ -1014,7 +1014,7 @@
         "params": [
           {
             "name": "T",
-            "type": 11
+            "type": 0
           },
           {
             "name": "E",
@@ -1035,6 +1035,48 @@
               {
                 "fields": [
                   {
+                    "type": 12
+                  }
+                ],
+                "index": 0,
+                "name": "Ok"
+              },
+              {
+                "fields": [
+                  {
+                    "type": 6
+                  }
+                ],
+                "index": 1,
+                "name": "Err"
+              }
+            ]
+          }
+        },
+        "params": [
+          {
+            "name": "T",
+            "type": 12
+          },
+          {
+            "name": "E",
+            "type": 6
+          }
+        ],
+        "path": [
+          "Result"
+        ]
+      }
+    },
+    {
+      "id": 12,
+      "type": {
+        "def": {
+          "variant": {
+            "variants": [
+              {
+                "fields": [
+                  {
                     "type": 5
                   }
                 ],
@@ -1044,7 +1086,7 @@
               {
                 "fields": [
                   {
-                    "type": 12
+                    "type": 13
                   }
                 ],
                 "index": 1,
@@ -1060,7 +1102,7 @@
           },
           {
             "name": "E",
-            "type": 12
+            "type": 13
           }
         ],
         "path": [
@@ -1069,7 +1111,7 @@
       }
     },
     {
-      "id": 12,
+      "id": 13,
       "type": {
         "def": {
           "variant": {
@@ -1123,7 +1165,7 @@
       }
     },
     {
-      "id": 13,
+      "id": 14,
       "type": {
         "def": {
           "sequence": {
@@ -1133,91 +1175,7 @@
       }
     },
     {
-      "id": 14,
-      "type": {
-        "def": {
-          "variant": {
-            "variants": [
-              {
-                "fields": [
-                  {
-                    "type": 0
-                  }
-                ],
-                "index": 0,
-                "name": "Ok"
-              },
-              {
-                "fields": [
-                  {
-                    "type": 6
-                  }
-                ],
-                "index": 1,
-                "name": "Err"
-              }
-            ]
-          }
-        },
-        "params": [
-          {
-            "name": "T",
-            "type": 0
-          },
-          {
-            "name": "E",
-            "type": 6
-          }
-        ],
-        "path": [
-          "Result"
-        ]
-      }
-    },
-    {
       "id": 15,
-      "type": {
-        "def": {
-          "variant": {
-            "variants": [
-              {
-                "fields": [
-                  {
-                    "type": 2
-                  }
-                ],
-                "index": 0,
-                "name": "Ok"
-              },
-              {
-                "fields": [
-                  {
-                    "type": 6
-                  }
-                ],
-                "index": 1,
-                "name": "Err"
-              }
-            ]
-          }
-        },
-        "params": [
-          {
-            "name": "T",
-            "type": 2
-          },
-          {
-            "name": "E",
-            "type": 6
-          }
-        ],
-        "path": [
-          "Result"
-        ]
-      }
-    },
-    {
-      "id": 16,
       "type": {
         "def": {
           "variant": {
@@ -1247,6 +1205,48 @@
           {
             "name": "T",
             "type": 3
+          },
+          {
+            "name": "E",
+            "type": 6
+          }
+        ],
+        "path": [
+          "Result"
+        ]
+      }
+    },
+    {
+      "id": 16,
+      "type": {
+        "def": {
+          "variant": {
+            "variants": [
+              {
+                "fields": [
+                  {
+                    "type": 2
+                  }
+                ],
+                "index": 0,
+                "name": "Ok"
+              },
+              {
+                "fields": [
+                  {
+                    "type": 6
+                  }
+                ],
+                "index": 1,
+                "name": "Err"
+              }
+            ]
+          }
+        },
+        "params": [
+          {
+            "name": "T",
+            "type": 2
           },
           {
             "name": "E",

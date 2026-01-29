@@ -1,8 +1,7 @@
 {
     "projectFiles": [
       "contracts/channel/**/*",
-      "contracts/governance/**/*",
-      "contracts/token/**/*"
+      "contracts/governance/**/*"
     ],
     "typechainGeneratedPath": "types",
     "isWorkspace": true,

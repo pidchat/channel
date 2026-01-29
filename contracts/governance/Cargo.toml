@@ -6,13 +6,14 @@ edition = "2021"
 
 [dependencies]
 ink = { version = "4.2.1", default-features = false }
+ink_prelude = { version = "~3.4.0", default-features = false }
 
 scale = { package = "parity-scale-codec", version = "3", default-features = false, features = ["derive"] }
 scale-info = { version = "2.6", default-features = false, features = ["derive"], optional = true }
 
 openbrush = { tag = "4.0.0-beta", git = "https://github.com/Brushfam/openbrush-contracts", default-features = false, features = ["psp22"] }
 pidchat_pkg = { path = "../../logics", default-features = false }
-
+channel = { path = "../channel",default-features = false, features = ["ink-as-dependency"] }
 [lib]
 name = "governance"
 path = "lib.rs"
@@ -24,7 +25,8 @@ std = [
     "scale/std",
     "scale-info/std",
     "openbrush/std",
-    "pidchat_pkg/std"
+    "pidchat_pkg/std",
+    "channel/std",
 ]
 ink-as-dependency = []
 

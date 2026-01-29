@@ -31,13 +31,29 @@ export default class Methods {
 	}
 
 	/**
-	 * getIdChannelPublic
+	 * transferBalance
 	 *
+	 * @param { ArgumentTypes.AccountId | null } addressToken,
+	 * @param { ArgumentTypes.AccountId } to,
+	 * @param { (number | string | BN) } typeTransfer,
 	*/
-	"getIdChannelPublic" (
+	"transferBalance" (
+		addressToken: ArgumentTypes.AccountId | null,
+		to: ArgumentTypes.AccountId,
+		typeTransfer: (number | string | BN),
 		__options: GasLimit,
 	){
-		return buildSubmittableExtrinsic( this.__apiPromise, this.__nativeContract, "channelImpl::getIdChannelPublic", [], __options);
+		return buildSubmittableExtrinsic( this.__apiPromise, this.__nativeContract, "transferBalance", [addressToken, to, typeTransfer], __options);
+	}
+
+	/**
+	 * getAddressGovernance
+	 *
+	*/
+	"getAddressGovernance" (
+		__options: GasLimit,
+	){
+		return buildSubmittableExtrinsic( this.__apiPromise, this.__nativeContract, "channelImpl::getAddressGovernance", [], __options);
 	}
 
 	/**
@@ -53,13 +69,27 @@ export default class Methods {
 	}
 
 	/**
-	 * getTotalMessages
+	 * getBalanceToken
 	 *
+	 * @param { ArgumentTypes.AccountId } addressToken,
 	*/
-	"getTotalMessages" (
+	"getBalanceToken" (
+		addressToken: ArgumentTypes.AccountId,
 		__options: GasLimit,
 	){
-		return buildSubmittableExtrinsic( this.__apiPromise, this.__nativeContract, "channelImpl::getTotalMessages", [], __options);
+		return buildSubmittableExtrinsic( this.__apiPromise, this.__nativeContract, "channelImpl::getBalanceToken", [addressToken], __options);
+	}
+
+	/**
+	 * addEmotion
+	 *
+	 * @param { string } emotion,
+	*/
+	"addEmotion" (
+		emotion: string,
+		__options: GasLimit,
+	){
+		return buildSubmittableExtrinsic( this.__apiPromise, this.__nativeContract, "channelImpl::addEmotion", [emotion], __options);
 	}
 
 	/**
@@ -77,49 +107,13 @@ export default class Methods {
 	}
 
 	/**
-	 * getEmotions
+	 * getIdChannelPublic
 	 *
 	*/
-	"getEmotions" (
+	"getIdChannelPublic" (
 		__options: GasLimit,
 	){
-		return buildSubmittableExtrinsic( this.__apiPromise, this.__nativeContract, "channelImpl::getEmotions", [], __options);
-	}
-
-	/**
-	 * getIsPrivate
-	 *
-	*/
-	"getIsPrivate" (
-		__options: GasLimit,
-	){
-		return buildSubmittableExtrinsic( this.__apiPromise, this.__nativeContract, "channelImpl::getIsPrivate", [], __options);
-	}
-
-	/**
-	 * receivedMessages
-	 *
-	 * @param { (string | number | BN) } idMessage,
-	*/
-	"receivedMessages" (
-		idMessage: (string | number | BN),
-		__options: GasLimit,
-	){
-		return buildSubmittableExtrinsic( this.__apiPromise, this.__nativeContract, "channelImpl::receivedMessages", [idMessage], __options);
-	}
-
-	/**
-	 * transferBalance
-	 *
-	 * @param { ArgumentTypes.AccountId | null } addressToken,
-	 * @param { (number | string | BN) } typeTransfer,
-	*/
-	"transferBalance" (
-		addressToken: ArgumentTypes.AccountId | null,
-		typeTransfer: (number | string | BN),
-		__options: GasLimit,
-	){
-		return buildSubmittableExtrinsic( this.__apiPromise, this.__nativeContract, "channelImpl::transferBalance", [addressToken, typeTransfer], __options);
+		return buildSubmittableExtrinsic( this.__apiPromise, this.__nativeContract, "channelImpl::getIdChannelPublic", [], __options);
 	}
 
 	/**
@@ -130,40 +124,6 @@ export default class Methods {
 		__options: GasLimit,
 	){
 		return buildSubmittableExtrinsic( this.__apiPromise, this.__nativeContract, "channelImpl::getDefaultMessage", [], __options);
-	}
-
-	/**
-	 * addEmotion
-	 *
-	 * @param { string } emotion,
-	*/
-	"addEmotion" (
-		emotion: string,
-		__options: GasLimit,
-	){
-		return buildSubmittableExtrinsic( this.__apiPromise, this.__nativeContract, "channelImpl::addEmotion", [emotion], __options);
-	}
-
-	/**
-	 * sendMessages
-	 *
-	 * @param { string } message,
-	*/
-	"sendMessages" (
-		message: string,
-		__options: GasLimit,
-	){
-		return buildSubmittableExtrinsic( this.__apiPromise, this.__nativeContract, "channelImpl::sendMessages", [message], __options);
-	}
-
-	/**
-	 * getAddressGovernance
-	 *
-	*/
-	"getAddressGovernance" (
-		__options: GasLimit,
-	){
-		return buildSubmittableExtrinsic( this.__apiPromise, this.__nativeContract, "channelImpl::getAddressGovernance", [], __options);
 	}
 
 	/**
@@ -181,13 +141,57 @@ export default class Methods {
 	}
 
 	/**
-	 * renounceOwnership
+	 * getEmotions
 	 *
 	*/
-	"renounceOwnership" (
+	"getEmotions" (
 		__options: GasLimit,
 	){
-		return buildSubmittableExtrinsic( this.__apiPromise, this.__nativeContract, "ownable::renounceOwnership", [], __options);
+		return buildSubmittableExtrinsic( this.__apiPromise, this.__nativeContract, "channelImpl::getEmotions", [], __options);
+	}
+
+	/**
+	 * sendMessages
+	 *
+	 * @param { string } message,
+	*/
+	"sendMessages" (
+		message: string,
+		__options: GasLimit,
+	){
+		return buildSubmittableExtrinsic( this.__apiPromise, this.__nativeContract, "channelImpl::sendMessages", [message], __options);
+	}
+
+	/**
+	 * receivedMessages
+	 *
+	 * @param { (string | number | BN) } idMessage,
+	*/
+	"receivedMessages" (
+		idMessage: (string | number | BN),
+		__options: GasLimit,
+	){
+		return buildSubmittableExtrinsic( this.__apiPromise, this.__nativeContract, "channelImpl::receivedMessages", [idMessage], __options);
+	}
+
+	/**
+	 * getTotalMessages
+	 *
+	*/
+	"getTotalMessages" (
+		__options: GasLimit,
+	){
+		return buildSubmittableExtrinsic( this.__apiPromise, this.__nativeContract, "channelImpl::getTotalMessages", [], __options);
+	}
+
+	/**
+	 * getIsPrivate
+	 *
+	*/
+	"getIsPrivate" (
+		__options: GasLimit,
+	){
+		return buildSubmittableExtrinsic( this.__apiPromise, this.__nativeContract, "channelImpl::getIsPrivate", [], __options);
 	}
 
 	/**
@@ -210,6 +214,16 @@ export default class Methods {
 		__options: GasLimit,
 	){
 		return buildSubmittableExtrinsic( this.__apiPromise, this.__nativeContract, "ownable::owner", [], __options);
+	}
+
+	/**
+	 * renounceOwnership
+	 *
+	*/
+	"renounceOwnership" (
+		__options: GasLimit,
+	){
+		return buildSubmittableExtrinsic( this.__apiPromise, this.__nativeContract, "ownable::renounceOwnership", [], __options);
 	}
 
 }

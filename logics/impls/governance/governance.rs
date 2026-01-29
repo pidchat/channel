@@ -12,6 +12,10 @@ use openbrush::{
 };
 use ink_prelude::vec::Vec;
 use super::data::GovError;
+use ink::{
+    env::hash::Blake2x256,
+    primitives::Hash,
+};
 
 /// Governance implementation trait that provides functionality for managing channels,
 /// voting on fake news, and handling token payments
@@ -20,7 +24,7 @@ use super::data::GovError;
 pub type GovernanceRef = dyn GovernanceImp;
 
 #[openbrush::trait_definition]
-pub trait GovernanceImp : Storage<Data> {
+pub trait GovernanceImp : Storage<Data> + Internal{
     
     /// Gets channel details by ID
     /// Returns tuple of (owner, balance, expiry timestamp, creator) if found
@@ -37,12 +41,13 @@ pub trait GovernanceImp : Storage<Data> {
     #[ink(message)] 
     fn get_total_channel(&self) -> Result<u128, PSP22Error>{
         Ok(self.data::<Data>().channel_id)    
-    }    
+    } 
+
 
     /// Creates a new public channel with payment
     /// Takes channel address as input and returns channel ID
     #[ink(message)]
-    fn add_messages_public(&mut self,address_channel: AccountId) -> Result<u128, PSP22Error>{
+    fn add_messages_public(&mut self,default_message: Option<Vec<String>>,type_default_message_channel: String) -> Result<AccountId, PSP22Error>{
         let caller = Self::env().caller();
         
         // Get token address and price
@@ -62,12 +67,18 @@ pub trait GovernanceImp : Storage<Data> {
         self.data::<Data>().channel_id +=1;
         let date_block = Self::env().block_timestamp() + (86624000*10); // 10 days expiry        
         let id_channel = self.data::<Data>().channel_id.clone();        
-        
+        //create channel 
+         let address_this_contract = Self::env().account_id();
+        let date_salt = (default_message.clone(),type_default_message_channel.clone(),address_this_contract.clone());
+        let salt = Self::env().hash_encoded::<Blake2x256, _>(&date_salt);
+        let contract_code_hash =  self.data::<Data>().channel_contract_code_hash;
+       
+        let address_channel = self.create_channel(address_this_contract,default_message.clone(),type_default_message_channel.clone(),contract_code_hash,salt)?;
         // Store channel data
         self.data::<Data>().channels.insert(&id_channel, &(address_channel,price,date_block,caller));
         self.data::<Data>().channels_for_addrress.insert(&address_channel,&id_channel);
         
-        Ok(id_channel)
+        Ok(address_channel)
     }
 
     /// Claims reward for correctly identifying fake news
@@ -131,7 +142,7 @@ pub trait GovernanceImp : Storage<Data> {
 
     /// Opens voting period for marking content as fake news
     #[ink(message)]
-    fn open_vote_for_fake_news(&mut self,channel_id: u128) -> Result<(), PSP22Error>{
+    fn open_vote_for_fake_news(&mut self,channel_id: u128, reason: String) -> Result<(), PSP22Error>{
         let caller = Self::env().caller();        
         
         // Verify channel exists and not expired
@@ -153,12 +164,12 @@ pub trait GovernanceImp : Storage<Data> {
              return Err(PSP22Error::Custom(GovError::YouAreNotAuditor.as_str()));
          }
         // Process stake payment
-        let adddress_this_contract = Self::env().account_id();
+        let address_this_contract = Self::env().account_id();
         let token_address = self.data::<Data>().token_address;
         if token_address == Default::default() {
             return Err(PSP22Error::Custom(GovError::NotFoundToken.as_str()));
         }
-        PSP22Ref::transfer_from(&token_address.unwrap(),caller, adddress_this_contract, channel.1, Vec::<u8>::new())
+        PSP22Ref::transfer_from(&token_address.unwrap(),caller, address_this_contract, channel.1, Vec::<u8>::new())
         .map_err(|_| PSP22Error::Custom(GovError::PaymentFail.as_str()))?;
 
         // Initialize vote
@@ -171,17 +182,20 @@ pub trait GovernanceImp : Storage<Data> {
         self.data::<Data>().channel_fake_id+=1;
         let id_fake = self.data::<Data>().channel_fake_id;
         self.data::<Data>().open_fake.insert(&id_fake,&channel_id);
+        self.data::<Data>().reason_fake.insert(&channel_id,&reason);
+
         Ok(())
     }
 
     /// Gets current vote counts and deadline for fake news vote
     #[ink(message)]
-    fn get_votes_fakes_news(&self,channel_id: u128) -> Result<(u128,u128,u64), PSP22Error>{
+    fn get_votes_fakes_news(&self,channel_id: u128) -> Result<(u128,u128,u64,String), PSP22Error>{
         let date_end = self.data::<Data>().deadlines_fake.get(&channel_id)
             .ok_or_else(|| PSP22Error::Custom(GovError::NotFound.as_str()))?;
         let quantity_yes = self.data::<Data>().qtd_fake_yes.get(&channel_id).unwrap();
         let quantity_no = self.data::<Data>().qtd_fake_no.get(&channel_id).unwrap();       
-        Ok((quantity_yes,quantity_no,date_end))
+         let channel_reason = self.data::<Data>().reason_fake.get(&channel_id);
+        Ok((quantity_yes,quantity_no,date_end,channel_reason.unwrap()))
     }
 
     /// Casts vote for fake news
@@ -455,5 +469,51 @@ pub trait GovernanceImp : Storage<Data> {
     fn get_price_per_channel(&self) -> u128{
         self.data::<Data>().price
     }
+     #[ink(message)]
+    fn transfer_balance_channel(&mut self,address_token: Option<AccountId>, type_transfer: u8, channel_id: u128) -> Result<(), PSP22Error>{
+        let caller = Self::env().caller();
+        let channel = self.data::<Data>().channels.get(&channel_id);
+        // Verify channel exists
+        if channel == None {
+            return Err(PSP22Error::Custom(GovError::PaymentFail.as_str()));
+        }
+        if channel.unwrap().3 != caller {
+            return Err(PSP22Error::Custom(GovError::NotChannelOwner.as_str()));
+        }         
+        self.transfer_balance(channel.unwrap().0,address_token,caller, type_transfer);
+        Ok(())
+    }
+    /// Checks if a channel is marked as fake news
+    #[ink(message)]
+    fn check_channel_fake(&self, channel_id: u128) -> Result<String, PSP22Error>{
+        let channel_reason = self.data::<Data>().reason_fake.get(&channel_id);
+        if channel_reason == Default::default() {
+            return Err(PSP22Error::Custom(GovError::NotOpenVoteInFake.as_str()));
+        }
+        Ok(channel_reason.unwrap())
+    }
     
+}
+
+pub trait Internal {
+    fn create_channel(
+        &self,
+        address_this_contract: AccountId,
+        default_message: Option<Vec<String>>,
+        type_default_message_channel: String,
+        pair_hash: Hash,
+        salt_bytes: [u8; 32],
+    ) -> Result<AccountId, PSP22Error>;
+    fn  destroy_channel(
+        &self,
+        channel_id: AccountId,
+    ) -> Result<(), PSP22Error>;
+    fn transfer_balance(
+        &self,
+        channel_id: AccountId,
+        address_token: Option<AccountId>,
+        to: AccountId,
+        type_transfer: u8
+    ) -> Result<(), PSP22Error>;
+
 }
