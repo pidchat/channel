@@ -103,7 +103,7 @@ pub trait Governance {
 
     /// Gets the current balance of the auditor
     #[ink(message)]
-    fn get_balance_auditor(&self) -> Result<u128, PSP22Error>;
+    fn get_balance_auditor(&self) -> u128;
 
     /// Checks if a channel is marked as fake news
     #[ink(message)]
