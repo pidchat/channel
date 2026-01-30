@@ -52,7 +52,7 @@ pub trait Governance {
 
     /// Opens a new vote for changing the price
     #[ink(message)]
-    fn open_vote_for_price(&mut self, new_price: Balance) -> Result<(), PSP22Error>;
+    fn open_vote_for_price(&mut self, new_price: Balance,new_balance_of_auditor:Balance) -> Result<(), PSP22Error>;
 
     /// Gets details of current price vote
     #[ink(message)]
@@ -101,7 +101,10 @@ pub trait Governance {
     #[ink(message)]
     fn transfer_balance_channel(&mut self,address_token: Option<AccountId>, type_transfer: u8) -> Result<(), PSP22Error>;
 
-     
+    /// Gets the current balance of the auditor
+    #[ink(message)]
+    fn get_balance_auditor(&self) -> Result<u128, PSP22Error>;
+
     /// Checks if a channel is marked as fake news
     #[ink(message)]
     fn check_channel_fake(&self, channel_id: u128) -> Result<(), PSP22Error>;

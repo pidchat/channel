@@ -254,7 +254,7 @@ pub trait GovernanceImp : Storage<Data> + Internal{
 
     /// Opens voting period for changing channel price
     #[ink(message)]
-    fn open_vote_for_price(&mut self, new_price:Balance) -> Result<(), PSP22Error>{
+    fn open_vote_for_price(&mut self, new_price:Balance,new_balance_of_auditor:Balance) -> Result<(), PSP22Error>{
         let date = Self::env().block_timestamp();
         let vote_price_end =  self.data::<Data>().vote_price_end;
         if date <= vote_price_end {
@@ -270,17 +270,18 @@ pub trait GovernanceImp : Storage<Data> + Internal{
 
         // Initialize price vote
         self.data::<Data>().new_price = new_price;
+        self.data::<Data>().new_balance_of_auditor = new_balance_of_auditor;
         self.data::<Data>().vote_price_end = date;
         self.data::<Data>().vote_id+=1u128;
         let vote_id = self.data::<Data>().vote_id;
-        self.data::<Data>().qtd_price_no.insert(&vote_id, &1u128);
-        self.data::<Data>().qtd_price_yes.insert(&vote_id, &1u128);
+        self.data::<Data>().qtd_price_no.insert(&vote_id, &0u128);
+        self.data::<Data>().qtd_price_yes.insert(&vote_id, &0u128);
         Ok(())
     }
 
     /// Gets current vote counts and details for price change vote
     #[ink(message)]
-    fn get_votes_price(&self) -> Result<(u128,u128,Balance,u64), PSP22Error>{        
+    fn get_votes_price(&self) -> Result<(u128,u128,Balance,Balance,u64), PSP22Error>{        
         let vote_id = self.data::<Data>().vote_id;
         if vote_id == 0 {
             return Err(PSP22Error::Custom(GovError::NotFound.as_str()));
@@ -288,8 +289,9 @@ pub trait GovernanceImp : Storage<Data> + Internal{
         let qtd_price_yes = self.data::<Data>().qtd_price_yes.get(&vote_id).unwrap();
         let qtd_price_no = self.data::<Data>().qtd_price_no.get(&vote_id).unwrap();
         let new_price = self.data::<Data>().new_price;
+        let new_balance_of_auditor = self.data::<Data>().new_balance_of_auditor;
         let data_end  = self.data::<Data>().vote_price_end;        
-        Ok((qtd_price_yes,qtd_price_no,new_price,data_end))
+        Ok((qtd_price_yes,qtd_price_no,new_price,new_balance_of_auditor,data_end))
     }
 
     /// Casts vote for price change
@@ -341,6 +343,7 @@ pub trait GovernanceImp : Storage<Data> + Internal{
     fn sync(&mut self) -> Result<(), PSP22Error>{
         let date = Self::env().block_timestamp();
         let vote_price_end =  self.data::<Data>().vote_price_end;
+        let new_balance_of_auditor = self.data::<Data>().new_balance_of_auditor;
         let price_new = self.data::<Data>().new_price;
         let price = self.data::<Data>().price;
         let vote_id = self.data::<Data>().vote_id;
@@ -350,6 +353,8 @@ pub trait GovernanceImp : Storage<Data> + Internal{
             let qtd_price_no= self.data::<Data>().qtd_price_no.get(&vote_id).unwrap();
             let qtd_price_yes = self.data::<Data>().qtd_price_yes.get(&vote_id).unwrap();
             if qtd_price_yes > qtd_price_no {
+                // Update price and auditor balance
+                self.data::<Data>().balance_of_auditor = new_balance_of_auditor;
                 self.data::<Data>().price = price_new;                
             }
         }        
@@ -468,6 +473,12 @@ pub trait GovernanceImp : Storage<Data> + Internal{
     #[ink(message)]
     fn get_price_per_channel(&self) -> u128{
         self.data::<Data>().price
+    }
+
+    /// Gets the current balance of the auditor
+    #[ink(message)]
+    fn get_balance_auditor(&self) -> Result<u128, PSP22Error>{
+        self.data::<Data>().balance_of_auditor
     }
      #[ink(message)]
     fn transfer_balance_channel(&mut self,address_token: Option<AccountId>, type_transfer: u8, channel_id: u128) -> Result<(), PSP22Error>{

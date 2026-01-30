@@ -29,15 +29,59 @@ export default class Methods {
 	}
 
 	/**
-	* getTotalChannel
+	* getPrices
 	*
 	*/
-	"getTotalChannel" (
+	"getPrices" (
 		__options ? : GasLimit,
 	){
-		return txSignAndSend( this.__apiPromise, this.__nativeContract, this.__keyringPair, "governanceImp::getTotalChannel", (events: EventRecord) => {
+		return txSignAndSend( this.__apiPromise, this.__nativeContract, this.__keyringPair, "governanceImp::getPrices", (events: EventRecord) => {
 			return decodeEvents(events, this.__nativeContract, EVENT_DATA_TYPE_DESCRIPTIONS);
 		}, [], __options);
+	}
+
+	/**
+	* recoverySafeBalancePublic
+	*
+	* @param { (string | number | BN) } channelId,
+	*/
+	"recoverySafeBalancePublic" (
+		channelId: (string | number | BN),
+		__options ? : GasLimit,
+	){
+		return txSignAndSend( this.__apiPromise, this.__nativeContract, this.__keyringPair, "governanceImp::recoverySafeBalancePublic", (events: EventRecord) => {
+			return decodeEvents(events, this.__nativeContract, EVENT_DATA_TYPE_DESCRIPTIONS);
+		}, [channelId], __options);
+	}
+
+	/**
+	* openVoteForPrice
+	*
+	* @param { (string | number | BN) } newPrice,
+	* @param { (string | number | BN) } newBalanceOfAuditor,
+	*/
+	"openVoteForPrice" (
+		newPrice: (string | number | BN),
+		newBalanceOfAuditor: (string | number | BN),
+		__options ? : GasLimit,
+	){
+		return txSignAndSend( this.__apiPromise, this.__nativeContract, this.__keyringPair, "governanceImp::openVoteForPrice", (events: EventRecord) => {
+			return decodeEvents(events, this.__nativeContract, EVENT_DATA_TYPE_DESCRIPTIONS);
+		}, [newPrice, newBalanceOfAuditor], __options);
+	}
+
+	/**
+	* getIdChannel
+	*
+	* @param { ArgumentTypes.AccountId } addressContract,
+	*/
+	"getIdChannel" (
+		addressContract: ArgumentTypes.AccountId,
+		__options ? : GasLimit,
+	){
+		return txSignAndSend( this.__apiPromise, this.__nativeContract, this.__keyringPair, "governanceImp::getIdChannel", (events: EventRecord) => {
+			return decodeEvents(events, this.__nativeContract, EVENT_DATA_TYPE_DESCRIPTIONS);
+		}, [addressContract], __options);
 	}
 
 	/**
@@ -50,6 +94,48 @@ export default class Methods {
 		return txSignAndSend( this.__apiPromise, this.__nativeContract, this.__keyringPair, "governanceImp::getFeeReceiverBalance", (events: EventRecord) => {
 			return decodeEvents(events, this.__nativeContract, EVENT_DATA_TYPE_DESCRIPTIONS);
 		}, [], __options);
+	}
+
+	/**
+	* getFeeReceiverWallet
+	*
+	*/
+	"getFeeReceiverWallet" (
+		__options ? : GasLimit,
+	){
+		return txSignAndSend( this.__apiPromise, this.__nativeContract, this.__keyringPair, "governanceImp::getFeeReceiverWallet", (events: EventRecord) => {
+			return decodeEvents(events, this.__nativeContract, EVENT_DATA_TYPE_DESCRIPTIONS);
+		}, [], __options);
+	}
+
+	/**
+	* rewardSafeForFakeNews
+	*
+	* @param { (string | number | BN) } channelId,
+	*/
+	"rewardSafeForFakeNews" (
+		channelId: (string | number | BN),
+		__options ? : GasLimit,
+	){
+		return txSignAndSend( this.__apiPromise, this.__nativeContract, this.__keyringPair, "governanceImp::rewardSafeForFakeNews", (events: EventRecord) => {
+			return decodeEvents(events, this.__nativeContract, EVENT_DATA_TYPE_DESCRIPTIONS);
+		}, [channelId], __options);
+	}
+
+	/**
+	* openVoteForFakeNews
+	*
+	* @param { (string | number | BN) } channelId,
+	* @param { string } reason,
+	*/
+	"openVoteForFakeNews" (
+		channelId: (string | number | BN),
+		reason: string,
+		__options ? : GasLimit,
+	){
+		return txSignAndSend( this.__apiPromise, this.__nativeContract, this.__keyringPair, "governanceImp::openVoteForFakeNews", (events: EventRecord) => {
+			return decodeEvents(events, this.__nativeContract, EVENT_DATA_TYPE_DESCRIPTIONS);
+		}, [channelId, reason], __options);
 	}
 
 	/**
@@ -67,19 +153,29 @@ export default class Methods {
 	}
 
 	/**
-	* addMessagesPublic
+	* doingVotePrice
 	*
-	* @param { Array<string> | null } defaultMessage,
-	* @param { string } typeDefaultMessageChannel,
+	* @param { boolean } isProved,
 	*/
-	"addMessagesPublic" (
-		defaultMessage: Array<string> | null,
-		typeDefaultMessageChannel: string,
+	"doingVotePrice" (
+		isProved: boolean,
 		__options ? : GasLimit,
 	){
-		return txSignAndSend( this.__apiPromise, this.__nativeContract, this.__keyringPair, "governanceImp::addMessagesPublic", (events: EventRecord) => {
+		return txSignAndSend( this.__apiPromise, this.__nativeContract, this.__keyringPair, "governanceImp::doingVotePrice", (events: EventRecord) => {
 			return decodeEvents(events, this.__nativeContract, EVENT_DATA_TYPE_DESCRIPTIONS);
-		}, [defaultMessage, typeDefaultMessageChannel], __options);
+		}, [isProved], __options);
+	}
+
+	/**
+	* getPricePerChannel
+	*
+	*/
+	"getPricePerChannel" (
+		__options ? : GasLimit,
+	){
+		return txSignAndSend( this.__apiPromise, this.__nativeContract, this.__keyringPair, "governanceImp::getPricePerChannel", (events: EventRecord) => {
+			return decodeEvents(events, this.__nativeContract, EVENT_DATA_TYPE_DESCRIPTIONS);
+		}, [], __options);
 	}
 
 	/**
@@ -101,25 +197,27 @@ export default class Methods {
 	}
 
 	/**
-	* getPrices
+	* checkChannelFake
 	*
+	* @param { (string | number | BN) } channelId,
 	*/
-	"getPrices" (
+	"checkChannelFake" (
+		channelId: (string | number | BN),
 		__options ? : GasLimit,
 	){
-		return txSignAndSend( this.__apiPromise, this.__nativeContract, this.__keyringPair, "governanceImp::getPrices", (events: EventRecord) => {
+		return txSignAndSend( this.__apiPromise, this.__nativeContract, this.__keyringPair, "governanceImp::checkChannelFake", (events: EventRecord) => {
 			return decodeEvents(events, this.__nativeContract, EVENT_DATA_TYPE_DESCRIPTIONS);
-		}, [], __options);
+		}, [channelId], __options);
 	}
 
 	/**
-	* getTotalVotesAllowed
+	* getTotalChannel
 	*
 	*/
-	"getTotalVotesAllowed" (
+	"getTotalChannel" (
 		__options ? : GasLimit,
 	){
-		return txSignAndSend( this.__apiPromise, this.__nativeContract, this.__keyringPair, "governanceImp::getTotalVotesAllowed", (events: EventRecord) => {
+		return txSignAndSend( this.__apiPromise, this.__nativeContract, this.__keyringPair, "governanceImp::getTotalChannel", (events: EventRecord) => {
 			return decodeEvents(events, this.__nativeContract, EVENT_DATA_TYPE_DESCRIPTIONS);
 		}, [], __options);
 	}
@@ -137,47 +235,55 @@ export default class Methods {
 	}
 
 	/**
-	* doingVotePrice
+	* addMessagesPublic
 	*
-	* @param { boolean } isProved,
+	* @param { Array<string> | null } defaultMessage,
+	* @param { string } typeDefaultMessageChannel,
 	*/
-	"doingVotePrice" (
-		isProved: boolean,
+	"addMessagesPublic" (
+		defaultMessage: Array<string> | null,
+		typeDefaultMessageChannel: string,
 		__options ? : GasLimit,
 	){
-		return txSignAndSend( this.__apiPromise, this.__nativeContract, this.__keyringPair, "governanceImp::doingVotePrice", (events: EventRecord) => {
+		return txSignAndSend( this.__apiPromise, this.__nativeContract, this.__keyringPair, "governanceImp::addMessagesPublic", (events: EventRecord) => {
 			return decodeEvents(events, this.__nativeContract, EVENT_DATA_TYPE_DESCRIPTIONS);
-		}, [isProved], __options);
+		}, [defaultMessage, typeDefaultMessageChannel], __options);
 	}
 
 	/**
-	* doingVoteFake
+	* getFeeReceiverWithdrawal
 	*
-	* @param { (string | number | BN) } channelId,
-	* @param { boolean } isFake,
 	*/
-	"doingVoteFake" (
-		channelId: (string | number | BN),
-		isFake: boolean,
+	"getFeeReceiverWithdrawal" (
 		__options ? : GasLimit,
 	){
-		return txSignAndSend( this.__apiPromise, this.__nativeContract, this.__keyringPair, "governanceImp::doingVoteFake", (events: EventRecord) => {
+		return txSignAndSend( this.__apiPromise, this.__nativeContract, this.__keyringPair, "governanceImp::getFeeReceiverWithdrawal", (events: EventRecord) => {
 			return decodeEvents(events, this.__nativeContract, EVENT_DATA_TYPE_DESCRIPTIONS);
-		}, [channelId, isFake], __options);
+		}, [], __options);
 	}
 
 	/**
-	* openVoteForPrice
+	* getTotalVotesAllowed
 	*
-	* @param { (string | number | BN) } newPrice,
 	*/
-	"openVoteForPrice" (
-		newPrice: (string | number | BN),
+	"getTotalVotesAllowed" (
 		__options ? : GasLimit,
 	){
-		return txSignAndSend( this.__apiPromise, this.__nativeContract, this.__keyringPair, "governanceImp::openVoteForPrice", (events: EventRecord) => {
+		return txSignAndSend( this.__apiPromise, this.__nativeContract, this.__keyringPair, "governanceImp::getTotalVotesAllowed", (events: EventRecord) => {
 			return decodeEvents(events, this.__nativeContract, EVENT_DATA_TYPE_DESCRIPTIONS);
-		}, [newPrice], __options);
+		}, [], __options);
+	}
+
+	/**
+	* getVotesPrice
+	*
+	*/
+	"getVotesPrice" (
+		__options ? : GasLimit,
+	){
+		return txSignAndSend( this.__apiPromise, this.__nativeContract, this.__keyringPair, "governanceImp::getVotesPrice", (events: EventRecord) => {
+			return decodeEvents(events, this.__nativeContract, EVENT_DATA_TYPE_DESCRIPTIONS);
+		}, [], __options);
 	}
 
 	/**
@@ -193,46 +299,6 @@ export default class Methods {
 	}
 
 	/**
-	* getPricePerChannel
-	*
-	*/
-	"getPricePerChannel" (
-		__options ? : GasLimit,
-	){
-		return txSignAndSend( this.__apiPromise, this.__nativeContract, this.__keyringPair, "governanceImp::getPricePerChannel", (events: EventRecord) => {
-			return decodeEvents(events, this.__nativeContract, EVENT_DATA_TYPE_DESCRIPTIONS);
-		}, [], __options);
-	}
-
-	/**
-	* openVoteForFakeNews
-	*
-	* @param { (string | number | BN) } channelId,
-	* @param { string } reason,
-	*/
-	"openVoteForFakeNews" (
-		channelId: (string | number | BN),
-		reason: string,
-		__options ? : GasLimit,
-	){
-		return txSignAndSend( this.__apiPromise, this.__nativeContract, this.__keyringPair, "governanceImp::openVoteForFakeNews", (events: EventRecord) => {
-			return decodeEvents(events, this.__nativeContract, EVENT_DATA_TYPE_DESCRIPTIONS);
-		}, [channelId, reason], __options);
-	}
-
-	/**
-	* getFeeReceiverWallet
-	*
-	*/
-	"getFeeReceiverWallet" (
-		__options ? : GasLimit,
-	){
-		return txSignAndSend( this.__apiPromise, this.__nativeContract, this.__keyringPair, "governanceImp::getFeeReceiverWallet", (events: EventRecord) => {
-			return decodeEvents(events, this.__nativeContract, EVENT_DATA_TYPE_DESCRIPTIONS);
-		}, [], __options);
-	}
-
-	/**
 	* getBalanceTokenLocked
 	*
 	*/
@@ -240,32 +306,6 @@ export default class Methods {
 		__options ? : GasLimit,
 	){
 		return txSignAndSend( this.__apiPromise, this.__nativeContract, this.__keyringPair, "governanceImp::getBalanceTokenLocked", (events: EventRecord) => {
-			return decodeEvents(events, this.__nativeContract, EVENT_DATA_TYPE_DESCRIPTIONS);
-		}, [], __options);
-	}
-
-	/**
-	* recoverySafeBalancePublic
-	*
-	* @param { (string | number | BN) } channelId,
-	*/
-	"recoverySafeBalancePublic" (
-		channelId: (string | number | BN),
-		__options ? : GasLimit,
-	){
-		return txSignAndSend( this.__apiPromise, this.__nativeContract, this.__keyringPair, "governanceImp::recoverySafeBalancePublic", (events: EventRecord) => {
-			return decodeEvents(events, this.__nativeContract, EVENT_DATA_TYPE_DESCRIPTIONS);
-		}, [channelId], __options);
-	}
-
-	/**
-	* getVotesPrice
-	*
-	*/
-	"getVotesPrice" (
-		__options ? : GasLimit,
-	){
-		return txSignAndSend( this.__apiPromise, this.__nativeContract, this.__keyringPair, "governanceImp::getVotesPrice", (events: EventRecord) => {
 			return decodeEvents(events, this.__nativeContract, EVENT_DATA_TYPE_DESCRIPTIONS);
 		}, [], __options);
 	}
@@ -285,57 +325,19 @@ export default class Methods {
 	}
 
 	/**
-	* getIdChannel
-	*
-	* @param { ArgumentTypes.AccountId } addressContract,
-	*/
-	"getIdChannel" (
-		addressContract: ArgumentTypes.AccountId,
-		__options ? : GasLimit,
-	){
-		return txSignAndSend( this.__apiPromise, this.__nativeContract, this.__keyringPair, "governanceImp::getIdChannel", (events: EventRecord) => {
-			return decodeEvents(events, this.__nativeContract, EVENT_DATA_TYPE_DESCRIPTIONS);
-		}, [addressContract], __options);
-	}
-
-	/**
-	* getFeeReceiverWithdrawal
-	*
-	*/
-	"getFeeReceiverWithdrawal" (
-		__options ? : GasLimit,
-	){
-		return txSignAndSend( this.__apiPromise, this.__nativeContract, this.__keyringPair, "governanceImp::getFeeReceiverWithdrawal", (events: EventRecord) => {
-			return decodeEvents(events, this.__nativeContract, EVENT_DATA_TYPE_DESCRIPTIONS);
-		}, [], __options);
-	}
-
-	/**
-	* rewardSafeForFakeNews
+	* doingVoteFake
 	*
 	* @param { (string | number | BN) } channelId,
+	* @param { boolean } isFake,
 	*/
-	"rewardSafeForFakeNews" (
+	"doingVoteFake" (
 		channelId: (string | number | BN),
+		isFake: boolean,
 		__options ? : GasLimit,
 	){
-		return txSignAndSend( this.__apiPromise, this.__nativeContract, this.__keyringPair, "governanceImp::rewardSafeForFakeNews", (events: EventRecord) => {
+		return txSignAndSend( this.__apiPromise, this.__nativeContract, this.__keyringPair, "governanceImp::doingVoteFake", (events: EventRecord) => {
 			return decodeEvents(events, this.__nativeContract, EVENT_DATA_TYPE_DESCRIPTIONS);
-		}, [channelId], __options);
-	}
-
-	/**
-	* checkChannelFake
-	*
-	* @param { (string | number | BN) } channelId,
-	*/
-	"checkChannelFake" (
-		channelId: (string | number | BN),
-		__options ? : GasLimit,
-	){
-		return txSignAndSend( this.__apiPromise, this.__nativeContract, this.__keyringPair, "governanceImp::checkChannelFake", (events: EventRecord) => {
-			return decodeEvents(events, this.__nativeContract, EVENT_DATA_TYPE_DESCRIPTIONS);
-		}, [channelId], __options);
+		}, [channelId, isFake], __options);
 	}
 
 }

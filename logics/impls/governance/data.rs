@@ -22,6 +22,7 @@ pub struct Data {
     pub price: Balance,
     pub vote_id: u128,
     pub new_price:Balance,
+    pub new_balance_of_auditor:Balance,
     pub vote_price_end: u64,
     //Auditor open the vote (id_channel, Auditor)
     pub who_open_fake:Mapping<u128,AccountId>,
