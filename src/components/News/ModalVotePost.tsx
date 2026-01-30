@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   IonToolbar,
   IonButton,
-  IonButtons
+  IonButtons,
+  IonLoading
 } from '@ionic/react';
 import {
   Modal,
@@ -10,20 +11,83 @@ import {
   ModalBody,
   ModalFooter,
 } from "reactstrap";
+import { useTranslation } from 'react-i18next';
+import useGovernance, { VotesFakesNews } from '../../hooks/useGovernance';
+import { getDateView } from '../../utils';
+import useContract from '../../hooks/useContract';
 
 
 
 interface ModalVotePostProps   {
   modal: boolean;
   modalToggle: () => void;
-  handleVote: (yesOuNo:boolean) => void;
+  reason: string;
+  channelId: string;
 }
 
-const ModalVotePost: React.FC<ModalVotePostProps> = ({ modal, modalToggle, handleVote }) => {  
 
-  const handleVotePost = (yesOuNo:boolean) => {
-      handleVote(yesOuNo);
-    
+const ModalVotePost: React.FC<ModalVotePostProps> = ({ modal, modalToggle, reason, channelId }) => {  
+  const { t } = useTranslation();
+  const { getVotesFakesNews,feeSimulatedNetwork, rewardSafeForFakesNews,doingVotesFakesNews } = useGovernance();
+  const {alert,balanceNative} = useContract();
+  const [openClaim, setOpenClaim] = useState(false);
+  const [feeChannel, setFeeChannel] = useState(0);
+  const [loading, setLoading] = useState(false);
+  const [details, setDetails] = useState<VotesFakesNews>({
+    votesYES: 0,
+    votesNO: 0,
+    dataCreate: "",
+    votesTotal: 0,
+  });
+  useEffect(() => {
+    getVotesFakesNews(channelId).then((details) => {
+      if(!details) return;
+      setDetails(details);
+      const dataEnd = new Date(details.dataCreate);
+      if(dataEnd.getTime() < Date.now()){
+        setOpenClaim(true);
+      }     
+    });
+    feeSimulatedNetwork(100000000).then((fee) => {
+      if(!fee) return;
+      setFeeChannel(fee);
+    });
+  }, [channelId]);
+   const handleRewardSafeForFakesNews = async () => {
+    if (!details) return;
+    try {
+      setLoading(true);
+      await rewardSafeForFakesNews(Number(channelId));
+      alert(t("TEXT_REWARD_SEND_SUCCESS"), "success");
+      modalToggle();
+    } catch (error: any) {
+      alert(t(`${error.message}`), "error");
+    } finally {
+      setLoading(false);
+    }
+  };
+  const handleDoingVotesFakesNews = async (yesOuNo: boolean) => {
+    if (!details) return;
+    try {
+      if (balanceNative < 100000000) {
+        alert(t("TEXT_ERROR_BALANCE"), "error");
+        return;
+      }
+      setLoading(true);
+      await doingVotesFakesNews(Number(channelId), yesOuNo);
+      alert(t("TEXT_VOTE_SUCCESS"), "success");
+      getVotesFakesNews(channelId).then((res) => {
+        if(!res) return;
+        setDetails(res);
+      });
+    } catch (error: any) {
+      if (error.message.includes("VoteDone")) {
+        alert(t("VoteDone"), "error");
+        return;
+      }
+    } finally {
+      setLoading(false);
+    }
   };
   return (
     <Modal
@@ -32,20 +96,61 @@ const ModalVotePost: React.FC<ModalVotePostProps> = ({ modal, modalToggle, handl
       toggle={modalToggle}
       centered
     >
-      <ModalHeader toggle={modalToggle}>{"Votar Post"}</ModalHeader>
+      <ModalHeader toggle={modalToggle}>{t("TEXT_VOTE_POST")}</ModalHeader>
       <ModalBody>
-          {"Sistema de governancia do PIDChat"}<br/>
-          {"Esse post é verdadeiro?"}<br/>
+          {t("TEXT_DESCRIPTION_REPORT_POST")}<br/>
+          {t("TEXT_REASON")}:<br/>         
+          {reason}<br/>
+           <div style={{  textAlign: "center",}}>{t("TEXT_DATE_AT")} {getDateView(details.dataCreate)}</div>
+          <div className="mt-3">
+            <div className="d-flex justify-content-between mb-1">
+              <small>{t("TEXT_YES")}: {details.votesYES}</small>
+              <small>{t("TEXT_NO")}: {details.votesNO}</small>
+            </div>
+            <div className="progress" style={{ height: "20px" }}>
+              <div
+                className="progress-bar bg-success"
+                role="progressbar"
+                style={{ width: `${details.votesTotal ? (details.votesYES / details.votesTotal) * 100 : 0}%` }}
+              />
+              <div
+                className="progress-bar bg-danger"
+                role="progressbar"
+                style={{ width: `${details.votesTotal ? (details.votesNO / details.votesTotal) * 100 : 0}%` }}
+              />
+            </div>
+            <div className="text-center mt-1">
+              <small>{t("TEXT_TOTAL_LIMIT")}{details.votesTotal}</small>
+            </div>
+          </div>
+            <p
+            style={{
+              gap: 5,
+              textAlign: "center",
+            }}
+          >
+            {t("TEXT_FEE")} <b>{feeChannel}</b> LUNES
+          </p>
       </ModalBody>
       <ModalFooter>
         <IonToolbar>
           <IonButtons slot='end'>
-            <IonButton onClick={modalToggle} color="medium">Cancelar</IonButton>
-            <IonButton onClick={() => handleVotePost(true)} color="success">Votar Sim</IonButton>            
-            <IonButton onClick={() => handleVotePost(false)} color="danger">Votar Não</IonButton>            
+            <IonButton onClick={modalToggle} color="medium">{t("TEXT_CANCEL")}</IonButton>
+            {!openClaim && (
+            <>
+            <IonButton onClick={() => handleDoingVotesFakesNews(true)} color="success">{t("TEXT_YES")}</IonButton>            
+            <IonButton onClick={() => handleDoingVotesFakesNews(false)} color="danger">{t("TEXT_NO")}</IonButton>            
+            </>
+            )}
+            {openClaim &&(
+              <>
+              <IonButton onClick={() => handleRewardSafeForFakesNews()} color="success">{t("TEXT_CLAIM")}</IonButton>           
+              </>
+            )}
           </IonButtons>
         </IonToolbar>
        </ModalFooter>
+       <IonLoading isOpen={loading} message={t("TEXT_WAIT")} />
     </Modal>
   );
 };

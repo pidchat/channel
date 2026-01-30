@@ -48,10 +48,10 @@ setupIonicReact({
   mode: 'md',
   animated: true,
 });
-StatusBar.setOverlaysWebView({ overlay: false });
-StatusBar.setStyle({ style: Style.Dark });
-StatusBar.setBackgroundColor({ color: '#fffff' });
-StatusBar.show();
+StatusBar?.setOverlaysWebView({ overlay: false });
+StatusBar?.setStyle({ style: Style.Dark });
+StatusBar?.setBackgroundColor({ color: '#fffff' });
+StatusBar?.show();
 const queryClient = new QueryClient();
 
 const App: React.FC = () => {

@@ -12,7 +12,7 @@ import { IonLoading, IonSpinner } from "@ionic/react";
 import { useTranslation } from "react-i18next";
 const CHUNK_SIZE = 10;
 const Chat: React.FC = () => {
-  const { t } = useTranslation();
+  const { t,i18n } = useTranslation();
   const { contractSelected, apiReady, password } =
     useContext(UseProviderContext);
   const [message, setMessage] = useState<IMessage[]>([]);
@@ -235,7 +235,7 @@ const Chat: React.FC = () => {
           )}
         </div>
         <div className="message-action">
-          {getDateView(message?.dataUpdate)}
+          {getDateView(message?.dataUpdate || "", i18n.language)}
           <i className="ti-double-check text-info"></i>
         </div>
       </div>

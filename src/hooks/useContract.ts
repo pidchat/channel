@@ -698,6 +698,7 @@ export const useContract = () => {
         };
       }
     } catch (error: any) {
+      console.log(error);
       alert(error.message, "error");
       return null;
     }
@@ -706,14 +707,14 @@ export const useContract = () => {
   const sendTXGovernance = async (address: string, router: string, param: any) => {
     try {
       if (!api || !apiReady || !account) {
-        return;
+        return "";
       }
       const contracts = await getQueryGovernance(address, router, param);
       if (!contracts) {
-        return;
+        return "";
       }
       const account_aux = getAccountAux();
-      if(!account_aux) return
+      if(!account_aux) return "";
       await new Promise<string>((resolve, reject) => {
         contracts.contract.tx[router](
           {
@@ -735,7 +736,11 @@ export const useContract = () => {
           }
         });
       });
+       const object = contracts.output.toHuman().Ok?.Ok;
+      console.log("contracts",object);
+      return object;
     } catch (error: any) {
+      console.log(error);
       alert(error.message, "error");
       return null;
     }
@@ -914,13 +919,9 @@ export const useContract = () => {
 
       // Calculate base storage size
       const contractSize = wasm.length;
-      console.log(`Contract WASM size: ${contractSize} bytes`);
 
       // Get storage deposit per byte from chain constants
-      const storageDepositPerByte = api.consts.contracts.depositPerByte;
-      console.log(
-        `Storage deposit per byte: ${storageDepositPerByte.toString()}`
-      );
+      const storageDepositPerByte = api.consts.contracts.depositPerByte;      
 
       // Calculate storage costs
       let totalStorageCost = 0;
@@ -928,7 +929,6 @@ export const useContract = () => {
       // 1. Base contract storage cost
       const baseStorageCost =
         Number(contractSize) * Number(storageDepositPerByte.toString());
-      console.log(`Base storage cost: ${baseStorageCost}`);
       totalStorageCost += baseStorageCost;
 
       // 2. Message storage cost
@@ -939,21 +939,18 @@ export const useContract = () => {
           acc + Number(messageSize) * Number(storageDepositPerByte.toString())
         );
       }, 0);
-      console.log(`Messages storage cost: ${messageStorageCost}`);
       totalStorageCost += messageStorageCost;
 
       // 3. Type storage cost (including length prefix)
       const typeSize = new TextEncoder().encode(type).length + 4;
       const typeStorageCost =
         Number(typeSize) * Number(storageDepositPerByte.toString());
-      console.log(`Type storage cost: ${typeStorageCost}`);
       totalStorageCost += typeStorageCost;
 
       // 4. Additional metadata storage
       const metadataOverhead = 100; // Estimated overhead for contract metadata
       const metadataStorageCost =
         metadataOverhead * Number(storageDepositPerByte.toString());
-      console.log(`Metadata storage cost: ${metadataStorageCost}`);
       totalStorageCost += metadataStorageCost + 500;
 
       // Add safety margin (10%)
@@ -961,7 +958,6 @@ export const useContract = () => {
       //fee transfer contract to owner
       const feeTransferContract = 12500000 * 2;
       const finalCost = totalStorageCost + safetyMargin + feeTransferContract;
-      console.log(`Final cost with safety margin: ${finalCost}`);
       const value = Number(finalCost);
       return value;
     } catch (error: any) {

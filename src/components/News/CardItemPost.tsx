@@ -9,6 +9,7 @@ import {
   IonButton,
   useIonRouter,
   IonSpinner,
+  IonLoading,
 } from "@ionic/react";
 import {
   chatbubbleOutline,
@@ -24,24 +25,46 @@ import ModalChatPost from "./ModalChatPost";
 import ModalReportPost from "./ModalReportPost";
 import ModalVotePost from "./ModalVotePost";
 import useGovernance, { ChannelInfo } from "../../hooks/useGovernance";
+import { useTranslation } from "react-i18next";
 interface CardItemPostProps {
   channelId: number;
 }
 const CardItemPost: React.FC<CardItemPostProps> = ({ channelId }) => {
-  const { isDarkMode, alert } = useContract();
+  const { t, i18n } = useTranslation();
+  const { isDarkMode, alert, balanceNative, account } =
+    useContract();
   const router = useIonRouter();
-  const { getMessageDefaultChannel, getTotalMessages, getNewsId } =
-    useGovernance();
+  const {
+    getMessageDefaultChannel,
+    getTotalMessages,
+    getNewsId,
+    getPriceGuardian,
+    getReasonReport,
+  } = useGovernance();
   const [openMessagesModal, setOpenMessagesModal] = useState(false);
   const [openReportPostModal, setOpenReportPostModal] = useState(false);
   const [openVotePostModal, setOpenVotePostModal] = useState(false);
   const [details, setDetails] = useState<ChannelInfo>();
   const [messages, setMessages] = useState<string[]>([]);
+  const [priceGuardian, setPriceGuardian] = useState(0);
+  const [reason, setReason] = useState("");
+  const [priceStr, setPriceStr] = useState("");
+  const [loading, setLoading] = useState(false);
   const [quantityMessages, setQuantityMessages] = useState(0);
   useEffect(() => {
     getNewsId(channelId).then((res) => {
-      console.log(res);
       setDetails(res);
+    });
+    getPriceGuardian().then((res) => {
+      if (res) {
+        setPriceGuardian(Number(res) / 1000000000000000000);
+        setPriceStr(res);
+      }
+    });
+    getReasonReport(channelId).then((res) => {
+      if (res) {
+        setReason(res);
+      }
     });
   }, [channelId]);
   useEffect(() => {
@@ -76,8 +99,9 @@ const CardItemPost: React.FC<CardItemPostProps> = ({ channelId }) => {
         maxWidth: "600px",
         margin: "auto",
         top: "30px",
-        backgroundColor: "transparent",
+        backgroundColor: reason ? "#e9cfcfff" : "transparent",
         width: "100%",
+        marginBottom: "10px",
       }}
     >
       <IonCardContent>
@@ -108,7 +132,7 @@ const CardItemPost: React.FC<CardItemPostProps> = ({ channelId }) => {
             }}
             onClick={() => {
               navigator.clipboard.writeText(details?.channelAddress || "");
-              alert("Endereço copiado para a área de transferência!", "info");
+              alert(t("TEXT_ADDRESS_LINK"), "info");
             }}
           >
             <IonLabel
@@ -141,6 +165,7 @@ const CardItemPost: React.FC<CardItemPostProps> = ({ channelId }) => {
             {getDateView(
               (Number(details?.dataCreate || 0) - 86624000 * 10).toString() ||
                 "",
+              i18n.language,
             )}
           </IonLabel>
         </div>
@@ -191,14 +216,16 @@ const CardItemPost: React.FC<CardItemPostProps> = ({ channelId }) => {
             >
               <IonIcon icon={alertCircle} />
             </IonButton>
-            <IonButton
-              fill="clear"
-              size="small"
-              style={{ color: "#536471" }}
-              onClick={() => setOpenVotePostModal(true)}
-            >
-              <IonIcon icon={skullOutline} />
-            </IonButton>
+            {reason && (
+              <IonButton
+                fill="clear"
+                size="small"
+                style={{ color: "#536471" }}
+                onClick={() => setOpenVotePostModal(true)}
+              >
+                <IonIcon icon={skullOutline} />
+              </IonButton>
+            )}
           </div>
         </div>
         <ModalChatPost
@@ -211,26 +238,32 @@ const CardItemPost: React.FC<CardItemPostProps> = ({ channelId }) => {
         />
         <ModalReportPost
           modal={openReportPostModal}
+          value={priceGuardian.toString()}
+          postReported={reason}
+          priceGuardian={priceStr}
+          channelId={details?.id || 0}
+          dataLimit={details?.dataCreate}
+          isOwner={account === details?.addressOwner}
           modalToggle={() => {
             setOpenReportPostModal(!openReportPostModal);
-            console.log("closeModal");
-          }}
-          onOpenReport={() => {
-            setOpenReportPostModal(true);
-            console.log("openReportPostModal");
+            getReasonReport(channelId).then((res) => {
+              if (res) {
+                setReason(res);
+              }
+            });
           }}
         />
         <ModalVotePost
           modal={openVotePostModal}
+          reason={reason}          
+          channelId={details?.id.toString() || ""}
           modalToggle={() => {
             setOpenVotePostModal(!openVotePostModal);
             console.log("closeModal");
-          }}
-          handleVote={(yesOuNo) => {
-            console.log("handleVote", yesOuNo);
-          }}
+          }}          
         />
       </IonCardContent>
+      <IonLoading isOpen={loading} message={t("TEXT_WAIT")} />
     </IonCard>
   );
 };

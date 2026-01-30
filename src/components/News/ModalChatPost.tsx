@@ -32,7 +32,7 @@ const ModalChatPost: React.FC<ModalChatPostProps> = ({
   modalToggle,
   addressChannel,
 }) => {
-  const { t } = useTranslation();
+  const { t,i18n } = useTranslation();
   const [newMessage, setNewMessage] = useState("");
   const [message, setMessage] = useState<IMessage[]>([]);
   const { getComments, getTotalMessages } = useGovernance();
@@ -157,7 +157,7 @@ const ModalChatPost: React.FC<ModalChatPostProps> = ({
       toggle={modalToggle}
       centered
     >
-      <ModalHeader toggle={modalToggle}>{"Comentários"}</ModalHeader>
+      <ModalHeader toggle={modalToggle}>{t("TEXT_COMMENTS")}</ModalHeader>
       <ModalBody>
         
         <PerfectScrollbar
@@ -185,7 +185,7 @@ const ModalChatPost: React.FC<ModalChatPostProps> = ({
                         marginLeft: "8px",
                       }}
                     >
-                      {getDateView(msg?.dataCreate)}
+                      {getDateView(msg?.dataCreate || "", i18n.language)}
                     </span>
                   </h3>
                   <p>{msg.message}</p>
@@ -210,7 +210,7 @@ const ModalChatPost: React.FC<ModalChatPostProps> = ({
             style={{ display: "flex", alignItems: "center", padding: "0 8px" }}
           >
             <IonInput
-              placeholder="Escreva um comentário..."
+              placeholder={t("TEXT_SEND_COMMENTS")}
               value={newMessage}
               onIonInput={(e) => handleChange(e.detail.value!)}
               onKeyDown={(e) => {

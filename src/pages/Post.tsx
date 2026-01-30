@@ -15,29 +15,37 @@ import {
   IonIcon,
   IonSpinner,
 } from "@ionic/react";
-import {
-  chatbubbleOutline,
-  alertCircleOutline,
-  flagOutline,
-} from "ionicons/icons";
+import { chatbubbleOutline, flagOutline, skullOutline } from "ionicons/icons";
 import ModalChatPost from "../components/News/ModalChatPost";
 import useContract from "../hooks/useContract";
 import useGovernance, { ChannelInfo } from "../hooks/useGovernance";
 import { getDateView, truncateText } from "../utils";
 import Identicon from "@polkadot/react-identicon";
 import ShareChannelModal from "../components/Modals/ShareChannelModal";
+import { useTranslation } from "react-i18next";
+import ModalReportPost from "../components/News/ModalReportPost";
+import ModalVotePost from "../components/News/ModalVotePost";
 
 const Post: React.FC = () => {
+  const { t,i18n } = useTranslation();
   const { account, apiReady, alert, isDarkMode } = useContract();
-  const { getMessageDefaultChannel, getChannelIdAccount, getNewsId } =
-    useGovernance();
+  const {
+    getMessageDefaultChannel,
+    getChannelIdAccount,
+    getNewsId,
+    getPriceGuardian,
+    getReasonReport,
+  } = useGovernance();
   const [details, setDetails] = useState<ChannelInfo>();
-  const [openMessagesModal, setOpenMessagesModal] = useState(false);
-  const [openReportPostModal, setOpenReportPostModal] = useState(false);
   const [modal, setModal] = useState(false);
+  const [openReportPostModal, setOpenReportPostModal] = useState(false);
+  const [openVotePostModal, setOpenVotePostModal] = useState(false);
   const [addressChannel, setAddressChannel] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [messages, setMessages] = useState<string[]>([]);
+  const [priceGuardian, setPriceGuardian] = useState(0);
+  const [reason, setReason] = useState("");
+  const [priceStr, setPriceStr] = useState("");
   useEffect(() => {
     if (apiReady) {
       const params = window.location.pathname.split("/");
@@ -59,6 +67,17 @@ const Post: React.FC = () => {
             .catch((error) => {
               alert(error.message, "error");
             });
+          getPriceGuardian().then((res) => {
+            if (res) {
+              setPriceGuardian(Number(res) / 1000000000000000000);
+              setPriceStr(res);
+            }
+          });
+          getReasonReport(Number(res)).then((res) => {
+            if (res) {
+              setReason(res);
+            }
+          });
         }
       })
       .catch((error) => {
@@ -137,6 +156,7 @@ const Post: React.FC = () => {
                         Number(details?.dataCreate || 0) -
                         86624000 * 10
                       ).toString() || "",
+                      i18n.language,
                     )}
                   </IonCardSubtitle>
                 </IonCardHeader>
@@ -185,30 +205,11 @@ const Post: React.FC = () => {
                   style={{ fontSize: "24px" }}
                 />
                 <span style={{ fontSize: "10px", marginTop: "4px" }}>
-                  Comentário
+                  {t("TEXT_COMMENTS")}
                 </span>
               </div>
             </IonButton>
-
-            <IonButton fill="clear" color="warning">
-              <div
-                style={{
-                  display: "flex",
-                  flexDirection: "column",
-                  alignItems: "center",
-                }}
-              >
-                <IonIcon
-                  icon={alertCircleOutline}
-                  style={{ fontSize: "24px" }}
-                />
-                <span style={{ fontSize: "10px", marginTop: "4px" }}>
-                  Alerta
-                </span>
-              </div>
-            </IonButton>
-
-            <IonButton fill="clear" color="danger">
+            <IonButton fill="clear" color="danger" onClick={() => setOpenReportPostModal(true)}>
               <div
                 style={{
                   display: "flex",
@@ -218,10 +219,26 @@ const Post: React.FC = () => {
               >
                 <IonIcon icon={flagOutline} style={{ fontSize: "24px" }} />
                 <span style={{ fontSize: "10px", marginTop: "4px" }}>
-                  Denunciar
+                   {t("TEXT_REPORT")}
                 </span>
               </div>
             </IonButton>
+            {reason && (
+              <IonButton fill="clear" color="warning" onClick={() => setOpenVotePostModal(true)}>
+                <div
+                  style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                  }}
+                >
+                  <IonIcon icon={skullOutline} style={{ fontSize: "24px" }} />
+                  <span style={{ fontSize: "10px", marginTop: "4px" }}>
+                    {t("TEXT_VOTE")}
+                  </span>
+                </div>
+              </IonButton>
+            )}
           </div>
         </IonToolbar>
       </IonFooter>
@@ -235,7 +252,33 @@ const Post: React.FC = () => {
         modal={modal}
         modalToggle={() => setModal(!modal)}
         name={details?.info?.name || ""}
-         patch={`post/${addressChannel}`}
+        patch={`post/${addressChannel}`}
+      />
+      <ModalReportPost
+        modal={openReportPostModal}
+        value={priceGuardian.toString()}
+        postReported={reason}
+        priceGuardian={priceStr}
+        channelId={details?.id || 0}
+        dataLimit={details?.dataCreate || ""}
+        isOwner={account === details?.addressOwner}
+        modalToggle={() => {
+          setOpenReportPostModal(!openReportPostModal);
+          getReasonReport(Number(details?.id || 0)).then((res) => {
+            if (res) {
+              setReason(res);
+            }
+          });
+        }}
+      />
+      <ModalVotePost
+        modal={openVotePostModal}
+        reason={reason}
+        channelId={details?.id.toString() || ""}
+        modalToggle={() => {
+          setOpenVotePostModal(!openVotePostModal);
+          console.log("closeModal");
+        }}
       />
     </IonPage>
   );

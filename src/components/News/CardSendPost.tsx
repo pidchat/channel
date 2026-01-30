@@ -21,11 +21,20 @@ interface CardSendPostProp {
 }
 const CardSendPost: React.FC<CardSendPostProp> = ({ reload }) => {
   const { t } = useTranslation();
-  const { account, accountIdentity, alert,createChannel, isDarkMode, feeCreateChannel } =
-    useContract();
-  const { getPriceGuardian,addNewsChannel } = useGovernance();
+  const {
+    account,
+    accountIdentity,
+    alert,
+    balanceToken,
+    balanceNative,
+    isDarkMode,
+    feeCreateChannel,
+    feeGasNetWork,
+  } = useContract();
+  const { getPriceGuardian, addNewsChannel } = useGovernance();
   const [feeChannel, setFeeChannel] = useState(0);
   const [priceGuardian, setPriceGuardian] = useState(0);
+  const [priceString, setPriceString] = useState("");
   const [description, setDescription] = useState("");
   const [loading, setLoading] = useState(false);
   useEffect(() => {
@@ -34,31 +43,49 @@ const CardSendPost: React.FC<CardSendPostProp> = ({ reload }) => {
   const calcFeeContract = async () => {
     const descriptionArray = description.split("\n");
     const value = await feeCreateChannel(descriptionArray, "String");
-    setFeeChannel(value);
+    setFeeChannel(value + feeGasNetWork);
   };
   useEffect(() => {
-    getPriceGuardian().then((value) => setPriceGuardian(Number(value)));
+    getPriceGuardian().then((value) => {
+      setPriceGuardian(Number(value) / 1000000000000000000);
+      setPriceString(value);
+    });
   }, []);
   const handleCreate = async () => {
-   try {
-    if(description.length === 0){
-      alert("Please enter a description", "error");
-      return;
+    try {
+      if (description.length === 0) {
+        alert("Please enter a description", "error");
+        return;
+      }
+      if (balanceNative < feeChannel) {
+        alert("You don't have enough balance Native", "error");
+        return;
+      }
+      if (balanceToken < priceGuardian) {
+        alert("You don't have enough balance Token", "error");
+        return;
+      }
+      setLoading(true);
+      const descriptionArray = description.split("\n");
+      let name =
+        "[" +
+        Math.random().toString(36).substring(2, 10) +
+        "]" +
+        new Date().getTime().toString(36);
+      await addNewsChannel(
+        descriptionArray,
+        priceString.toString(),
+        name,
+        "String",
+      );
+      setDescription("");
+      setLoading(false);
+      alert("Channel published successfully", "success");
+      reload();
+    } catch (error: any) {
+      setLoading(false);
+      alert(error, "error");
     }
-    setLoading(true);
-    const descriptionArray = description.split("\n");
-    let name = "["+Math.random().toString(36).substring(2, 10)+"]"+new Date().getTime().toString(36);    
-    var addr = await createChannel(name, descriptionArray, "String", false);  
-    await addNewsChannel(addr,priceGuardian.toString());    
-    setDescription("");
-    setLoading(false);
-    alert("Channel published successfully", "success");
-    reload();
-   } catch (error:any) {
-    setLoading(false);
-    alert(error, "error");    
-   }
-    
   };
   return (
     <IonCard
@@ -131,11 +158,10 @@ const CardSendPost: React.FC<CardSendPostProp> = ({ reload }) => {
               marginLeft: "auto",
             }}
           >
-            {t("TEXT_FEE_SAFE")} <b>{priceGuardian / 1000000000000000000}</b>{" "}
-            PID
+            {t("TEXT_FEE_SAFE")} <b>{priceGuardian}</b> PID
           </p>
           <IonButton color="primary" shape="round" onClick={handleCreate}>
-            {loading ? "Publicando..." : "Publicar"}
+            {loading ? t("TEXT_WAIT") : t("TEXT_SEND_POST")}
           </IonButton>
         </div>
       </IonCardContent>
