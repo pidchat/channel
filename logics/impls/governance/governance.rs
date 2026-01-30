@@ -477,7 +477,7 @@ pub trait GovernanceImp : Storage<Data> + Internal{
 
     /// Gets the current balance of the auditor
     #[ink(message)]
-    fn get_balance_auditor(&self) -> Result<u128, PSP22Error>{
+    fn get_balance_auditor(&self) -> u128{
         self.data::<Data>().balance_of_auditor
     }
      #[ink(message)]
