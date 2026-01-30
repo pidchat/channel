@@ -34,6 +34,8 @@ export interface InfoGovernance {
   totalBalanceBlock: string;
 }
 export interface InfoVotePriceAndAuditor {
+  voteYes: number;
+  voteNo: number;
   votePrice: string;
   balanceAuditor: string;
   dataLimit: string;
@@ -505,7 +507,14 @@ export const useGovernance = () => {
       if (result.value.err) {
         throw new Error(result.value.err);
       }
-      return result.value.ok?.toString() || "0";
+      const data:InfoVotePriceAndAuditor={
+        voteYes: Number(result.value.ok?.ok?.[0] || 0),
+        voteNo: Number(result.value.ok?.ok?.[1] || 0),
+        votePrice: result.value.ok?.ok?.[2]?.toString() || "0",
+        balanceAuditor: result.value.ok?.ok?.[3]?.toString() || "0",
+        dataLimit: result.value.ok?.ok?.[4]?.toString().replaceAll(",", "") || "0",
+      }
+      return data;
     } catch (error: any) {
       throw new Error(error);
     }
@@ -527,6 +536,7 @@ export const useGovernance = () => {
     rewardSafeForFakesNews,
     recoverySafePublic,
     getInfoGovernance,
+    getVotePrice,
   };
 };
 export default useGovernance;
