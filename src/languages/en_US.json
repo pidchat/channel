@@ -130,5 +130,19 @@
   "TEXT_DATE_AT":"Date until ",
   "TEXT_REWARD_SEND_SUCCESS":"Reward sent successfully",
   "TEXT_DATA_LIMIT_BALANCE":"Until {{value}}, your balance is blocked!",
-  "TEXT_REWARD_SAFE":"Recover Guarantee Fund"
+  "TEXT_REWARD_SAFE":"Recover Guarantee Fund",
+  "TEXT_GOVERNANCE_CONTRACT_INFO":"Governance Contract Info",
+  "CONTRACT_ADDRESS":"Contract Address",
+  "PRICE_GUARDIAN":"Guarantee Price",
+  "TOTAL_BALANCE_AUDITOR":"Balance for Auditor",
+  "TOTAL_BALANCE_BLOCK":"Blocked Balance",
+  "TOTAL_FAKE_NEWS":"Total Fake News",
+  "TOTAL_NEWS":"Total News",
+  "TEXT_OPEN_VOTE":"Open Vote",
+  "TEXT_AUDITOR_OPEN_VOTE":"To open voting you must have at least {{value}} PID.",
+  "TEXT_PRICE_PER_POST":"Price per post",
+  "TEXT_BALANCE_PER_AUDIT":"Balance to be auditor",
+  "TEXT_GOVERNANCE":"Governance",
+  "DepositDone":"Reward has already been deposited!",
+  "BlockedBalance":"Blocked Balance!"
 }

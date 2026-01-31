@@ -232,7 +232,7 @@ pub trait GovernanceImp : Storage<Data> + Internal{
         let everybody  =  qtd_yes + qtd_no +1;
         let qtd_total_per_vote = self.data::<Data>().qtd_total_per_vote;
         if everybody > qtd_total_per_vote {
-            return Err(PSP22Error::Custom(GovError::VotoFull.as_str()));
+            return Err(PSP22Error::Custom(GovError::VoteFull.as_str()));
         }
 
         // Record vote
@@ -353,7 +353,7 @@ pub trait GovernanceImp : Storage<Data> + Internal{
             let qtd_price_no= self.data::<Data>().qtd_price_no.get(&vote_id).unwrap();
             let qtd_price_yes = self.data::<Data>().qtd_price_yes.get(&vote_id).unwrap();
             if qtd_price_yes > qtd_price_no {
-                // Update price and auditor balance
+                // Update price and auditor balance                
                 self.data::<Data>().balance_of_auditor = new_balance_of_auditor;
                 self.data::<Data>().price = price_new;                
             }
@@ -373,22 +373,8 @@ pub trait GovernanceImp : Storage<Data> + Internal{
         if channel.3 != caller {
             return Err(PSP22Error::Custom(GovError::NotChannelOwner.as_str()));
         }
-        
-        // Check if channel expired
-        let time_block = channel.2;
-        let date = Self::env().block_timestamp();
-        if time_block > date {
-            return Err(PSP22Error::Custom(GovError::BlockedBalance.as_str()));
-        }        
-
-        // Check if already claimed
-        let recovery_in_user_payment = self.data::<Data>().recovery_in_user_payment.get(&(caller,channel_id));
-        if recovery_in_user_payment != Default::default() {
-            return Err(PSP22Error::Custom(GovError::DepositDone.as_str()));
-        }
-
         let mut balance = channel.1;
-
+        let mut forceDepositForVote = false;
         // Check if channel has open fake news vote
         let channel_in_vote = self.data::<Data>().who_open_fake.get(&channel_id);
         if channel_in_vote != Default::default() {
@@ -402,8 +388,22 @@ pub trait GovernanceImp : Storage<Data> + Internal{
             if qtd_yes > qtd_no {
                 return Err(PSP22Error::Custom(GovError::NoApproval.as_str()));
             }
-            balance = balance + channel.1;
+            forceDepositForVote = true;
+            balance = balance + channel.1;            
         }
+        
+        // Check if channel expired
+        let time_block = channel.2;
+        let date = Self::env().block_timestamp();
+        if time_block > date && !forceDepositForVote{
+            return Err(PSP22Error::Custom(GovError::BlockedBalance.as_str()));
+        }        
+
+        // Check if already claimed
+        let recovery_in_user_payment = self.data::<Data>().recovery_in_user_payment.get(&(caller,channel_id));
+        if recovery_in_user_payment != Default::default() {
+            return Err(PSP22Error::Custom(GovError::DepositDone.as_str()));
+        }       
 
         // Process fee if receiver set
         let fee_receiver = self.data::<Data>().fee_receiver;

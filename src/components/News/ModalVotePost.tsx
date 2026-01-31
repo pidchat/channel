@@ -27,7 +27,7 @@ interface ModalVotePostProps   {
 
 
 const ModalVotePost: React.FC<ModalVotePostProps> = ({ modal, modalToggle, reason, channelId }) => {  
-  const { t } = useTranslation();
+  const { t,i18n } = useTranslation();
   const { getVotesFakesNews,feeSimulatedNetwork, rewardSafeForFakesNews,doingVotesFakesNews } = useGovernance();
   const {alert,balanceNative} = useContract();
   const [openClaim, setOpenClaim] = useState(false);
@@ -42,8 +42,12 @@ const ModalVotePost: React.FC<ModalVotePostProps> = ({ modal, modalToggle, reaso
   useEffect(() => {
     getVotesFakesNews(channelId).then((details) => {
       if(!details) return;
+      if(!details.dataCreate) return;
       setDetails(details);
-      const dataEnd = new Date(details.dataCreate);
+      const dataEnd = new Date();
+      dataEnd.setTime(Number(details.dataCreate))
+      console.log("Date.now()",Date.now())
+      console.log("details.dataCreate",dataEnd.getTime() )
       if(dataEnd.getTime() < Date.now()){
         setOpenClaim(true);
       }     
@@ -60,6 +64,7 @@ const ModalVotePost: React.FC<ModalVotePostProps> = ({ modal, modalToggle, reaso
       await rewardSafeForFakesNews(Number(channelId));
       alert(t("TEXT_REWARD_SEND_SUCCESS"), "success");
       modalToggle();
+      setLoading(false);
     } catch (error: any) {
       alert(t(`${error.message}`), "error");
     } finally {
@@ -101,7 +106,7 @@ const ModalVotePost: React.FC<ModalVotePostProps> = ({ modal, modalToggle, reaso
           {t("TEXT_DESCRIPTION_REPORT_POST")}<br/>
           {t("TEXT_REASON")}:<br/>         
           {reason}<br/>
-           <div style={{  textAlign: "center",}}>{t("TEXT_DATE_AT")} {getDateView(details.dataCreate)}</div>
+           <div style={{  textAlign: "center",}}>{t("TEXT_DATE_AT")} {getDateView(details.dataCreate,i18n.language)}</div>
           <div className="mt-3">
             <div className="d-flex justify-content-between mb-1">
               <small>{t("TEXT_YES")}: {details.votesYES}</small>

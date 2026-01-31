@@ -130,5 +130,19 @@
   "TEXT_DATE_AT":"Fecha hasta ",
   "TEXT_REWARD_SEND_SUCCESS":"Recompensa enviada con éxito",
   "TEXT_DATA_LIMIT_BALANCE":"Hasta {{value}}, tu saldo está bloqueado!",
-  "TEXT_REWARD_SAFE":"Recuperar Fondo de Garantía"
+  "TEXT_REWARD_SAFE":"Recuperar Fondo de Garantía",
+  "TEXT_GOVERNANCE_CONTRACT_INFO":"Información del Contrato de Gobernanza",
+  "CONTRACT_ADDRESS":"Dirección del Contrato",
+  "PRICE_GUARDIAN":"Precio de garantía",
+  "TOTAL_BALANCE_AUDITOR":"Saldo para Auditor",
+  "TOTAL_BALANCE_BLOCK":"Saldo bloqueado",
+  "TOTAL_FAKE_NEWS":"Total de Noticias Falsas",
+  "TOTAL_NEWS":"Total de Noticias",
+  "TEXT_OPEN_VOTE":"Abrir Votação",
+  "TEXT_AUDITOR_OPEN_VOTE":"Para abrir votación debes tener al menos {{value}} PID.",
+  "TEXT_PRICE_PER_POST":"Precio por publicación",
+  "TEXT_BALANCE_PER_AUDIT":"Saldo para ser auditor",
+  "TEXT_GOVERNANCE":"Gobernanza",
+  "DepositDone":"¡Recompensa ya fue depositada!",
+  "BlockedBalance":"Blocked Balance!"
 }

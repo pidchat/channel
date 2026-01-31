@@ -32,6 +32,7 @@ export interface InfoGovernance {
   addressContract: string;
   totalFakesNews: number;
   totalBalanceBlock: string;
+  totalBalanceAuditor: string;
 }
 export interface InfoVotePriceAndAuditor {
   voteYes: number;
@@ -417,6 +418,7 @@ export const useGovernance = () => {
       if (result.value.err) {
         throw new Error(result.value.err);
       }
+     
       if (result.value.ok?.err) {
         throw new Error(result.value.ok?.err.custom || "");
       }
@@ -429,7 +431,7 @@ export const useGovernance = () => {
         },
       );
     } catch (error: any) {
-      throw new Error("Error at get reward safe for fakes news");
+      throw new Error(error.message);
     }
   };
   const recoverySafePublic = async (channelID: number) => {
@@ -449,6 +451,7 @@ export const useGovernance = () => {
         throw new Error(result.value.err);
       }
       if (result.value.ok?.err) {
+        console.log("result.value.ok?.err.custom",result.value.ok?.err.custom)
         throw new Error(result.value.ok?.err.custom || "");
       }
       //send tx
@@ -460,7 +463,7 @@ export const useGovernance = () => {
         },
       );
     } catch (error: any) {
-      throw new Error(error);
+      throw new Error(error.message);
     }
   };
   const getInfoGovernance = async () => {
@@ -475,18 +478,41 @@ export const useGovernance = () => {
         account_aux,
         api,
       );
-      const totalNews = await contract.query.getTotalChannel();
+      const totalNews = await getTotalNews();
       const totalFakesNews = await contract.query.getTotalFakeOpen();
-      const priceGuardian = await contract.query.getPrices();
+      const priceGuardian = await getPriceGuardian();
+      //const totalBalanceAuditor = await getBalanceForAuditor();
       const ifoData: InfoGovernance = {
-        totalNews: Number(totalNews.value.ok || 0),
-        totalFakesNews: Number(totalFakesNews.value.ok || 0),
-        priceGuardian: priceGuardian.value.ok?.toString() || "0",
+        totalNews: Number(totalNews || 0),
+        totalFakesNews: Number(totalFakesNews.value.ok?.ok?.toHuman() || 0),
+        priceGuardian: priceGuardian || "0",
         addressContract: import.meta.env.VITE_CONTRACT_GOVERNANCE,
-        totalBalanceBlock: priceGuardian.value.ok?.ok?.toString() || "0",
+        totalBalanceBlock: priceGuardian || "0",
+        totalBalanceAuditor:  "0",
       };
 
       return ifoData;
+    } catch (error: any) {
+      throw new Error(error);
+    }
+  };
+  const getBalanceForAuditor = async () => {
+    try {
+      if (!api || !apiReady) {
+        return;
+      }
+      const account_aux = await getAccountAux();
+      if (!account_aux) return;
+      const contract = new Governance(
+        import.meta.env.VITE_CONTRACT_GOVERNANCE,
+        account_aux,
+        api,
+      );
+      const result = await contract.query.getBalanceAuditor();
+      if (result.value.err) {
+        throw new Error(result.value.err);
+      }
+       return result.value.ok?.toString() || "0";
     } catch (error: any) {
       throw new Error(error);
     }
@@ -507,18 +533,88 @@ export const useGovernance = () => {
       if (result.value.err) {
         throw new Error(result.value.err);
       }
-      const data:InfoVotePriceAndAuditor={
+      const data: InfoVotePriceAndAuditor = {
         voteYes: Number(result.value.ok?.ok?.[0] || 0),
         voteNo: Number(result.value.ok?.ok?.[1] || 0),
         votePrice: result.value.ok?.ok?.[2]?.toString() || "0",
         balanceAuditor: result.value.ok?.ok?.[3]?.toString() || "0",
-        dataLimit: result.value.ok?.ok?.[4]?.toString().replaceAll(",", "") || "0",
-      }
+        dataLimit:
+          result.value.ok?.ok?.[4]?.toString().replaceAll(",", "") || "0",
+      };
       return data;
     } catch (error: any) {
       throw new Error(error);
     }
-  }
+  };
+  const openVoteNewPriceAndBalanceAudit = async (newPrice: string, newBalanceAuditor: string) => {
+    try {
+      if (!api || !apiReady || !account) {
+        return;
+      }
+      const newPriceComplete = `${newPrice}000000000000000000`;
+      const newPriceAuditorComplete = `${newBalanceAuditor}000000000000000000`;
+      const account_aux = await getAccountAuxContract();
+      if (!account_aux) return;
+      const contract = new Governance(
+        import.meta.env.VITE_CONTRACT_GOVERNANCE,
+        account_aux,
+        api,
+      );
+      const result = await contract.query.openVoteForPrice(newPriceComplete, newPriceAuditorComplete);
+      if (result.value.err) {
+        throw new Error(result.value.err);
+      }
+      if (result.value.ok?.err) {
+        throw new Error(result.value.ok?.err.custom || "");
+      }
+      //send tx
+      await sendTXGovernance(
+        import.meta.env.VITE_CONTRACT_GOVERNANCE,
+        "governanceImp::openVoteForPrice",
+        {
+          newPrice: newPriceComplete,
+          newBalanceOfAuditor: newPriceAuditorComplete,
+        },
+      );      
+    } catch (error: any) {
+      throw new Error(error);
+    }
+  };
+  const doingVotesPrice = async (
+    yesOrNo: boolean
+  ) => {
+    try {
+      if (!api || !apiReady || !account) {
+        return;
+      }
+      const account_aux = await getAccountAuxContract();
+      if (!account_aux) return;
+      const contract = new Governance(
+        import.meta.env.VITE_CONTRACT_GOVERNANCE,
+        account_aux,
+        api,
+      );
+      const result = await contract.query.doingVotePrice(yesOrNo);
+      if (result.value.err) {
+        throw new Error(result.value.err);
+      }
+      if (result.value.ok?.err) {
+        throw new Error(result.value.ok?.err.custom || "");
+      }
+      
+      //send tx
+      await sendTXGovernance(
+        import.meta.env.VITE_CONTRACT_GOVERNANCE,
+        "governanceImp::doingVotePrice",
+        {
+          isProved: yesOrNo,
+        },
+      );
+      return result.value.ok;
+    } catch (error: any) {
+      throw new Error(error.message);
+    }
+  };
   return {
     feeSimulatedNetwork,
     getTotalMessages,
@@ -537,6 +633,9 @@ export const useGovernance = () => {
     recoverySafePublic,
     getInfoGovernance,
     getVotePrice,
+    getBalanceForAuditor,
+    openVoteNewPriceAndBalanceAudit,
+    doingVotesPrice
   };
 };
 export default useGovernance;

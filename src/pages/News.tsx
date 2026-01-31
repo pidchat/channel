@@ -1,20 +1,31 @@
-import { IonContent, IonLoading, IonPage } from "@ionic/react";
+import { IonContent, IonIcon, IonLoading, IonPage } from "@ionic/react";
 import CardSendPost from "../components/News/CardSendPost";
 import CardItemPost from "../components/News/CardItemPost";
 import HeaderHome from "../components/News/HeaderHome";
 import useContract from "../hooks/useContract";
-import useGovernance from "../hooks/useGovernance";
+import useGovernance, { InfoGovernance } from "../hooks/useGovernance";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
+import { truncateText } from "../utils";
+import { copyOutline } from "ionicons/icons";
 const CHUNK_SIZE = 10;
 const News: React.FC = () => {
   const { t } = useTranslation();
-  const { account, apiReady, alert } = useContract();
-  const { getTotalNews, getChannelIdAccount,getNewsId } = useGovernance();
+  const { account, apiReady, alert, isDarkMode } = useContract();
+  const { getTotalNews, getChannelIdAccount, getNewsId, getInfoGovernance } =
+    useGovernance();
   const [totalNews, setTotalNews] = useState(0);
   const [page, setPage] = useState(0);
   const [channelIds, setChannelIds] = useState<number[]>([]);
   const [loading, setLoading] = useState(false);
+  const [infoGovernance, setInfoGovernance] = useState<InfoGovernance>({
+    addressContract: import.meta.env.VITE_CONTRACT_GOVERNANCE,
+    priceGuardian: "0",
+    totalBalanceAuditor: "0",
+    totalBalanceBlock: "0",
+    totalFakesNews: 0,
+    totalNews: 0,
+  });
 
   useEffect(() => {
     if (apiReady) {
@@ -39,20 +50,24 @@ const News: React.FC = () => {
       do {
         if (channelIds[index] == value) {
           newIds.push(channelIds[index]);
-        }else{
-          newIds.push(value);          
+        } else {
+          newIds.push(value);
         }
-        value --;
+        value--;
         index++;
-        if(index == CHUNK_SIZE) {
+        if (index == CHUNK_SIZE) {
           break;
         }
-        
       } while (value > 0);
       setTotalNews(Number(count || 0));
       setChannelIds(newIds);
     });
-  }
+    getInfoGovernance().then((res) => {
+      if (res) {
+        setInfoGovernance(res);
+      }
+    });
+  };
   const getMoreChannelIds = () => {
     const newIds: number[] = [];
     if (channelIds.length >= totalNews) {
@@ -67,39 +82,42 @@ const News: React.FC = () => {
       if (index == CHUNK_SIZE) {
         break;
       }
-    } while (countLoop != 0);    
+    } while (countLoop != 0);
     setChannelIds((prev) => [...prev, ...newIds]);
   };
 
   const handleSearch = (searchText: string) => {
-    
-    if(searchText.trim().length === 0){
-      alert(t("TEXT_FIELD_ENTER_ADDRESS"),'error');
+    if (searchText.trim().length === 0) {
+      alert(t("TEXT_FIELD_ENTER_ADDRESS"), "error");
       return;
     }
     setLoading(true);
-    getChannelIdAccount(searchText).then(async (res) => {
-      if (res) {
-        const details = await getNewsId(Number(res));
-        location.href = `/post/${details?.channelAddress}`;
-      }
-      setLoading(false);
-    }).catch(() => {
-      setLoading(false);
-      alert(t("TEXT_ALERT_CHANNEL_NOT_FOUND"),'error');
-    });
+    getChannelIdAccount(searchText)
+      .then(async (res) => {
+        if (res) {
+          const details = await getNewsId(Number(res));
+          location.href = `/post/${details?.channelAddress}`;
+        }
+        setLoading(false);
+      })
+      .catch(() => {
+        setLoading(false);
+        alert(t("TEXT_ALERT_CHANNEL_NOT_FOUND"), "error");
+      });
   };
   const handleOwnerPostsClick = () => {
     setLoading(true);
     setTotalNews(0);
-     setChannelIds([]);
-     getTotalNews().then((count) => {      
-      setTotalNews(Number(count || 0))
-      setLoading(false);
-    }).catch(() => {
-      setLoading(false);
-      alert(t("TEXT_ALERT_CHANNEL_NOT_FOUND"),'error');
-    });
+    setChannelIds([]);
+    getTotalNews()
+      .then((count) => {
+        setTotalNews(Number(count || 0));
+        setLoading(false);
+      })
+      .catch(() => {
+        setLoading(false);
+        alert(t("TEXT_ALERT_CHANNEL_NOT_FOUND"), "error");
+      });
   };
   return (
     <IonPage>
@@ -110,6 +128,62 @@ const News: React.FC = () => {
             handleOwnerPostsClick={handleOwnerPostsClick}
           />
           {account && <CardSendPost reload={reload} />}
+          {/* Governance Contract Info Card */}
+          <div style={{ margin: "1rem auto", width: "fit-content" }}>
+            <details className="governance-dropdown">
+              <summary className="governance-summary">
+                {t("TEXT_GOVERNANCE_CONTRACT_INFO")}
+              </summary>
+              <div className="governance-details">
+                <p
+                  onClick={() =>
+                    navigator.clipboard.writeText(
+                      infoGovernance.addressContract,
+                    )
+                  }
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.backgroundColor = isDarkMode
+                      ? "#333"
+                      : "#f0f0f0";
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.backgroundColor = "transparent";
+                  }}
+                >
+                  <strong>{t("CONTRACT_ADDRESS")}:</strong>{" "}
+                  {truncateText(infoGovernance.addressContract, 7, 10, false)}
+                  <IonIcon icon={copyOutline} style={{ fontSize: "14px" }} />
+                </p>
+                <p>
+                  <strong>{t("PRICE_GUARDIAN")}:</strong>{" "}
+                  {(
+                    Number(infoGovernance.priceGuardian) / 1000000000000000000
+                  ).toFixed(0)}
+                </p>
+                <p>
+                  <strong>{t("TOTAL_BALANCE_AUDITOR")}:</strong>{" "}
+                  {(
+                    Number(infoGovernance.totalBalanceAuditor) /
+                    1000000000000000000
+                  ).toFixed(0)}
+                </p>
+                <p>
+                  <strong>{t("TOTAL_BALANCE_BLOCK")}:</strong>{" "}
+                  {(
+                    Number(infoGovernance.totalBalanceBlock) /
+                    1000000000000000000
+                  ).toFixed(0)}
+                </p>
+                <p>
+                  <strong>{t("TOTAL_FAKE_NEWS")}:</strong>{" "}
+                  {infoGovernance.totalFakesNews}
+                </p>
+                <p>
+                  <strong>{t("TOTAL_NEWS")}:</strong> {infoGovernance.totalNews}
+                </p>
+              </div>
+            </details>
+          </div>
           <div style={{ marginTop: "1rem" }}></div>
           {channelIds.map((channelId, index) => (
             <CardItemPost key={index} channelId={channelId} />

@@ -9,7 +9,6 @@ import {
   IonButton,
   useIonRouter,
   IonSpinner,
-  IonLoading,
 } from "@ionic/react";
 import {
   chatbubbleOutline,
@@ -49,7 +48,6 @@ const CardItemPost: React.FC<CardItemPostProps> = ({ channelId }) => {
   const [priceGuardian, setPriceGuardian] = useState(0);
   const [reason, setReason] = useState("");
   const [priceStr, setPriceStr] = useState("");
-  const [loading, setLoading] = useState(false);
   const [quantityMessages, setQuantityMessages] = useState(0);
   useEffect(() => {
     getNewsId(channelId).then((res) => {
@@ -263,7 +261,6 @@ const CardItemPost: React.FC<CardItemPostProps> = ({ channelId }) => {
           }}          
         />
       </IonCardContent>
-      <IonLoading isOpen={loading} message={t("TEXT_WAIT")} />
     </IonCard>
   );
 };

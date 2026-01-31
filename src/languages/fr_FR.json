@@ -130,5 +130,19 @@
   "TEXT_DATE_AT":"Date jusqu'à ",
   "TEXT_REWARD_SEND_SUCCESS":"Recompense envoyée avec succès",
   "TEXT_DATA_LIMIT_BALANCE":"Jusqu'à {{value}}, votre solde est bloqué!",
-  "TEXT_REWARD_SAFE":"Réclamer le Fonds de Garantie"
+  "TEXT_REWARD_SAFE":"Réclamer le Fonds de Garantie",
+  "TEXT_GOVERNANCE_CONTRACT_INFO":"Informations du Contrat de Gouvernance",
+  "CONTRACT_ADDRESS":"Adresse du Contrat",
+  "PRICE_GUARDIAN":"Prix de la garantie",
+  "TOTAL_BALANCE_AUDITOR":"Solde pour l'Auditeur",
+  "TOTAL_BALANCE_BLOCK":"Solde bloqué",
+  "TOTAL_FAKE_NEWS":"Total des Fausses Nouvelles",
+  "TOTAL_NEWS":"Total des Nouvelles",
+  "TEXT_OPEN_VOTE":"Ouvrir la Votation",
+  "TEXT_AUDITOR_OPEN_VOTE":"Pour ouvrir le vote vous devez avoir au moins {{value}} PID.",
+  "TEXT_PRICE_PER_POST":"Prix par post",
+  "TEXT_BALANCE_PER_AUDIT":"Solde pour être auditeur",
+  "TEXT_GOVERNANCE":"Gouvernance",
+  "DepositDone":"Récompense déjà déposée!",
+  "BlockedBalance":"Solde bloqué !"
 }

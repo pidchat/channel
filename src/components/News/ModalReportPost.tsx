@@ -36,9 +36,9 @@ const ModalReportPost: React.FC<ModalReportPostProps> = ({
   const { t, i18n } = useTranslation();
   const [reason, setReason] = useState("");
   const { feeNetWork, feeSimulatedNetwork, alert,balanceToken } = useContract();
-    const {
+  const {
       openVotesFakesNews,
-      rewardSafeForFakesNews,
+      recoverySafePublic,
     } = useGovernance();
   const [loading, setLoading] = useState(false);
  
@@ -50,7 +50,7 @@ const ModalReportPost: React.FC<ModalReportPostProps> = ({
     if(!channelId) return;
     try {
       setLoading(true);
-      await rewardSafeForFakesNews(channelId);
+      await recoverySafePublic(channelId);
       alert(t("TEXT_REWARD_SEND_SUCCESS"), "success");
       
       modalToggle()

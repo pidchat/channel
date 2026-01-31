@@ -122,7 +122,7 @@
   "TEXT_VOTE":"Votar",
   "TEXT_DATA_LIMIT":"Até a {{value}} você pode reportar esse postagem",
   "TEXT_POST_REPORTED":"Post reportado com sucesso, aguarde a votação.",
-  "TEXT_BALANCE_AUDITOR":"Você precisa ter no minimo 1000000 PID para reportar um post.",
+  "TEXT_BALANCE_AUDITOR":"Você precisa ter no minimo {{value}} PID para reportar um post.",
   "TEXT_VOTE_POST":"Votar Post",
   "TEXT_TOTAL_LIMIT":"Limite Total de Votos:",
   "TEXT_CLAIM":"Recompensar",
@@ -131,6 +131,21 @@
   "TEXT_DATE_AT":"Data até ",
   "TEXT_REWARD_SEND_SUCCESS":"Recompensa enviada com sucesso",
   "TEXT_DATA_LIMIT_BALANCE":"Até a {{value}} seu saldo está bloqueado!",
-  "TEXT_REWARD_SAFE":"Revindicar Fundo de Garantia"
+  "TEXT_REWARD_SAFE":"Revindicar Fundo de Garantia",
+  "TEXT_GOVERNANCE_CONTRACT_INFO":"Informações do Contrato de Governança",
+  "CONTRACT_ADDRESS":"Endereço do Contrato",
+  "PRICE_GUARDIAN":"Preço de garantia",
+  "TOTAL_BALANCE_AUDITOR":"Saldo para Auditor",
+  "TOTAL_BALANCE_BLOCK":"Saldo bloqueado",
+  "TOTAL_FAKE_NEWS":"Total de Notícias Falsas",
+  "TOTAL_NEWS":"Total de Notícias",  
+  "TEXT_OPEN_VOTE":"Abrir Votação",
+  "TEXT_AUDITOR_OPEN_VOTE":"Para abrir votação ou votar, você deve ter no minimo {{value}} PID.",
+  "TEXT_PRICE_PER_POST":"Preço por post",
+  "TEXT_BALANCE_PER_AUDIT":"Saldo para ser auditor",
+  "TEXT_GOVERNANCE":"Governaça",
+  "DepositDone":"Recompesa já foi depositada!",
+  "BlockedBalance":"Saldo bloqueado!",
+  "TEXT_ENTER_INFORMATION":"informe os campos!"
 
 }
