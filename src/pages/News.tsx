@@ -8,6 +8,7 @@ import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { truncateText } from "../utils";
 import { copyOutline } from "ionicons/icons";
+import PerfectScrollbar from 'react-perfect-scrollbar';
 const CHUNK_SIZE = 10;
 const News: React.FC = () => {
   const { t } = useTranslation();
@@ -18,6 +19,8 @@ const News: React.FC = () => {
   const [page, setPage] = useState(0);
   const [channelIds, setChannelIds] = useState<number[]>([]);
   const [loading, setLoading] = useState(false);
+  const [scrollEl, setScrollEl] = useState<any>();
+   const [loadingMore, setLoadingMore] = useState(false);
   const [infoGovernance, setInfoGovernance] = useState<InfoGovernance>({
     addressContract: import.meta.env.VITE_CONTRACT_GOVERNANCE,
     priceGuardian: "0",
@@ -69,10 +72,11 @@ const News: React.FC = () => {
     });
   };
   const getMoreChannelIds = () => {
-    const newIds: number[] = [];
+   
     if (channelIds.length >= totalNews) {
       return;
     }
+    const newIds: number[] = channelIds;
     var countLoop = totalNews - page;
     var index = 0;
     do {
@@ -83,7 +87,7 @@ const News: React.FC = () => {
         break;
       }
     } while (countLoop != 0);
-    setChannelIds((prev) => [...prev, ...newIds]);
+    setChannelIds(newIds);
   };
 
   const handleSearch = (searchText: string) => {
@@ -185,9 +189,20 @@ const News: React.FC = () => {
             </details>
           </div>
           <div style={{ marginTop: "1rem" }}></div>
+          <PerfectScrollbar
+                    containerRef={(ref) => setScrollEl(ref)}
+                    onScroll={() => {
+                      
+                      const scrollBottom = scrollEl.scrollHeight - scrollEl.scrollTop - scrollEl.clientHeight;         
+                      if (scrollBottom == 0 && !loadingMore) {
+                        getMoreChannelIds();
+                      }
+                    }}
+                  >
           {channelIds.map((channelId, index) => (
             <CardItemPost key={index} channelId={channelId} />
           ))}
+          </PerfectScrollbar>
         </div>
         <IonLoading isOpen={loading} message={t("TEXT_WAIT")} />
       </IonContent>

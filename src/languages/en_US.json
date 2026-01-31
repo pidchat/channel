@@ -144,5 +144,6 @@
   "TEXT_BALANCE_PER_AUDIT":"Balance to be auditor",
   "TEXT_GOVERNANCE":"Governance",
   "DepositDone":"Reward has already been deposited!",
-  "BlockedBalance":"Blocked Balance!"
+  "BlockedBalance":"Blocked Balance!",
+  "TEXT_ENTER_INFORMATION":"Please fill in the fields!"
 }

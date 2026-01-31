@@ -144,5 +144,6 @@
   "TEXT_BALANCE_PER_AUDIT":"Solde pour être auditeur",
   "TEXT_GOVERNANCE":"Gouvernance",
   "DepositDone":"Récompense déjà déposée!",
-  "BlockedBalance":"Solde bloqué !"
+  "BlockedBalance":"Solde bloqué !",
+  "TEXT_ENTER_INFORMATION":"Remplissez les champs !"
 }

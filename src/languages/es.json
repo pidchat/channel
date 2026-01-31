@@ -144,5 +144,6 @@
   "TEXT_BALANCE_PER_AUDIT":"Saldo para ser auditor",
   "TEXT_GOVERNANCE":"Gobernanza",
   "DepositDone":"¡Recompensa ya fue depositada!",
-  "BlockedBalance":"Blocked Balance!"
+  "BlockedBalance":"Blocked Balance!",
+  "TEXT_ENTER_INFORMATION":"¡Ingresa los campos!"
 }
