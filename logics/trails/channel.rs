@@ -118,4 +118,11 @@ pub trait Channel {
      /// * `Err` if transfer failed
      #[ink(message)]
      fn get_is_private(&self) -> bool;
+     /// Get Type Message
+     /// 
+     /// # Returns
+     /// * `Ok(())` if transfer was successful
+     /// * `Err` if transfer failed
+     #[ink(message)]
+     fn get_type_message(&self) -> String;
 }

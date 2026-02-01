@@ -206,7 +206,7 @@ pub trait ChannelImpl: Storage<Data> + Storage<reentrancy_guard::Data> + Storage
     /// List emotions
     ///
     /// # Returns
-    /// * `Ok(())` if transfer was successful
+    /// * `Ok(Vec<(String, u128)>)` if transfer was successful
     /// * `Err` if transfer failed
     #[ink(message)]
     fn get_emotions(&self) -> Result<Vec<(String, u128)>, PSP22Error> {
@@ -223,11 +223,21 @@ pub trait ChannelImpl: Storage<Data> + Storage<reentrancy_guard::Data> + Storage
     /// Is Private
      /// 
      /// # Returns
-     /// * `Ok(())` if transfer was successful
-     /// * `Err` if transfer failed
+     /// * `Ok(true)` if channel is private
+     /// * `Ok(false)` if channel is public
      #[ink(message)]
      fn get_is_private(&self) -> bool {
         self.data::<Data>().id_private
+     }
+
+     /// Get Type Message
+     /// 
+     /// # Returns
+     /// * `Ok(String)` if type message was successful
+     /// * `Err` if transfer failed
+     #[ink(message)]
+     fn get_type_message(&self) -> String {
+        self.data::<Data>().type_default_message_channel.clone()
      }
 
 }

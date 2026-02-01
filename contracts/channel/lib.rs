@@ -48,11 +48,7 @@ pub mod channel {
             let caller = instance.env().caller();
             // Initialize ownership to contract creator
             ownable::InternalImpl::_init_with_owner(&mut instance, caller);
-            if type_default_message_channel == "Bytes" {
-                instance.channel_data.type_default_message_channel = type_default_message_channel;
-            }else{
-                instance.channel_data.type_default_message_channel = "String".to_string();
-            }
+            instance.channel_data.type_default_message_channel = type_default_message_channel;
             // Initialize channel data
             instance.channel_data.id_private = id_private;
             instance.channel_data.emotion_keys = Default::default();

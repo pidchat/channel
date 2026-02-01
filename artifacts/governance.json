@@ -1,6 +1,6 @@
 {
   "source": {
-    "hash": "0x5999614b7824b5c4ef4314564883089212fcd9afeee483104364b2dcd8deeebf",
+    "hash": "0x024409c0d8ee45ea9a0562d39d94e212b736a9802934053743ba019cc869614e",
     "language": "ink! 4.3.0",
     "compiler": "rustc 1.94.0-nightly",
     "build_info": {
@@ -147,9 +147,9 @@
         "args": [],
         "default": false,
         "docs": [
-          " Gets total votes allowed per voting round"
+          " Gets the current balance of the auditor"
         ],
-        "label": "GovernanceImp::get_total_votes_allowed",
+        "label": "GovernanceImp::get_balance_auditor",
         "mutates": false,
         "payable": false,
         "returnType": {
@@ -159,7 +159,7 @@
           ],
           "type": 11
         },
-        "selector": "0x9a20ed21"
+        "selector": "0xa2e2a487"
       },
       {
         "args": [
@@ -168,56 +168,75 @@
             "type": {
               "displayName": [
                 "governanceimp_external",
-                "DoingVoteFakeInput1"
+                "GetVotesFakesNewsInput1"
               ],
               "type": 3
-            }
-          },
-          {
-            "label": "is_fake",
-            "type": {
-              "displayName": [
-                "governanceimp_external",
-                "DoingVoteFakeInput2"
-              ],
-              "type": 12
             }
           }
         ],
         "default": false,
         "docs": [
-          " Casts vote for fake news"
+          " Gets current vote counts and deadline for fake news vote"
         ],
-        "label": "GovernanceImp::doing_vote_fake",
-        "mutates": true,
+        "label": "GovernanceImp::get_votes_fakes_news",
+        "mutates": false,
         "payable": false,
         "returnType": {
           "displayName": [
             "ink",
             "MessageResult"
           ],
-          "type": 13
+          "type": 12
         },
-        "selector": "0xe647e51b"
+        "selector": "0xd480cb52"
       },
       {
         "args": [
           {
-            "label": "default_message",
+            "label": "channel_fake_id",
             "type": {
               "displayName": [
                 "governanceimp_external",
-                "AddMessagesPublicInput1"
+                "GetChannelFakeInput1"
               ],
-              "type": 16
+              "type": 3
+            }
+          }
+        ],
+        "default": false,
+        "docs": [
+          " Gets channel ID on fake news vote ID"
+        ],
+        "label": "GovernanceImp::get_channel_fake",
+        "mutates": false,
+        "payable": false,
+        "returnType": {
+          "displayName": [
+            "ink",
+            "MessageResult"
+          ],
+          "type": 16
+        },
+        "selector": "0xa01cc780"
+      },
+      {
+        "args": [
+          {
+            "label": "channel_id",
+            "type": {
+              "displayName": [
+                "governanceimp_external",
+                "OpenVoteForFakeNewsInput1"
+              ],
+              "type": 3
             }
           },
           {
-            "label": "type_default_message_channel",
+            "label": "reason",
             "type": {
               "displayName": [
                 "governanceimp_external",
-                "AddMessagesPublicInput2"
+                "OpenVoteForFakeNewsInput2"
               ],
               "type": 5
             }
@@ -225,10 +244,9 @@
         ],
         "default": false,
         "docs": [
-          " Creates a new public channel with payment",
-          " Takes channel address as input and returns channel ID"
+          " Opens voting period for marking content as fake news"
         ],
-        "label": "GovernanceImp::add_messages_public",
+        "label": "GovernanceImp::open_vote_for_fake_news",
         "mutates": true,
         "payable": false,
         "returnType": {
@@ -238,62 +256,27 @@
           ],
           "type": 18
         },
-        "selector": "0x017df7d9"
+        "selector": "0xa67839ca"
       },
       {
         "args": [
           {
-            "label": "address_contract",
+            "label": "channel_id",
             "type": {
               "displayName": [
                 "governanceimp_external",
-                "GetIdChannelInput1"
+                "RewardSafeForFakeNewsInput1"
               ],
-              "type": 0
+              "type": 3
             }
           }
         ],
         "default": false,
         "docs": [
-          " Gets channel ID for given contract address"
+          " Claims reward for correctly identifying fake news",
+          " Returns reward amount if successful"
         ],
-        "label": "GovernanceImp::get_id_channel",
-        "mutates": false,
-        "payable": false,
-        "returnType": {
-          "displayName": [
-            "ink",
-            "MessageResult"
-          ],
-          "type": 20
-        },
-        "selector": "0x99bd3f8d"
-      },
-      {
-        "args": [],
-        "default": false,
-        "docs": [
-          " Gets total number of fake news votes opened"
-        ],
-        "label": "GovernanceImp::get_total_fake_open",
-        "mutates": false,
-        "payable": false,
-        "returnType": {
-          "displayName": [
-            "ink",
-            "MessageResult"
-          ],
-          "type": 22
-        },
-        "selector": "0x70620cc2"
-      },
-      {
-        "args": [],
-        "default": false,
-        "docs": [
-          " Updates channel price if vote passed"
-        ],
-        "label": "GovernanceImp::sync",
+        "label": "GovernanceImp::reward_safe_for_fake_news",
         "mutates": true,
         "payable": false,
         "returnType": {
@@ -301,27 +284,27 @@
             "ink",
             "MessageResult"
           ],
-          "type": 13
+          "type": 16
         },
-        "selector": "0x009ae61b"
+        "selector": "0x8a020509"
       },
       {
         "args": [],
         "default": false,
         "docs": [
-          " Allows fee receiver to withdraw accumulated fees"
+          " Gets accumulated fee balance"
         ],
-        "label": "GovernanceImp::get_fee_receiver_withdrawal",
-        "mutates": true,
+        "label": "GovernanceImp::get_fee_receiver_balance",
+        "mutates": false,
         "payable": false,
         "returnType": {
           "displayName": [
             "ink",
             "MessageResult"
           ],
-          "type": 22
+          "type": 11
         },
-        "selector": "0x2a5e2a45"
+        "selector": "0x202ce326"
       },
       {
         "args": [
@@ -366,7 +349,7 @@
             "ink",
             "MessageResult"
           ],
-          "type": 13
+          "type": 18
         },
         "selector": "0x3939d6d0"
       },
@@ -384,46 +367,17 @@
             "ink",
             "MessageResult"
           ],
-          "type": 22
+          "type": 16
         },
         "selector": "0x327cd24f"
-      },
-      {
-        "args": [
-          {
-            "label": "channel_id",
-            "type": {
-              "displayName": [
-                "governanceimp_external",
-                "GetVotesFakesNewsInput1"
-              ],
-              "type": 3
-            }
-          }
-        ],
-        "default": false,
-        "docs": [
-          " Gets current vote counts and deadline for fake news vote"
-        ],
-        "label": "GovernanceImp::get_votes_fakes_news",
-        "mutates": false,
-        "payable": false,
-        "returnType": {
-          "displayName": [
-            "ink",
-            "MessageResult"
-          ],
-          "type": 24
-        },
-        "selector": "0xd480cb52"
       },
       {
         "args": [],
         "default": false,
         "docs": [
-          " Gets fee receiver wallet address"
+          " Gets total number of channels created"
         ],
-        "label": "GovernanceImp::get_fee_receiver_wallet",
+        "label": "GovernanceImp::get_total_channel",
         "mutates": false,
         "payable": false,
         "returnType": {
@@ -431,9 +385,9 @@
             "ink",
             "MessageResult"
           ],
-          "type": 27
+          "type": 16
         },
-        "selector": "0x56aad75f"
+        "selector": "0xca5f3e29"
       },
       {
         "args": [
@@ -470,7 +424,7 @@
             "ink",
             "MessageResult"
           ],
-          "type": 13
+          "type": 18
         },
         "selector": "0x3602612c"
       },
@@ -478,19 +432,19 @@
         "args": [],
         "default": false,
         "docs": [
-          " Gets the current price per channel"
+          " Updates channel price if vote passed"
         ],
-        "label": "GovernanceImp::get_price_per_channel",
-        "mutates": false,
+        "label": "GovernanceImp::sync",
+        "mutates": true,
         "payable": false,
         "returnType": {
           "displayName": [
             "ink",
             "MessageResult"
           ],
-          "type": 11
+          "type": 18
         },
-        "selector": "0x52340f96"
+        "selector": "0x009ae61b"
       },
       {
         "args": [
@@ -499,18 +453,27 @@
             "type": {
               "displayName": [
                 "governanceimp_external",
-                "RewardSafeForFakeNewsInput1"
+                "DoingVoteFakeInput1"
               ],
               "type": 3
+            }
+          },
+          {
+            "label": "is_fake",
+            "type": {
+              "displayName": [
+                "governanceimp_external",
+                "DoingVoteFakeInput2"
+              ],
+              "type": 20
             }
           }
         ],
         "default": false,
         "docs": [
-          " Claims reward for correctly identifying fake news",
-          " Returns reward amount if successful"
+          " Casts vote for fake news"
         ],
-        "label": "GovernanceImp::reward_safe_for_fake_news",
+        "label": "GovernanceImp::doing_vote_fake",
         "mutates": true,
         "payable": false,
         "returnType": {
@@ -518,9 +481,165 @@
             "ink",
             "MessageResult"
           ],
-          "type": 22
+          "type": 18
         },
-        "selector": "0x8a020509"
+        "selector": "0xe647e51b"
+      },
+      {
+        "args": [
+          {
+            "label": "channel_id",
+            "type": {
+              "displayName": [
+                "governanceimp_external",
+                "RecoverySafeBalancePublicInput1"
+              ],
+              "type": 3
+            }
+          }
+        ],
+        "default": false,
+        "docs": [
+          " Allows channel owner to recover staked balance after expiry"
+        ],
+        "label": "GovernanceImp::recovery_safe_balance_public",
+        "mutates": true,
+        "payable": false,
+        "returnType": {
+          "displayName": [
+            "ink",
+            "MessageResult"
+          ],
+          "type": 16
+        },
+        "selector": "0xfefe0fd2"
+      },
+      {
+        "args": [
+          {
+            "label": "default_message",
+            "type": {
+              "displayName": [
+                "governanceimp_external",
+                "AddMessagesPublicInput1"
+              ],
+              "type": 21
+            }
+          },
+          {
+            "label": "type_default_message_channel",
+            "type": {
+              "displayName": [
+                "governanceimp_external",
+                "AddMessagesPublicInput2"
+              ],
+              "type": 5
+            }
+          }
+        ],
+        "default": false,
+        "docs": [
+          " Creates a new public channel with payment",
+          " Takes channel address as input and returns channel ID"
+        ],
+        "label": "GovernanceImp::add_messages_public",
+        "mutates": true,
+        "payable": false,
+        "returnType": {
+          "displayName": [
+            "ink",
+            "MessageResult"
+          ],
+          "type": 23
+        },
+        "selector": "0x017df7d9"
+      },
+      {
+        "args": [
+          {
+            "label": "address_contract",
+            "type": {
+              "displayName": [
+                "governanceimp_external",
+                "GetIdChannelInput1"
+              ],
+              "type": 0
+            }
+          }
+        ],
+        "default": false,
+        "docs": [
+          " Gets channel ID for given contract address"
+        ],
+        "label": "GovernanceImp::get_id_channel",
+        "mutates": false,
+        "payable": false,
+        "returnType": {
+          "displayName": [
+            "ink",
+            "MessageResult"
+          ],
+          "type": 25
+        },
+        "selector": "0x99bd3f8d"
+      },
+      {
+        "args": [
+          {
+            "label": "channel_id",
+            "type": {
+              "displayName": [
+                "governanceimp_external",
+                "CheckChannelFakeInput1"
+              ],
+              "type": 3
+            }
+          }
+        ],
+        "default": false,
+        "docs": [
+          " Checks if a channel is marked as fake news"
+        ],
+        "label": "GovernanceImp::check_channel_fake",
+        "mutates": false,
+        "payable": false,
+        "returnType": {
+          "displayName": [
+            "ink",
+            "MessageResult"
+          ],
+          "type": 27
+        },
+        "selector": "0xc3dae5e0"
+      },
+      {
+        "args": [
+          {
+            "label": "is_proved",
+            "type": {
+              "displayName": [
+                "governanceimp_external",
+                "DoingVotePriceInput1"
+              ],
+              "type": 20
+            }
+          }
+        ],
+        "default": false,
+        "docs": [
+          " Casts vote for price change"
+        ],
+        "label": "GovernanceImp::doing_vote_price",
+        "mutates": true,
+        "payable": false,
+        "returnType": {
+          "displayName": [
+            "ink",
+            "MessageResult"
+          ],
+          "type": 18
+        },
+        "selector": "0xc7f94b38"
       },
       {
         "args": [
@@ -548,7 +667,7 @@
             "ink",
             "MessageResult"
           ],
-          "type": 28
+          "type": 29
         },
         "selector": "0xed34679a"
       },
@@ -556,9 +675,9 @@
         "args": [],
         "default": false,
         "docs": [
-          " Gets total number of channels created"
+          " Gets total number of fake news votes opened"
         ],
-        "label": "GovernanceImp::get_total_channel",
+        "label": "GovernanceImp::get_total_fake_open",
         "mutates": false,
         "payable": false,
         "returnType": {
@@ -566,28 +685,17 @@
             "ink",
             "MessageResult"
           ],
-          "type": 22
+          "type": 16
         },
-        "selector": "0xca5f3e29"
+        "selector": "0x70620cc2"
       },
       {
-        "args": [
-          {
-            "label": "channel_id",
-            "type": {
-              "displayName": [
-                "governanceimp_external",
-                "CheckChannelFakeInput1"
-              ],
-              "type": 3
-            }
-          }
-        ],
+        "args": [],
         "default": false,
         "docs": [
-          " Checks if a channel is marked as fake news"
+          " Gets current vote counts and details for price change vote"
         ],
-        "label": "GovernanceImp::check_channel_fake",
+        "label": "GovernanceImp::get_votes_price",
         "mutates": false,
         "payable": false,
         "returnType": {
@@ -595,9 +703,9 @@
             "ink",
             "MessageResult"
           ],
-          "type": 32
+          "type": 33
         },
-        "selector": "0xc3dae5e0"
+        "selector": "0x9400dc49"
       },
       {
         "args": [],
@@ -621,9 +729,45 @@
         "args": [],
         "default": false,
         "docs": [
-          " Gets the current balance of the auditor"
+          " Gets fee receiver wallet address"
         ],
-        "label": "GovernanceImp::get_balance_auditor",
+        "label": "GovernanceImp::get_fee_receiver_wallet",
+        "mutates": false,
+        "payable": false,
+        "returnType": {
+          "displayName": [
+            "ink",
+            "MessageResult"
+          ],
+          "type": 36
+        },
+        "selector": "0x56aad75f"
+      },
+      {
+        "args": [],
+        "default": false,
+        "docs": [
+          " Allows fee receiver to withdraw accumulated fees"
+        ],
+        "label": "GovernanceImp::get_fee_receiver_withdrawal",
+        "mutates": true,
+        "payable": false,
+        "returnType": {
+          "displayName": [
+            "ink",
+            "MessageResult"
+          ],
+          "type": 16
+        },
+        "selector": "0x2a5e2a45"
+      },
+      {
+        "args": [],
+        "default": false,
+        "docs": [
+          " Gets total votes allowed per voting round"
+        ],
+        "label": "GovernanceImp::get_total_votes_allowed",
         "mutates": false,
         "payable": false,
         "returnType": {
@@ -633,130 +777,15 @@
           ],
           "type": 11
         },
-        "selector": "0xa2e2a487"
+        "selector": "0x9a20ed21"
       },
       {
         "args": [],
         "default": false,
         "docs": [
-          " Gets current vote counts and details for price change vote"
+          " Gets the current price per channel"
         ],
-        "label": "GovernanceImp::get_votes_price",
-        "mutates": false,
-        "payable": false,
-        "returnType": {
-          "displayName": [
-            "ink",
-            "MessageResult"
-          ],
-          "type": 34
-        },
-        "selector": "0x9400dc49"
-      },
-      {
-        "args": [
-          {
-            "label": "channel_fake_id",
-            "type": {
-              "displayName": [
-                "governanceimp_external",
-                "GetChannelFakeInput1"
-              ],
-              "type": 3
-            }
-          }
-        ],
-        "default": false,
-        "docs": [
-          " Gets channel ID on fake news vote ID"
-        ],
-        "label": "GovernanceImp::get_channel_fake",
-        "mutates": false,
-        "payable": false,
-        "returnType": {
-          "displayName": [
-            "ink",
-            "MessageResult"
-          ],
-          "type": 22
-        },
-        "selector": "0xa01cc780"
-      },
-      {
-        "args": [
-          {
-            "label": "channel_id",
-            "type": {
-              "displayName": [
-                "governanceimp_external",
-                "OpenVoteForFakeNewsInput1"
-              ],
-              "type": 3
-            }
-          },
-          {
-            "label": "reason",
-            "type": {
-              "displayName": [
-                "governanceimp_external",
-                "OpenVoteForFakeNewsInput2"
-              ],
-              "type": 5
-            }
-          }
-        ],
-        "default": false,
-        "docs": [
-          " Opens voting period for marking content as fake news"
-        ],
-        "label": "GovernanceImp::open_vote_for_fake_news",
-        "mutates": true,
-        "payable": false,
-        "returnType": {
-          "displayName": [
-            "ink",
-            "MessageResult"
-          ],
-          "type": 13
-        },
-        "selector": "0xa67839ca"
-      },
-      {
-        "args": [
-          {
-            "label": "channel_id",
-            "type": {
-              "displayName": [
-                "governanceimp_external",
-                "RecoverySafeBalancePublicInput1"
-              ],
-              "type": 3
-            }
-          }
-        ],
-        "default": false,
-        "docs": [
-          " Allows channel owner to recover staked balance after expiry"
-        ],
-        "label": "GovernanceImp::recovery_safe_balance_public",
-        "mutates": true,
-        "payable": false,
-        "returnType": {
-          "displayName": [
-            "ink",
-            "MessageResult"
-          ],
-          "type": 22
-        },
-        "selector": "0xfefe0fd2"
-      },
-      {
-        "args": [],
-        "default": false,
-        "docs": [
-          " Gets accumulated fee balance"
-        ],
-        "label": "GovernanceImp::get_fee_receiver_balance",
+        "label": "GovernanceImp::get_price_per_channel",
         "mutates": false,
         "payable": false,
         "returnType": {
@@ -766,36 +795,7 @@
           ],
           "type": 11
         },
-        "selector": "0x202ce326"
-      },
-      {
-        "args": [
-          {
-            "label": "is_proved",
-            "type": {
-              "displayName": [
-                "governanceimp_external",
-                "DoingVotePriceInput1"
-              ],
-              "type": 12
-            }
-          }
-        ],
-        "default": false,
-        "docs": [
-          " Casts vote for price change"
-        ],
-        "label": "GovernanceImp::doing_vote_price",
-        "mutates": true,
-        "payable": false,
-        "returnType": {
-          "displayName": [
-            "ink",
-            "MessageResult"
-          ],
-          "type": 13
-        },
-        "selector": "0xc7f94b38"
+        "selector": "0x52340f96"
       }
     ]
   },
@@ -1429,20 +1429,12 @@
       "id": 12,
       "type": {
         "def": {
-          "primitive": "bool"
-        }
-      }
-    },
-    {
-      "id": 13,
-      "type": {
-        "def": {
           "variant": {
             "variants": [
               {
                 "fields": [
                   {
-                    "type": 14
+                    "type": 13
                   }
                 ],
                 "index": 0,
@@ -1463,7 +1455,7 @@
         "params": [
           {
             "name": "T",
-            "type": 14
+            "type": 13
           },
           {
             "name": "E",
@@ -1476,7 +1468,7 @@
       }
     },
     {
-      "id": 14,
+      "id": 13,
       "type": {
         "def": {
           "variant": {
@@ -1484,7 +1476,7 @@
               {
                 "fields": [
                   {
-                    "type": 9
+                    "type": 14
                   }
                 ],
                 "index": 0,
@@ -1505,7 +1497,7 @@
         "params": [
           {
             "name": "T",
-            "type": 9
+            "type": 14
           },
           {
             "name": "E",
@@ -1515,6 +1507,19 @@
         "path": [
           "Result"
         ]
+      }
+    },
+    {
+      "id": 14,
+      "type": {
+        "def": {
+          "tuple": [
+            3,
+            3,
+            4,
+            5
+          ]
+        }
       }
     },
     {
@@ -1578,17 +1583,22 @@
           "variant": {
             "variants": [
               {
-                "index": 0,
-                "name": "None"
-              },
-              {
                 "fields": [
                   {
                     "type": 17
                   }
                 ],
+                "index": 0,
+                "name": "Ok"
+              },
+              {
+                "fields": [
+                  {
+                    "type": 10
+                  }
+                ],
                 "index": 1,
-                "name": "Some"
+                "name": "Err"
               }
             ]
           }
@@ -1597,10 +1607,14 @@
           {
             "name": "T",
             "type": 17
+          },
+          {
+            "name": "E",
+            "type": 10
           }
         ],
         "path": [
-          "Option"
+          "Result"
         ]
       }
     },
@@ -1608,10 +1622,42 @@
       "id": 17,
       "type": {
         "def": {
-          "sequence": {
-            "type": 5
+          "variant": {
+            "variants": [
+              {
+                "fields": [
+                  {
+                    "type": 3
+                  }
+                ],
+                "index": 0,
+                "name": "Ok"
+              },
+              {
+                "fields": [
+                  {
+                    "type": 15
+                  }
+                ],
+                "index": 1,
+                "name": "Err"
+              }
+            ]
           }
-        }
+        },
+        "params": [
+          {
+            "name": "T",
+            "type": 3
+          },
+          {
+            "name": "E",
+            "type": 15
+          }
+        ],
+        "path": [
+          "Result"
+        ]
       }
     },
     {
@@ -1665,6 +1711,141 @@
               {
                 "fields": [
                   {
+                    "type": 9
+                  }
+                ],
+                "index": 0,
+                "name": "Ok"
+              },
+              {
+                "fields": [
+                  {
+                    "type": 15
+                  }
+                ],
+                "index": 1,
+                "name": "Err"
+              }
+            ]
+          }
+        },
+        "params": [
+          {
+            "name": "T",
+            "type": 9
+          },
+          {
+            "name": "E",
+            "type": 15
+          }
+        ],
+        "path": [
+          "Result"
+        ]
+      }
+    },
+    {
+      "id": 20,
+      "type": {
+        "def": {
+          "primitive": "bool"
+        }
+      }
+    },
+    {
+      "id": 21,
+      "type": {
+        "def": {
+          "variant": {
+            "variants": [
+              {
+                "index": 0,
+                "name": "None"
+              },
+              {
+                "fields": [
+                  {
+                    "type": 22
+                  }
+                ],
+                "index": 1,
+                "name": "Some"
+              }
+            ]
+          }
+        },
+        "params": [
+          {
+            "name": "T",
+            "type": 22
+          }
+        ],
+        "path": [
+          "Option"
+        ]
+      }
+    },
+    {
+      "id": 22,
+      "type": {
+        "def": {
+          "sequence": {
+            "type": 5
+          }
+        }
+      }
+    },
+    {
+      "id": 23,
+      "type": {
+        "def": {
+          "variant": {
+            "variants": [
+              {
+                "fields": [
+                  {
+                    "type": 24
+                  }
+                ],
+                "index": 0,
+                "name": "Ok"
+              },
+              {
+                "fields": [
+                  {
+                    "type": 10
+                  }
+                ],
+                "index": 1,
+                "name": "Err"
+              }
+            ]
+          }
+        },
+        "params": [
+          {
+            "name": "T",
+            "type": 24
+          },
+          {
+            "name": "E",
+            "type": 10
+          }
+        ],
+        "path": [
+          "Result"
+        ]
+      }
+    },
+    {
+      "id": 24,
+      "type": {
+        "def": {
+          "variant": {
+            "variants": [
+              {
+                "fields": [
+                  {
                     "type": 0
                   }
                 ],
@@ -1699,207 +1880,6 @@
       }
     },
     {
-      "id": 20,
-      "type": {
-        "def": {
-          "variant": {
-            "variants": [
-              {
-                "fields": [
-                  {
-                    "type": 21
-                  }
-                ],
-                "index": 0,
-                "name": "Ok"
-              },
-              {
-                "fields": [
-                  {
-                    "type": 10
-                  }
-                ],
-                "index": 1,
-                "name": "Err"
-              }
-            ]
-          }
-        },
-        "params": [
-          {
-            "name": "T",
-            "type": 21
-          },
-          {
-            "name": "E",
-            "type": 10
-          }
-        ],
-        "path": [
-          "Result"
-        ]
-      }
-    },
-    {
-      "id": 21,
-      "type": {
-        "def": {
-          "variant": {
-            "variants": [
-              {
-                "index": 0,
-                "name": "None"
-              },
-              {
-                "fields": [
-                  {
-                    "type": 3
-                  }
-                ],
-                "index": 1,
-                "name": "Some"
-              }
-            ]
-          }
-        },
-        "params": [
-          {
-            "name": "T",
-            "type": 3
-          }
-        ],
-        "path": [
-          "Option"
-        ]
-      }
-    },
-    {
-      "id": 22,
-      "type": {
-        "def": {
-          "variant": {
-            "variants": [
-              {
-                "fields": [
-                  {
-                    "type": 23
-                  }
-                ],
-                "index": 0,
-                "name": "Ok"
-              },
-              {
-                "fields": [
-                  {
-                    "type": 10
-                  }
-                ],
-                "index": 1,
-                "name": "Err"
-              }
-            ]
-          }
-        },
-        "params": [
-          {
-            "name": "T",
-            "type": 23
-          },
-          {
-            "name": "E",
-            "type": 10
-          }
-        ],
-        "path": [
-          "Result"
-        ]
-      }
-    },
-    {
-      "id": 23,
-      "type": {
-        "def": {
-          "variant": {
-            "variants": [
-              {
-                "fields": [
-                  {
-                    "type": 3
-                  }
-                ],
-                "index": 0,
-                "name": "Ok"
-              },
-              {
-                "fields": [
-                  {
-                    "type": 15
-                  }
-                ],
-                "index": 1,
-                "name": "Err"
-              }
-            ]
-          }
-        },
-        "params": [
-          {
-            "name": "T",
-            "type": 3
-          },
-          {
-            "name": "E",
-            "type": 15
-          }
-        ],
-        "path": [
-          "Result"
-        ]
-      }
-    },
-    {
-      "id": 24,
-      "type": {
-        "def": {
-          "variant": {
-            "variants": [
-              {
-                "fields": [
-                  {
-                    "type": 25
-                  }
-                ],
-                "index": 0,
-                "name": "Ok"
-              },
-              {
-                "fields": [
-                  {
-                    "type": 10
-                  }
-                ],
-                "index": 1,
-                "name": "Err"
-              }
-            ]
-          }
-        },
-        "params": [
-          {
-            "name": "T",
-            "type": 25
-          },
-          {
-            "name": "E",
-            "type": 10
-          }
-        ],
-        "path": [
-          "Result"
-        ]
-      }
-    },
-    {
       "id": 25,
       "type": {
         "def": {
@@ -1917,7 +1897,7 @@
               {
                 "fields": [
                   {
-                    "type": 15
+                    "type": 10
                   }
                 ],
                 "index": 1,
@@ -1933,7 +1913,7 @@
           },
           {
             "name": "E",
-            "type": 15
+            "type": 10
           }
         ],
         "path": [
@@ -1945,13 +1925,33 @@
       "id": 26,
       "type": {
         "def": {
-          "tuple": [
-            3,
-            3,
-            4,
-            5
-          ]
-        }
+          "variant": {
+            "variants": [
+              {
+                "index": 0,
+                "name": "None"
+              },
+              {
+                "fields": [
+                  {
+                    "type": 3
+                  }
+                ],
+                "index": 1,
+                "name": "Some"
+              }
+            ]
+          }
+        },
+        "params": [
+          {
+            "name": "T",
+            "type": 3
+          }
+        ],
+        "path": [
+          "Option"
+        ]
       }
     },
     {
@@ -1963,7 +1963,7 @@
               {
                 "fields": [
                   {
-                    "type": 7
+                    "type": 28
                   }
                 ],
                 "index": 0,
@@ -1984,7 +1984,7 @@
         "params": [
           {
             "name": "T",
-            "type": 7
+            "type": 28
           },
           {
             "name": "E",
@@ -1998,178 +1998,6 @@
     },
     {
       "id": 28,
-      "type": {
-        "def": {
-          "variant": {
-            "variants": [
-              {
-                "fields": [
-                  {
-                    "type": 29
-                  }
-                ],
-                "index": 0,
-                "name": "Ok"
-              },
-              {
-                "fields": [
-                  {
-                    "type": 10
-                  }
-                ],
-                "index": 1,
-                "name": "Err"
-              }
-            ]
-          }
-        },
-        "params": [
-          {
-            "name": "T",
-            "type": 29
-          },
-          {
-            "name": "E",
-            "type": 10
-          }
-        ],
-        "path": [
-          "Result"
-        ]
-      }
-    },
-    {
-      "id": 29,
-      "type": {
-        "def": {
-          "variant": {
-            "variants": [
-              {
-                "fields": [
-                  {
-                    "type": 30
-                  }
-                ],
-                "index": 0,
-                "name": "Ok"
-              },
-              {
-                "fields": [
-                  {
-                    "type": 15
-                  }
-                ],
-                "index": 1,
-                "name": "Err"
-              }
-            ]
-          }
-        },
-        "params": [
-          {
-            "name": "T",
-            "type": 30
-          },
-          {
-            "name": "E",
-            "type": 15
-          }
-        ],
-        "path": [
-          "Result"
-        ]
-      }
-    },
-    {
-      "id": 30,
-      "type": {
-        "def": {
-          "variant": {
-            "variants": [
-              {
-                "index": 0,
-                "name": "None"
-              },
-              {
-                "fields": [
-                  {
-                    "type": 31
-                  }
-                ],
-                "index": 1,
-                "name": "Some"
-              }
-            ]
-          }
-        },
-        "params": [
-          {
-            "name": "T",
-            "type": 31
-          }
-        ],
-        "path": [
-          "Option"
-        ]
-      }
-    },
-    {
-      "id": 31,
-      "type": {
-        "def": {
-          "tuple": [
-            0,
-            3,
-            4,
-            0
-          ]
-        }
-      }
-    },
-    {
-      "id": 32,
-      "type": {
-        "def": {
-          "variant": {
-            "variants": [
-              {
-                "fields": [
-                  {
-                    "type": 33
-                  }
-                ],
-                "index": 0,
-                "name": "Ok"
-              },
-              {
-                "fields": [
-                  {
-                    "type": 10
-                  }
-                ],
-                "index": 1,
-                "name": "Err"
-              }
-            ]
-          }
-        },
-        "params": [
-          {
-            "name": "T",
-            "type": 33
-          },
-          {
-            "name": "E",
-            "type": 10
-          }
-        ],
-        "path": [
-          "Result"
-        ]
-      }
-    },
-    {
-      "id": 33,
       "type": {
         "def": {
           "variant": {
@@ -2211,7 +2039,7 @@
       }
     },
     {
-      "id": 34,
+      "id": 29,
       "type": {
         "def": {
           "variant": {
@@ -2219,7 +2047,7 @@
               {
                 "fields": [
                   {
-                    "type": 35
+                    "type": 30
                   }
                 ],
                 "index": 0,
@@ -2240,7 +2068,7 @@
         "params": [
           {
             "name": "T",
-            "type": 35
+            "type": 30
           },
           {
             "name": "E",
@@ -2253,7 +2081,7 @@
       }
     },
     {
-      "id": 35,
+      "id": 30,
       "type": {
         "def": {
           "variant": {
@@ -2261,7 +2089,7 @@
               {
                 "fields": [
                   {
-                    "type": 36
+                    "type": 31
                   }
                 ],
                 "index": 0,
@@ -2282,7 +2110,7 @@
         "params": [
           {
             "name": "T",
-            "type": 36
+            "type": 31
           },
           {
             "name": "E",
@@ -2295,7 +2123,137 @@
       }
     },
     {
-      "id": 36,
+      "id": 31,
+      "type": {
+        "def": {
+          "variant": {
+            "variants": [
+              {
+                "index": 0,
+                "name": "None"
+              },
+              {
+                "fields": [
+                  {
+                    "type": 32
+                  }
+                ],
+                "index": 1,
+                "name": "Some"
+              }
+            ]
+          }
+        },
+        "params": [
+          {
+            "name": "T",
+            "type": 32
+          }
+        ],
+        "path": [
+          "Option"
+        ]
+      }
+    },
+    {
+      "id": 32,
+      "type": {
+        "def": {
+          "tuple": [
+            0,
+            3,
+            4,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "id": 33,
+      "type": {
+        "def": {
+          "variant": {
+            "variants": [
+              {
+                "fields": [
+                  {
+                    "type": 34
+                  }
+                ],
+                "index": 0,
+                "name": "Ok"
+              },
+              {
+                "fields": [
+                  {
+                    "type": 10
+                  }
+                ],
+                "index": 1,
+                "name": "Err"
+              }
+            ]
+          }
+        },
+        "params": [
+          {
+            "name": "T",
+            "type": 34
+          },
+          {
+            "name": "E",
+            "type": 10
+          }
+        ],
+        "path": [
+          "Result"
+        ]
+      }
+    },
+    {
+      "id": 34,
+      "type": {
+        "def": {
+          "variant": {
+            "variants": [
+              {
+                "fields": [
+                  {
+                    "type": 35
+                  }
+                ],
+                "index": 0,
+                "name": "Ok"
+              },
+              {
+                "fields": [
+                  {
+                    "type": 15
+                  }
+                ],
+                "index": 1,
+                "name": "Err"
+              }
+            ]
+          }
+        },
+        "params": [
+          {
+            "name": "T",
+            "type": 35
+          },
+          {
+            "name": "E",
+            "type": 15
+          }
+        ],
+        "path": [
+          "Result"
+        ]
+      }
+    },
+    {
+      "id": 35,
       "type": {
         "def": {
           "tuple": [
@@ -2306,6 +2264,48 @@
             4
           ]
         }
+      }
+    },
+    {
+      "id": 36,
+      "type": {
+        "def": {
+          "variant": {
+            "variants": [
+              {
+                "fields": [
+                  {
+                    "type": 7
+                  }
+                ],
+                "index": 0,
+                "name": "Ok"
+              },
+              {
+                "fields": [
+                  {
+                    "type": 10
+                  }
+                ],
+                "index": 1,
+                "name": "Err"
+              }
+            ]
+          }
+        },
+        "params": [
+          {
+            "name": "T",
+            "type": 7
+          },
+          {
+            "name": "E",
+            "type": 10
+          }
+        ],
+        "path": [
+          "Result"
+        ]
       }
     },
     {
