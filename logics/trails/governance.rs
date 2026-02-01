@@ -89,7 +89,8 @@ pub trait Governance {
     /// Synchronizes contract state
     #[ink(message)]
     fn sync(&mut self) -> Result<(), PSP22Error>;
-        /// Gets total votes allowed per voting round
+
+     /// Gets total votes allowed per voting round
     #[ink(message)]
     fn get_total_votes_allowed(&self) -> u128;
     
@@ -108,4 +109,7 @@ pub trait Governance {
     /// Checks if a channel is marked as fake news
     #[ink(message)]
     fn check_channel_fake(&self, channel_id: u128) -> Result<(), PSP22Error>;
+     /// Opens a new vote for changing the price
+    #[ink(message)]
+    fn get_channel_fake(&self, channel_fake_id: u128) -> Result<(), PSP22Error>;
 }

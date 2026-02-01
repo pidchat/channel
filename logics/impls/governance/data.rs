@@ -79,7 +79,7 @@ pub enum GovError {
     NotOpenVoteInFake,
     NoVote,
     TimeOverOpenVote,
-    VotoFull
+    VoteFull
 
 }
 
@@ -107,7 +107,7 @@ impl GovError {
             GovError::NotOpenVoteInFake => String::from("NotOpenVoteInFake"),
             GovError::NoVote => String::from("NoVote"),
             GovError::TimeOverOpenVote => String::from("TimeOverOpenVote"),
-            GovError::VotoFull => String::from("VotoFull"),
+            GovError::VoteFull => String::from("VoteFull"),
         }
     }
 }

@@ -503,6 +503,15 @@ pub trait GovernanceImp : Storage<Data> + Internal{
         }
         Ok(channel_reason.unwrap())
     }
+    /// Gets channel ID on fake news vote ID
+    #[ink(message)]
+    fn get_channel_fake(&self, channel_fake_id: u128) -> Result<(u128), PSP22Error>{
+        let channel_id = self.data::<Data>().open_fake.get(&channel_fake_id);
+        if channel_id == Default::default() {
+            return Err(PSP22Error::Custom(GovError::NotFoundChannel.as_str()));
+        }
+        Ok(channel_id.unwrap())
+    }
     
 }
 
