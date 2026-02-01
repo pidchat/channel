@@ -148,7 +148,7 @@ const Web3Auth: React.FC = () => {
           <IonRow>
             <IonCol size="12" className="textContainer">
               <IonText>
-                <h2 className="title">{t("TEXT_CONNECT_YOUR_ACCOUNT")}</h2>
+                <h2 className="title">{t("TEXT_MESSAGE_BLOCKCHAIN")}</h2>
                 <p className="subtitle">{t("TEXT_CONNECT_TO_YOUR_WALLET")}</p>
                 <div style={{ display: "flex", justifyContent: "center" }}>
                   <IonButton
