@@ -210,7 +210,7 @@ export const useGovernance = () => {
     description: string[],
     price: string,
     name: string,
-    type: string = "String",
+    type: string = "String"
   ) => {
     try {
       if (!api || !apiReady) {
@@ -221,13 +221,25 @@ export const useGovernance = () => {
         return;
       }
       const account_aux = await getAccountAuxContract();
-      if (!account_aux) return;
-
+      if (!account_aux) return;      
       //approve
       await sendTXToken(import.meta.env.VITE_CONTRACT_TOKEN, "psp22::approve", {
         spender: import.meta.env.VITE_CONTRACT_GOVERNANCE,
         value: price,
       });
+
+       const contract = new Governance(
+        import.meta.env.VITE_CONTRACT_GOVERNANCE,
+        account_aux,
+        api,
+      );
+      const result = await contract.query.addMessagesPublic(description,type);
+      if (result.value.err) {
+        throw new Error(result.value.err);
+      }
+      if (result.value.ok?.err) {
+        throw new Error(result.value.ok?.err.custom || "");
+      }
       var resp = await sendTXGovernance(
         import.meta.env.VITE_CONTRACT_GOVERNANCE,
         "governanceImp::addMessagesPublic",
@@ -245,7 +257,7 @@ export const useGovernance = () => {
       });
     } catch (error: any) {
       console.log(error);
-      throw new Error("Error at add news channel");
+      throw new Error(error.message || "");
     }
   };
 
@@ -481,14 +493,20 @@ export const useGovernance = () => {
       const totalNews = await getTotalNews();
       const totalFakesNews = await contract.query.getTotalFakeOpen();
       const priceGuardian = await getPriceGuardian();
-      //const totalBalanceAuditor = await getBalanceForAuditor();
+      const totalBalanceAuditor = await getBalanceForAuditor();
+      let balanceBlock = "0"
+      try{
+        const totalBalanceBlock = await contract.query.getBalanceTokenLocked();
+        balanceBlock = totalBalanceBlock.value.ok?.toString() || "0"
+      }catch(error: any){        
+      }
       const ifoData: InfoGovernance = {
         totalNews: Number(totalNews || 0),
         totalFakesNews: Number(totalFakesNews.value.ok?.ok?.toHuman() || 0),
         priceGuardian: priceGuardian || "0",
         addressContract: import.meta.env.VITE_CONTRACT_GOVERNANCE,
-        totalBalanceBlock: priceGuardian || "0",
-        totalBalanceAuditor:  "0",
+        totalBalanceBlock: balanceBlock,
+        totalBalanceAuditor: totalBalanceAuditor || "0",
       };
 
       return ifoData;
@@ -532,6 +550,9 @@ export const useGovernance = () => {
       const result = await contract.query.getVotesPrice();
       if (result.value.err) {
         throw new Error(result.value.err);
+      }
+       if (result.value.ok?.err) {
+        throw new Error(result.value.ok?.err.custom || "");
       }
       const data: InfoVotePriceAndAuditor = {
         voteYes: Number(result.value.ok?.ok?.[0] || 0),
@@ -615,6 +636,27 @@ export const useGovernance = () => {
       throw new Error(error.message);
     }
   };
+  const getTypeChannel = async (channelId: string) => {
+    try {
+      if (!api || !apiReady) {
+        return;
+      }
+      const account_aux = await getAccountAux();
+      if (!account_aux) return;
+      const contract = new Channel(
+        channelId,
+        account_aux,
+        api,
+      );
+      const result = await contract.query.getTypeMessage();
+      if (result.value.err) {
+        throw new Error(result.value.err);
+      }     
+      return result.value.ok?.toString() || "0";
+    } catch (error: any) {
+      throw new Error(error);
+    }
+  }
   return {
     feeSimulatedNetwork,
     getTotalMessages,
@@ -635,7 +677,8 @@ export const useGovernance = () => {
     getVotePrice,
     getBalanceForAuditor,
     openVoteNewPriceAndBalanceAudit,
-    doingVotesPrice
+    doingVotesPrice,
+    getTypeChannel
   };
 };
 export default useGovernance;

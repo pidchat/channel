@@ -145,5 +145,8 @@
   "TEXT_GOVERNANCE":"Governance",
   "DepositDone":"Reward has already been deposited!",
   "BlockedBalance":"Blocked Balance!",
-  "TEXT_ENTER_INFORMATION":"Please fill in the fields!"
+  "TEXT_ENTER_INFORMATION":"Please fill in the fields!",
+  "TEXT_YOUR_AGREEMENT":"Do you accept the agreement?",
+  "TEXT_ENTER_DESCRIPTION_OR_IMAGE":"Please enter a description or upload an image",
+  "TEXT_CHANNEL_PUBLISHED_SUCCESSFULLY":"Channel published successfully"
 }

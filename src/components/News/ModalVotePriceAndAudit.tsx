@@ -66,10 +66,10 @@ const ModalVotePriceAndAudit: React.FC<IIssueChannel> = ({
       if (data) {
         setInfoGovernance(data);
         setValuePrice(
-          (Number(data?.priceGuardian) / 100000000000000000).toFixed(0) || "",
+          (Number(data?.priceGuardian) / 1000000000000000000).toFixed(0) || "",
         );
         setValueBalanceAudit(
-          (Number(data?.totalBalanceAuditor) / 100000000000000000).toFixed(0) ||
+          (Number(data?.totalBalanceAuditor) / 1000000000000000000).toFixed(0) ||
             "",
         );
       }
@@ -79,7 +79,7 @@ const ModalVotePriceAndAudit: React.FC<IIssueChannel> = ({
   };
   const handleDoingVotesPrice = async (yesOrNo: boolean) => {
     try {
-      if (balanceToken < 1000000) {
+      if (balanceToken < (Number(infoGovernance?.totalBalanceAuditor) / 1000000000000000000)) {
         alert(t("TEXT_BALANCE_AUDITOR"), "error");
         return;
       }
@@ -95,8 +95,9 @@ const ModalVotePriceAndAudit: React.FC<IIssueChannel> = ({
   };
   const handleOpenVotePrice = async () => {
     try {
-      if (balanceToken < 1000000) {
-        alert(t("TEXT_BALANCE_AUDITOR"), "error");
+      console.log(balanceToken, (Number(infoGovernance?.totalBalanceAuditor) / 1000000000000000000));
+      if (balanceToken < (Number(infoGovernance?.totalBalanceAuditor) / 1000000000000000000)) {
+        alert(t("TEXT_BALANCE_AUDITOR", { value: (Number(infoGovernance?.totalBalanceAuditor) / 1000000000000000000).toFixed(0) }), "error");
         return;
       }
       if (!valuePrice || !valueBalanceAudit) {
@@ -106,6 +107,7 @@ const ModalVotePriceAndAudit: React.FC<IIssueChannel> = ({
       setLoading(true);
       await openVoteNewPriceAndBalanceAudit(valuePrice.replace(/\D/g, ''), valueBalanceAudit.replace(/\D/g, ''));
       alert(t("TEXT_VOTE_SUCCESS"), "success");
+      await getPriceVoteView();
     } catch (error: any) {
       alert(error.message, "error");
     } finally {
@@ -126,7 +128,7 @@ const ModalVotePriceAndAudit: React.FC<IIssueChannel> = ({
         <p>
           {t("TEXT_AUDITOR_OPEN_VOTE", {
             value: (
-              Number(infoGovernance?.priceGuardian) / 100000000000000000
+              Number(infoGovernance?.priceGuardian) / 1000000000000000000
             ).toFixed(0),
           })}
         </p>
@@ -196,18 +198,21 @@ const ModalVotePriceAndAudit: React.FC<IIssueChannel> = ({
                 />
               </div>
               <div className="text-center mt-1">
-                <small>
-                  {t("TEXT_PRICE_PER_POST")}
+                <p>
+                  {t("TEXT_PRICE_PER_POST")}: 
                   {(
-                    Number(infoVotePrice?.votePrice) / 100000000000000000
-                  ).toFixed(0)}
-                </small>
-                <small>
-                  {t("TEXT_BALANCE_PER_AUDIT")}
+                    Number(infoVotePrice?.votePrice) / 1000000000000000000
+                  ).toFixed(0)} PID
+                </p> 
+                <p>
+                  {t("TEXT_BALANCE_PER_AUDIT")}: 
                   {(
-                    Number(infoVotePrice.balanceAuditor) / 100000000000000000
-                  ).toFixed(0)}
-                </small>
+                    Number(infoVotePrice.balanceAuditor) / 1000000000000000000
+                  ).toFixed(0)} PID
+                </p>
+                <p className="text-center">
+                  <strong>{t("TEXT_YOUR_AGREEMENT")}</strong>
+                </p>
               </div>
             </div>
           </>

@@ -427,12 +427,16 @@ export const useContract = () => {
 
             if (event.section === "contracts" && event.method === "Called") {
               if (event.data.toHuman().contract === el.address) {
-                console.log("Channel: ", el.address);
-                console.log("caller: ", event.data.toHuman().caller);
                 addLastMessage(el.address);
               }
-            }
-            if (event.section === "balances" && event.method === "Transfer") {
+            }           
+          });
+        });
+      });
+      api.query.system.events((events: any) => {
+          events.forEach(async (record: any) => {
+            const { event } = record;            
+            if ((event.section === "balances" || event.section === "assets") && (event.method === "Transfer" || event.method === "Deposit" || event.method === "Transferred")) {
               if (
                 event.data.toHuman().to === account ||
                 event.data.toHuman().from === account
@@ -443,7 +447,6 @@ export const useContract = () => {
             }
           });
         });
-      });
     }
   };
   const connectWallet = async () => {

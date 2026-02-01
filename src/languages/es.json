@@ -145,5 +145,8 @@
   "TEXT_GOVERNANCE":"Gobernanza",
   "DepositDone":"¡Recompensa ya fue depositada!",
   "BlockedBalance":"Blocked Balance!",
-  "TEXT_ENTER_INFORMATION":"¡Ingresa los campos!"
+  "TEXT_ENTER_INFORMATION":"¡Ingresa los campos!",
+  "TEXT_YOUR_AGREEMENT":"Aceptar el acuerdo?",
+  "TEXT_ENTER_DESCRIPTION_OR_IMAGE":"Por favor, ingresa una descripción o sube una imagen",
+  "TEXT_CHANNEL_PUBLISHED_SUCCESSFULLY":"Canal publicado con éxito"
 }

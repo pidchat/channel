@@ -37,14 +37,25 @@ const CardSendPost: React.FC<CardSendPostProp> = ({ reload }) => {
   const [priceString, setPriceString] = useState("");
   const [description, setDescription] = useState("");
   const [loading, setLoading] = useState(false);
+  const [typeChannel, setTypeChannel] = useState("String");
+  const [image, setImage] = useState<string>("");
   useEffect(() => {
     calcFeeContract();
   }, [description]);
   const calcFeeContract = async () => {
     const descriptionArray = description.split("\n");
-    const value = await feeCreateChannel(descriptionArray, "String");
+    const value = await feeCreateChannel(descriptionArray, typeChannel);
     setFeeChannel(value + feeGasNetWork);
   };
+  useEffect(() => {
+     if(image?.length > 0){
+      () =>async () => {
+       const breakIn256:string[] = image.match(/.{1,256}/g) || [];
+        const value = await feeCreateChannel(breakIn256, typeChannel);
+        setFeeChannel(value + feeGasNetWork);
+      }
+     }
+  }, [image]);
   useEffect(() => {
     getPriceGuardian().then((value) => {
       setPriceGuardian(Number(value) / 1000000000000000000);
@@ -53,34 +64,37 @@ const CardSendPost: React.FC<CardSendPostProp> = ({ reload }) => {
   }, []);
   const handleCreate = async () => {
     try {
-      if (description.length === 0) {
-        alert("Please enter a description", "error");
+      if (description.length === 0 && (typeChannel === "Image" && image.length === 0)) {
+        alert(t("TEXT_ENTER_DESCRIPTION_OR_IMAGE"), "error");
         return;
       }
       if (balanceNative < feeChannel) {
-        alert("You don't have enough balance Native", "error");
+        alert(t("TEXT_ERROR_BALANCE_NATIVE"), "error");
         return;
       }
       if (balanceToken < priceGuardian) {
-        alert("You don't have enough balance Token", "error");
+        alert(t("TEXT_ERROR_BALANCE_TOKEN"), "error");
         return;
       }
+      
+      const breakIn256:string[] = image.match(/.{1,256}/g) || [];
       setLoading(true);
-      const descriptionArray = description.split("\n");
+      let data_post = typeChannel === "Image" ? breakIn256 : description.split("\n");
       let name =
         "[" +
         Math.random().toString(36).substring(2, 10) +
         "]" +
         new Date().getTime().toString(36);
       await addNewsChannel(
-        descriptionArray,
+        data_post,
         priceString.toString(),
         name,
-        "String",
+        typeChannel,
       );
       setDescription("");
       setLoading(false);
-      alert("Channel published successfully", "success");
+      setImage("");
+      alert(t("TEXT_CHANNEL_PUBLISHED_SUCCESSFULLY"), "success");
       reload();
     } catch (error: any) {
       setLoading(false);
@@ -107,25 +121,64 @@ const CardSendPost: React.FC<CardSendPostProp> = ({ reload }) => {
           </IonLabel>
         </IonItem>
         <IonItem lines="none" style={{ fontSize: "12px" }}>
-          <Input
-            style={{
-              color: "#1d9bf0",
-              fontSize: "inherit",
-              maxHeight: "100px",
-              overflowY: "auto",
-            }}
-            value={description}
-            type="textarea"
-            name="email"
-            id="email"
-            onChange={(e) => setDescription(e.target.value)}
-          />
+          {image.length > 0 ? (
+            <img
+              src={image[0]}
+              alt="Preview"
+              style={{
+                maxWidth: "500px",
+                maxHeight: "800px",
+                marginBottom: 10,
+                display: "block",
+                marginLeft: "auto",
+                marginRight: "auto",
+              }}
+            />
+          ) : (
+            <Input
+              style={{
+                color: "#1d9bf0",
+                fontSize: "inherit",
+                maxHeight: "100px",
+                overflowY: "auto",
+              }}
+              value={description}
+              type="textarea"
+              name="email"
+              id="email"
+              onChange={(e) => setDescription(e.target.value)}
+            />
+          )}
         </IonItem>
         <div style={{ display: "flex", gap: "12px" }}>
-          {/**
-           <IonButton fill="clear" size="small">
+          <input
+            type="file"
+            accept="image/*"
+            style={{ display: "none" }}
+            id="image-upload"
+            onChange={(e)  => {
+              const file = e.target.files?.[0];
+              if (file) {
+                console.log("Selected image:", file);
+                const reader = new FileReader();
+                reader.onloadend = () => {
+                  const result = reader.result as string;
+                  setImage(result);
+                  setTypeChannel("Image");
+                };
+                reader.readAsDataURL(file);
+              }
+            }}
+          />
+          <IonButton
+            fill="clear"
+            size="small"
+            onClick={() => document.getElementById("image-upload")?.click()}
+          >
             <IonIcon icon={imageOutline} slot="icon-only" title="Image" />
           </IonButton>
+
+          {/**
           <IonButton fill="clear" size="small">
             <IonIcon icon={happyOutline} slot="icon-only" title="Emoji" />
           </IonButton>

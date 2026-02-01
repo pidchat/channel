@@ -267,11 +267,12 @@ pub trait GovernanceImp : Storage<Data> + Internal{
         if balance_of < self.data::<Data>().balance_of_auditor {
             return Err(PSP22Error::Custom(GovError::YouAreNotAuditor.as_str()));
         }
-
+        //new date 
+        let new_date = Self::env().block_timestamp() + (86624000*30);
         // Initialize price vote
         self.data::<Data>().new_price = new_price;
         self.data::<Data>().new_balance_of_auditor = new_balance_of_auditor;
-        self.data::<Data>().vote_price_end = date;
+        self.data::<Data>().vote_price_end = new_date;
         self.data::<Data>().vote_id+=1u128;
         let vote_id = self.data::<Data>().vote_id;
         self.data::<Data>().qtd_price_no.insert(&vote_id, &0u128);

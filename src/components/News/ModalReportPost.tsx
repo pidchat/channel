@@ -36,9 +36,11 @@ const ModalReportPost: React.FC<ModalReportPostProps> = ({
   const { t, i18n } = useTranslation();
   const [reason, setReason] = useState("");
   const { feeNetWork, feeSimulatedNetwork, alert,balanceToken } = useContract();
+  const [balanceAuditor, setBalanceAuditor] = useState(0);
   const {
       openVotesFakesNews,
       recoverySafePublic,
+      getBalanceForAuditor,
     } = useGovernance();
   const [loading, setLoading] = useState(false);
  
@@ -52,7 +54,10 @@ const ModalReportPost: React.FC<ModalReportPostProps> = ({
       setLoading(true);
       await recoverySafePublic(channelId);
       alert(t("TEXT_REWARD_SEND_SUCCESS"), "success");
-      
+      getBalanceForAuditor().then((balance) => {
+        if(!balance) return;
+        setBalanceAuditor(Number(balance) / 100000000000000000);
+      })
       modalToggle()
     } catch (error: any) {
       alert(t(`${error.message}`), "error");
@@ -63,7 +68,7 @@ const ModalReportPost: React.FC<ModalReportPostProps> = ({
    const handleOpenVotesFakesNews = async (reason: string) => {
     if (!channelId) return;
     try {
-      if (balanceToken < 1000000) {
+      if (balanceToken < balanceAuditor) {
         alert(t("TEXT_BALANCE_AUDITOR"), "error");
         return;
       }

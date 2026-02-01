@@ -30,8 +30,7 @@ interface CardItemPostProps {
 }
 const CardItemPost: React.FC<CardItemPostProps> = ({ channelId }) => {
   const { t, i18n } = useTranslation();
-  const { isDarkMode, alert, balanceNative, account } =
-    useContract();
+  const { isDarkMode, alert, balanceNative, account } = useContract();
   const router = useIonRouter();
   const {
     getMessageDefaultChannel,
@@ -39,6 +38,7 @@ const CardItemPost: React.FC<CardItemPostProps> = ({ channelId }) => {
     getNewsId,
     getPriceGuardian,
     getReasonReport,
+    getTypeChannel,
   } = useGovernance();
   const [openMessagesModal, setOpenMessagesModal] = useState(false);
   const [openReportPostModal, setOpenReportPostModal] = useState(false);
@@ -49,6 +49,18 @@ const CardItemPost: React.FC<CardItemPostProps> = ({ channelId }) => {
   const [reason, setReason] = useState("");
   const [priceStr, setPriceStr] = useState("");
   const [quantityMessages, setQuantityMessages] = useState(0);
+  const [typeChannel, setTypeChannel] = useState("String");
+  const [image, setImage] = useState<string>();
+  useEffect(() => {
+    if (!details || messages.length == 0) return;
+    if (typeChannel != "String") {
+      let img = "";
+      for (let i = 0; i < messages.length; i++) {
+        img += messages[i];
+      }
+      setImage(img);
+    }
+  }, [typeChannel]);
   useEffect(() => {
     getNewsId(channelId).then((res) => {
       setDetails(res);
@@ -71,6 +83,11 @@ const CardItemPost: React.FC<CardItemPostProps> = ({ channelId }) => {
       if (res && res.length > 0) {
         setMessages(res);
       }
+      getTypeChannel(details.channelAddress).then((res) => {
+        if (res) {
+          setTypeChannel(res);
+        }
+      });
     });
   }, [details]);
   useEffect(() => {
@@ -186,10 +203,27 @@ const CardItemPost: React.FC<CardItemPostProps> = ({ channelId }) => {
               e.currentTarget.style.backgroundColor = "transparent";
             }}
           >
-            {messages.slice(0, 5).map((item, index) => (
-              <div key={index}>{item}</div>
-            ))}
-            {messages.length > 5 && <span>...</span>}
+            {typeChannel === "Image" ? (
+              <img
+                src={image}
+                alt="Preview"
+                style={{
+                  maxWidth: "500px",
+                  maxHeight: "800px",
+                  marginBottom: 10,
+                  display: "block",
+                  marginLeft: "auto",
+                  marginRight: "auto",
+                }}
+              />
+            ) : (
+              <>
+                {messages.slice(0, 5).map((item, index) => (
+                  <div key={index}>{item}</div>
+                ))}
+                {messages.length > 5 && <span>...</span>}
+              </>
+            )}
           </div>
           <div
             style={{
@@ -253,12 +287,12 @@ const CardItemPost: React.FC<CardItemPostProps> = ({ channelId }) => {
         />
         <ModalVotePost
           modal={openVotePostModal}
-          reason={reason}          
+          reason={reason}
           channelId={details?.id.toString() || ""}
           modalToggle={() => {
             setOpenVotePostModal(!openVotePostModal);
             console.log("closeModal");
-          }}          
+          }}
         />
       </IonCardContent>
     </IonCard>
