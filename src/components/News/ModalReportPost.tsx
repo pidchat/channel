@@ -104,7 +104,7 @@ const ModalReportPost: React.FC<ModalReportPostProps> = ({
         {t("TEXT_DESCRIPTION_REPORT_POST")}
         <br />
         <ul>
-          <li>1. {t("TEXT_1_REPORT_POST")} </li>
+          <li>1. {t("TEXT_1_REPORT_POST", { value: balanceAuditor })} </li>
           <li>2. {t("TEXT_2_REPORT_POST", { value: value })}</li>
           <li>3. {t("TEXT_3_REPORT_POST")}</li>
           <li>4. {t("TEXT_4_REPORT_POST")}</li>
