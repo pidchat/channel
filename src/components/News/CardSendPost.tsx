@@ -12,6 +12,7 @@ import useContract from "../../hooks/useContract";
 import Identicon from "@polkadot/react-identicon";
 import { truncateText } from "../../utils";
 import useGovernance from "../../hooks/useGovernance";
+import { Input } from "reactstrap";
 interface CardSendPostProp {
   reload: () => void;
 }
@@ -63,7 +64,7 @@ const CardSendPost: React.FC<CardSendPostProp> = ({ reload }) => {
         alert(t("TEXT_ERROR_BALANCE_TOKEN"), "error");
         return;
       }
-      
+
       //const breakIn256 = image.map((item) => item.slice(0, 256));
       setLoading(true);
       let data_post = description.split("\n");
@@ -106,6 +107,19 @@ const CardSendPost: React.FC<CardSendPostProp> = ({ reload }) => {
             {accountIdentity?.name || truncateText(account || "", 7, 10, false)}
           </IonLabel>
         </IonItem>
+        <Input
+          style={{
+            color: "#1d9bf0",
+            fontSize: "inherit",
+            maxHeight: "100px",
+            overflowY: "auto",
+          }}
+          value={description}
+          type="textarea"
+          name="email"
+          id="email"
+          onChange={(e) => setDescription(e.target.value)}
+        />
         {/** 
          * <IonItem lines="none" style={{ fontSize: "12px" }}>
           {image.length > 0 ? (
@@ -169,7 +183,6 @@ const CardSendPost: React.FC<CardSendPostProp> = ({ reload }) => {
             <IonIcon icon={imageOutline} slot="icon-only" title="Image" />
           </IonButton>
            */}
-          
 
           {/**
           <IonButton fill="clear" size="small">
