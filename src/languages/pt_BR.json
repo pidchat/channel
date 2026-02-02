@@ -152,6 +152,6 @@
   "TEXT_CHANNEL_PUBLISHED_SUCCESSFULLY":"Canal publicado com sucesso",
   "TEXT_SYNC_SUCCESS":"Sincronização realizada com sucesso",
   "TEXT_CLOSE_VOTE":"Fechar Votação",
-  "TEXT_POST_KEYWORDS":"PIDCHAT, PID, PIDTOKEN"
+  "TEXT_POST_KEYWORDS":"PIDCHAT, PID, PIDTOKEN, PIDTOKENDAO"
 
 }

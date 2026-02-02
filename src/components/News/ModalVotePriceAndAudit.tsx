@@ -102,14 +102,13 @@ const ModalVotePriceAndAudit: React.FC<IIssueChannel> = ({
       getInfoGovernanceView();
       getPriceVoteView();
     } catch (error: any) {
-      alert(error.message, "error");
+     alert(t(`${error.message}`), "error");
     } finally {
       setLoading(false);
     }
   };
   const handleOpenVotePrice = async () => {
     try {
-      console.log(balanceToken, (Number(infoGovernance?.totalBalanceAuditor) / 1000000000000000000));
       if (balanceToken < (Number(infoGovernance?.totalBalanceAuditor) / 1000000000000000000)) {
         alert(t("TEXT_BALANCE_AUDITOR", { value: (Number(infoGovernance?.totalBalanceAuditor) / 1000000000000000000).toFixed(0) }), "error");
         return;
@@ -123,7 +122,7 @@ const ModalVotePriceAndAudit: React.FC<IIssueChannel> = ({
       alert(t("TEXT_VOTE_SUCCESS"), "success");
       await getPriceVoteView();
     } catch (error: any) {
-      alert(error.message, "error");
+      alert(t(`${error.message}`), "error");
     } finally {
       setLoading(false);
     }
@@ -135,7 +134,7 @@ const ModalVotePriceAndAudit: React.FC<IIssueChannel> = ({
       alert(t("TEXT_SYNC_SUCCESS"), "success");
       await getPriceVoteView();
     } catch (error: any) {
-      alert(error.message, "error");
+      alert(t(`${error.message}`), "error");
     } finally {
       setLoading(false);
     }
