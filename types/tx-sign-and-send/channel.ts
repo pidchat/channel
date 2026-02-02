@@ -59,25 +59,29 @@ export default class Methods {
 	}
 
 	/**
-	* getIsPrivate
+	* editMessages
 	*
+	* @param { string } message,
+	* @param { (string | number | BN) } idMessagee,
 	*/
-	"getIsPrivate" (
+	"editMessages" (
+		message: string,
+		idMessagee: (string | number | BN),
 		__options ? : GasLimit,
 	){
-		return txSignAndSend( this.__apiPromise, this.__nativeContract, this.__keyringPair, "channelImpl::getIsPrivate", (events: EventRecord) => {
+		return txSignAndSend( this.__apiPromise, this.__nativeContract, this.__keyringPair, "channelImpl::editMessages", (events: EventRecord) => {
 			return decodeEvents(events, this.__nativeContract, EVENT_DATA_TYPE_DESCRIPTIONS);
-		}, [], __options);
+		}, [message, idMessagee], __options);
 	}
 
 	/**
-	* getTypeMessage
+	* getIdChannelPublic
 	*
 	*/
-	"getTypeMessage" (
+	"getIdChannelPublic" (
 		__options ? : GasLimit,
 	){
-		return txSignAndSend( this.__apiPromise, this.__nativeContract, this.__keyringPair, "channelImpl::getTypeMessage", (events: EventRecord) => {
+		return txSignAndSend( this.__apiPromise, this.__nativeContract, this.__keyringPair, "channelImpl::getIdChannelPublic", (events: EventRecord) => {
 			return decodeEvents(events, this.__nativeContract, EVENT_DATA_TYPE_DESCRIPTIONS);
 		}, [], __options);
 	}
@@ -97,15 +101,59 @@ export default class Methods {
 	}
 
 	/**
-	* getIdChannelPublic
+	* receivedMessages
 	*
+	* @param { (string | number | BN) } idMessage,
 	*/
-	"getIdChannelPublic" (
+	"receivedMessages" (
+		idMessage: (string | number | BN),
 		__options ? : GasLimit,
 	){
-		return txSignAndSend( this.__apiPromise, this.__nativeContract, this.__keyringPair, "channelImpl::getIdChannelPublic", (events: EventRecord) => {
+		return txSignAndSend( this.__apiPromise, this.__nativeContract, this.__keyringPair, "channelImpl::receivedMessages", (events: EventRecord) => {
+			return decodeEvents(events, this.__nativeContract, EVENT_DATA_TYPE_DESCRIPTIONS);
+		}, [idMessage], __options);
+	}
+
+	/**
+	* getTotalMessages
+	*
+	*/
+	"getTotalMessages" (
+		__options ? : GasLimit,
+	){
+		return txSignAndSend( this.__apiPromise, this.__nativeContract, this.__keyringPair, "channelImpl::getTotalMessages", (events: EventRecord) => {
 			return decodeEvents(events, this.__nativeContract, EVENT_DATA_TYPE_DESCRIPTIONS);
 		}, [], __options);
+	}
+
+	/**
+	* addPermission
+	*
+	* @param { ArgumentTypes.AccountId } address,
+	* @param { boolean } typePermission,
+	*/
+	"addPermission" (
+		address: ArgumentTypes.AccountId,
+		typePermission: boolean,
+		__options ? : GasLimit,
+	){
+		return txSignAndSend( this.__apiPromise, this.__nativeContract, this.__keyringPair, "channelImpl::addPermission", (events: EventRecord) => {
+			return decodeEvents(events, this.__nativeContract, EVENT_DATA_TYPE_DESCRIPTIONS);
+		}, [address, typePermission], __options);
+	}
+
+	/**
+	* addEmotion
+	*
+	* @param { string } emotion,
+	*/
+	"addEmotion" (
+		emotion: string,
+		__options ? : GasLimit,
+	){
+		return txSignAndSend( this.__apiPromise, this.__nativeContract, this.__keyringPair, "channelImpl::addEmotion", (events: EventRecord) => {
+			return decodeEvents(events, this.__nativeContract, EVENT_DATA_TYPE_DESCRIPTIONS);
+		}, [emotion], __options);
 	}
 
 	/**
@@ -116,6 +164,18 @@ export default class Methods {
 		__options ? : GasLimit,
 	){
 		return txSignAndSend( this.__apiPromise, this.__nativeContract, this.__keyringPair, "channelImpl::getDefaultMessage", (events: EventRecord) => {
+			return decodeEvents(events, this.__nativeContract, EVENT_DATA_TYPE_DESCRIPTIONS);
+		}, [], __options);
+	}
+
+	/**
+	* getEmotions
+	*
+	*/
+	"getEmotions" (
+		__options ? : GasLimit,
+	){
+		return txSignAndSend( this.__apiPromise, this.__nativeContract, this.__keyringPair, "channelImpl::getEmotions", (events: EventRecord) => {
 			return decodeEvents(events, this.__nativeContract, EVENT_DATA_TYPE_DESCRIPTIONS);
 		}, [], __options);
 	}
@@ -147,55 +207,27 @@ export default class Methods {
 	}
 
 	/**
-	* addEmotion
-	*
-	* @param { string } emotion,
-	*/
-	"addEmotion" (
-		emotion: string,
-		__options ? : GasLimit,
-	){
-		return txSignAndSend( this.__apiPromise, this.__nativeContract, this.__keyringPair, "channelImpl::addEmotion", (events: EventRecord) => {
-			return decodeEvents(events, this.__nativeContract, EVENT_DATA_TYPE_DESCRIPTIONS);
-		}, [emotion], __options);
-	}
-
-	/**
-	* getEmotions
+	* getIsPrivate
 	*
 	*/
-	"getEmotions" (
+	"getIsPrivate" (
 		__options ? : GasLimit,
 	){
-		return txSignAndSend( this.__apiPromise, this.__nativeContract, this.__keyringPair, "channelImpl::getEmotions", (events: EventRecord) => {
+		return txSignAndSend( this.__apiPromise, this.__nativeContract, this.__keyringPair, "channelImpl::getIsPrivate", (events: EventRecord) => {
 			return decodeEvents(events, this.__nativeContract, EVENT_DATA_TYPE_DESCRIPTIONS);
 		}, [], __options);
 	}
 
 	/**
-	* getTotalMessages
+	* getTypeMessage
 	*
 	*/
-	"getTotalMessages" (
+	"getTypeMessage" (
 		__options ? : GasLimit,
 	){
-		return txSignAndSend( this.__apiPromise, this.__nativeContract, this.__keyringPair, "channelImpl::getTotalMessages", (events: EventRecord) => {
+		return txSignAndSend( this.__apiPromise, this.__nativeContract, this.__keyringPair, "channelImpl::getTypeMessage", (events: EventRecord) => {
 			return decodeEvents(events, this.__nativeContract, EVENT_DATA_TYPE_DESCRIPTIONS);
 		}, [], __options);
-	}
-
-	/**
-	* receivedMessages
-	*
-	* @param { (string | number | BN) } idMessage,
-	*/
-	"receivedMessages" (
-		idMessage: (string | number | BN),
-		__options ? : GasLimit,
-	){
-		return txSignAndSend( this.__apiPromise, this.__nativeContract, this.__keyringPair, "channelImpl::receivedMessages", (events: EventRecord) => {
-			return decodeEvents(events, this.__nativeContract, EVENT_DATA_TYPE_DESCRIPTIONS);
-		}, [idMessage], __options);
 	}
 
 	/**
@@ -210,38 +242,6 @@ export default class Methods {
 		return txSignAndSend( this.__apiPromise, this.__nativeContract, this.__keyringPair, "channelImpl::sendMessages", (events: EventRecord) => {
 			return decodeEvents(events, this.__nativeContract, EVENT_DATA_TYPE_DESCRIPTIONS);
 		}, [message], __options);
-	}
-
-	/**
-	* editMessages
-	*
-	* @param { string } message,
-	* @param { (string | number | BN) } idMessagee,
-	*/
-	"editMessages" (
-		message: string,
-		idMessagee: (string | number | BN),
-		__options ? : GasLimit,
-	){
-		return txSignAndSend( this.__apiPromise, this.__nativeContract, this.__keyringPair, "channelImpl::editMessages", (events: EventRecord) => {
-			return decodeEvents(events, this.__nativeContract, EVENT_DATA_TYPE_DESCRIPTIONS);
-		}, [message, idMessagee], __options);
-	}
-
-	/**
-	* addPermission
-	*
-	* @param { ArgumentTypes.AccountId } address,
-	* @param { boolean } typePermission,
-	*/
-	"addPermission" (
-		address: ArgumentTypes.AccountId,
-		typePermission: boolean,
-		__options ? : GasLimit,
-	){
-		return txSignAndSend( this.__apiPromise, this.__nativeContract, this.__keyringPair, "channelImpl::addPermission", (events: EventRecord) => {
-			return decodeEvents(events, this.__nativeContract, EVENT_DATA_TYPE_DESCRIPTIONS);
-		}, [address, typePermission], __options);
 	}
 
 	/**

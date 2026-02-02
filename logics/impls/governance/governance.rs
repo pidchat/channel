@@ -297,11 +297,17 @@ pub trait GovernanceImp : Storage<Data> + Storage<reentrancy_guard::Data> + Stor
         if vote_id == 0 {
             return Err(PSP22Error::Custom(GovError::NotFound.as_str()));
         }
+       
+
         let qtd_price_yes = self.data::<Data>().qtd_price_yes.get(&vote_id).unwrap();
         let qtd_price_no = self.data::<Data>().qtd_price_no.get(&vote_id).unwrap();
         let new_price = self.data::<Data>().new_price;
         let new_balance_of_auditor = self.data::<Data>().new_balance_of_auditor;
         let data_end  = self.data::<Data>().vote_price_end;        
+
+         if new_price == 0u128 {
+            return Err(PSP22Error::Custom(GovError::NotFound.as_str()));
+        }
         Ok((qtd_price_yes,qtd_price_no,new_price,new_balance_of_auditor,data_end))
     }
 
@@ -366,7 +372,9 @@ pub trait GovernanceImp : Storage<Data> + Storage<reentrancy_guard::Data> + Stor
             if qtd_price_yes > qtd_price_no {
                 // Update price and auditor balance                
                 self.data::<Data>().balance_of_auditor = new_balance_of_auditor;
-                self.data::<Data>().price = price_new;                
+                self.data::<Data>().price = price_new;     
+                self.data::<Data>().new_price = 0u128;     
+                self.data::<Data>().new_balance_of_auditor = 0u128;      
             }
         }        
         Ok(())
