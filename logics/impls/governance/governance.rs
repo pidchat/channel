@@ -331,7 +331,7 @@ pub trait GovernanceImp : Storage<Data> + Storage<reentrancy_guard::Data> + Stor
         }
 
         // Check if user already voted
-        let user_in_vote = self.data::<Data>().price_vote_auditor.get(&(caller,vote_id)).unwrap();
+        let user_in_vote = self.data::<Data>().price_vote_auditor.get(&(caller,vote_id)).unwrap_or_default();
         if user_in_vote != Default::default() {
             return Err(PSP22Error::Custom(GovError::VoteDone.as_str()));
         }

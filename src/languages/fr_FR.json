@@ -148,5 +148,8 @@
   "TEXT_ENTER_INFORMATION":"Remplissez les champs !",
   "TEXT_YOUR_AGREEMENT":"Accepter l'accord ?",
   "TEXT_ENTER_INFORMATION_POST":"Veuillez entrer les informations de la publication",
-  "TEXT_CHANNEL_PUBLISHED_SUCCESSFULLY":"Canal publié avec succès"
+  "TEXT_CHANNEL_PUBLISHED_SUCCESSFULLY":"Canal publié avec succès",
+  "TEXT_SYNC_SUCCESS":"Synchronisation effectuée avec succès",
+  "TEXT_CLOSE_VOTE":"Fermer la Votation",
+  "TEXT_POST_KEYWORDS":"PIDCHAT, PID, PIDTOKEN"
 }

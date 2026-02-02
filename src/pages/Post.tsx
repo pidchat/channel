@@ -96,6 +96,8 @@ const Post: React.FC = () => {
 
   return (
     <IonPage>
+      <meta name="description" content={messages.map((message) => message).join(" ")} />
+      <meta name="keywords" content={details?.info?.twitter ? `${details.info.twitter}, ${t("TEXT_POST_KEYWORDS")}` : t("TEXT_POST_KEYWORDS")} />
       <div className={account ? "contentNews" : "contentFull"}>
         {details ? (
           <>

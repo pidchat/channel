@@ -162,21 +162,21 @@ const News: React.FC = () => {
                   <strong>{t("PRICE_GUARDIAN")}:</strong>{" "}
                   {(
                     Number(infoGovernance.priceGuardian) / 1000000000000000000
-                  ).toFixed(0)}
+                  ).toFixed(0)} PID
                 </p>
                 <p>
                   <strong>{t("TOTAL_BALANCE_AUDITOR")}:</strong>{" "}
                   {(
                     Number(infoGovernance.totalBalanceAuditor) /
                     1000000000000000000
-                  ).toFixed(0)}
+                  ).toFixed(0)} PID
                 </p>
                 <p>
                   <strong>{t("TOTAL_BALANCE_BLOCK")}:</strong>{" "}
                   {(
                     Number(infoGovernance.totalBalanceBlock) /
                     1000000000000000000
-                  ).toFixed(0)}
+                  ).toFixed(0)} PID
                 </p>
                 <p>
                   <strong>{t("TOTAL_FAKE_NEWS")}:</strong>{" "}

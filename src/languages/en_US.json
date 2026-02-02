@@ -148,5 +148,8 @@
   "TEXT_ENTER_INFORMATION":"Please fill in the fields!",
   "TEXT_YOUR_AGREEMENT":"Do you accept the agreement?",
   "TEXT_ENTER_INFORMATION_POST":"Please enter the post information",
-  "TEXT_CHANNEL_PUBLISHED_SUCCESSFULLY":"Channel published successfully"
+  "TEXT_CHANNEL_PUBLISHED_SUCCESSFULLY":"Channel published successfully",
+  "TEXT_SYNC_SUCCESS":"Synchronization performed successfully",
+  "TEXT_CLOSE_VOTE":"Close Vote",
+  "TEXT_POST_KEYWORDS":"PIDCHAT, PID, PIDTOKEN"
 }

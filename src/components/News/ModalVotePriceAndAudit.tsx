@@ -36,12 +36,14 @@ const ModalVotePriceAndAudit: React.FC<IIssueChannel> = ({
     doingVotesPrice,
     feeSimulatedNetwork,
     openVoteNewPriceAndBalanceAudit,
+    syncVotePrice,
   } = useGovernance();
   const { alert, balanceToken } = useContract();
   const [feeChannel, setFeeChannel] = useState(0);
   const [infoVotePrice, setInfoVotePrice] = useState<InfoVotePriceAndAuditor>();
   const [infoGovernance, setInfoGovernance] = useState<InfoGovernance>();
   const [loading, setLoading] = useState(false);
+  const [syncEnable, setSyncEnable] = useState(false);
 
   useEffect(() => {
     if (!apiReady) return;
@@ -55,7 +57,17 @@ const ModalVotePriceAndAudit: React.FC<IIssueChannel> = ({
   const getPriceVoteView = async () => {
     try {
       const data = await getVotePrice();
-      if (data) setInfoVotePrice(data);
+      if (data) {
+        setInfoVotePrice(data);
+        const dataEnd = new Date();
+      dataEnd.setTime(Number(data.dataLimit))
+      console.log("Date.now()",Date.now())
+      console.log("details.dataCreate",dataEnd.getTime() )
+      if(dataEnd.getTime() < Date.now()){
+        setSyncEnable(true);
+      }     
+      }
+
     } catch (error: any) {
       console.log(error);
     }
@@ -87,6 +99,8 @@ const ModalVotePriceAndAudit: React.FC<IIssueChannel> = ({
       await doingVotesPrice(yesOrNo);
       await getPriceVoteView();
       alert(t("TEXT_VOTE_SUCCESS"), "success");
+      getInfoGovernanceView();
+      getPriceVoteView();
     } catch (error: any) {
       alert(error.message, "error");
     } finally {
@@ -107,6 +121,18 @@ const ModalVotePriceAndAudit: React.FC<IIssueChannel> = ({
       setLoading(true);
       await openVoteNewPriceAndBalanceAudit(valuePrice.replace(/\D/g, ''), valueBalanceAudit.replace(/\D/g, ''));
       alert(t("TEXT_VOTE_SUCCESS"), "success");
+      await getPriceVoteView();
+    } catch (error: any) {
+      alert(error.message, "error");
+    } finally {
+      setLoading(false);
+    }
+  };
+  const handleSyncVotePrice = async () => {
+    try {
+      setLoading(true);
+      await syncVotePrice();
+      alert(t("TEXT_SYNC_SUCCESS"), "success");
       await getPriceVoteView();
     } catch (error: any) {
       alert(error.message, "error");
@@ -250,6 +276,16 @@ const ModalVotePriceAndAudit: React.FC<IIssueChannel> = ({
               color="danger"
             >
               {t("TEXT_NO")}
+            </IonButton>
+          </>
+        )}
+        {syncEnable && (
+          <>
+            <IonButton
+              onClick={() => handleSyncVotePrice()}
+              color="primary"
+            >
+              {t("TEXT_CLOSE_VOTE")}
             </IonButton>
           </>
         )}

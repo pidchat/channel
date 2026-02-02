@@ -661,6 +661,36 @@ export const useGovernance = () => {
       throw new Error(error);
     }
   }
+  const syncVotePrice = async () => {
+    try {
+      if (!api || !apiReady || !account) {
+        return;
+      }
+      const account_aux = await getAccountAuxContract();
+      if (!account_aux) return;
+      const contract = new Governance(
+        import.meta.env.VITE_CONTRACT_GOVERNANCE,
+        account_aux,
+        api,
+      );
+      const result = await contract.query.sync();
+      if (result.value.err) {
+        throw new Error(result.value.err);
+      }
+      if (result.value.ok?.err) {
+        throw new Error(result.value.ok?.err.custom || "");
+      }
+      //send tx
+      await sendTXGovernance(
+        import.meta.env.VITE_CONTRACT_GOVERNANCE,
+        "governanceImp::sync",
+        {},
+      );
+      return result.value.ok;
+    } catch (error: any) {
+      throw new Error(error.message);
+    }
+  }
   return {
     feeSimulatedNetwork,
     getTotalMessages,
@@ -682,7 +712,8 @@ export const useGovernance = () => {
     getBalanceForAuditor,
     openVoteNewPriceAndBalanceAudit,
     doingVotesPrice,
-    getTypeChannel
+    getTypeChannel,
+    syncVotePrice
   };
 };
 export default useGovernance;
