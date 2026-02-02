@@ -10,6 +10,11 @@ use openbrush::{
         String
     },
 };
+use openbrush::contracts::{
+    ownable,
+    ownable::only_owner,
+    reentrancy_guard
+};
 use ink_prelude::vec::Vec;
 use super::data::GovError;
 use ink::{
@@ -20,11 +25,8 @@ use ink::{
 /// Governance implementation trait that provides functionality for managing channels,
 /// voting on fake news, and handling token payments
 
-#[openbrush::wrapper]
-pub type GovernanceRef = dyn GovernanceImp;
-
 #[openbrush::trait_definition]
-pub trait GovernanceImp : Storage<Data> + Internal{
+pub trait GovernanceImp : Storage<Data> + Storage<reentrancy_guard::Data> + Storage<ownable::Data> + InternalImp{
     
     /// Gets channel details by ID
     /// Returns tuple of (owner, balance, expiry timestamp, creator) if found
@@ -65,7 +67,7 @@ pub trait GovernanceImp : Storage<Data> + Internal{
 
         // Create new channel
         self.data::<Data>().channel_id +=1;
-        let date_block = Self::env().block_timestamp() + (86624000*10); // 10 days expiry        
+        let date_block = Self::env().block_timestamp() + (86624000 * self.data::<Data>().time_block_balance_post); // 10 days expiry        
         let id_channel = self.data::<Data>().channel_id.clone();        
         //create channel 
          let address_this_contract = Self::env().account_id();
@@ -172,8 +174,12 @@ pub trait GovernanceImp : Storage<Data> + Internal{
         PSP22Ref::transfer_from(&token_address.unwrap(),caller, address_this_contract, channel.1, Vec::<u8>::new())
         .map_err(|_| PSP22Error::Custom(GovError::PaymentFail.as_str()))?;
 
-        // Initialize vote
-        date_block = date_block + (86624000); // 1 day voting period
+        // Initialize vote period
+        let time_vote_fake = self.data::<Data>().time_vote_fake;
+        if time_vote_fake == 0 {
+            return Err(PSP22Error::Custom(GovError::NotFound.as_str()));
+        }
+        date_block = date_block + (86624000 * time_vote_fake); 
         self.data::<Data>().qtd_fake_yes.insert(&channel_id, &1);
         self.data::<Data>().qtd_fake_no.insert(&channel_id, &0);
         self.data::<Data>().deadlines_fake.insert(&channel_id, &date_block);
@@ -268,7 +274,11 @@ pub trait GovernanceImp : Storage<Data> + Internal{
             return Err(PSP22Error::Custom(GovError::YouAreNotAuditor.as_str()));
         }
         //new date 
-        let new_date = Self::env().block_timestamp() + (86624000*30);
+        let time_vote_price = self.data::<Data>().time_vote_price;
+        if time_vote_price == 0 {
+            return Err(PSP22Error::Custom(GovError::NotFound.as_str()));
+        }
+        let new_date = Self::env().block_timestamp() + (86624000 * time_vote_price);
         // Initialize price vote
         self.data::<Data>().new_price = new_price;
         self.data::<Data>().new_balance_of_auditor = new_balance_of_auditor;
@@ -513,10 +523,45 @@ pub trait GovernanceImp : Storage<Data> + Internal{
         }
         Ok(channel_id.unwrap())
     }
-    
+    /// Gets the voting deadline for price changes
+    #[ink(message)]
+    fn get_time_vote_price(&self) -> u64{
+        self.data::<Data>().time_vote_price
+    }
+    /// Sets the voting deadline for price changes
+    #[ink(message)]
+    #[openbrush::modifiers(only_owner)]
+    fn set_time_vote_price(&mut self, time_vote_price: u64) -> Result<(), PSP22Error>{
+        self.data::<Data>().time_vote_price = time_vote_price;
+        Ok(())
+    }
+    /// Gets the voting deadline for fake news votes
+    #[ink(message)]
+    fn get_time_vote_fake(&self) -> u64{
+        self.data::<Data>().time_vote_fake
+    }
+    /// Sets the voting deadline for fake news votes
+    #[ink(message)]
+    #[openbrush::modifiers(only_owner)]
+    fn set_time_vote_fake(&mut self, time_vote_fake: u64) -> Result<(), PSP22Error>{
+        self.data::<Data>().time_vote_fake = time_vote_fake;
+        Ok(())
+    }
+    /// Gets the time block balance post
+    #[ink(message)]
+    fn get_time_block_balance_post(&self) -> u64{
+        self.data::<Data>().time_block_balance_post
+    }
+    /// Sets the time block balance post   
+    #[ink(message)]
+    #[openbrush::modifiers(only_owner)]
+    fn set_time_block_balance_post(&mut self, time_block_balance_post: u64) -> Result<(), PSP22Error>{
+        self.data::<Data>().time_block_balance_post = time_block_balance_post;
+        Ok(())
+    }
 }
 
-pub trait Internal {
+pub trait InternalImp {
     fn create_channel(
         &self,
         address_this_contract: AccountId,

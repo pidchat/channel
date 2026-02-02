@@ -53,6 +53,12 @@ pub struct Data {
     /// balance of auditor
     pub balance_of_auditor : Balance,
     pub channel_contract_code_hash: Hash,
+    /// voting deadline for price changes
+    pub time_vote_price: u64,
+    /// voting deadline for fake news votes
+    pub time_vote_fake: u64,
+    /// Time block balance post
+    pub time_block_balance_post: u64,
 }
 
 #[derive(Debug, PartialEq, Eq, scale::Encode, scale::Decode)]

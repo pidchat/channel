@@ -109,7 +109,32 @@ pub trait Governance {
     /// Checks if a channel is marked as fake news
     #[ink(message)]
     fn check_channel_fake(&self, channel_id: u128) -> Result<(), PSP22Error>;
+
      /// Opens a new vote for changing the price
     #[ink(message)]
     fn get_channel_fake(&self, channel_fake_id: u128) -> Result<(), PSP22Error>;
+
+    /// Gets the voting deadline for price changes
+    #[ink(message)]
+    fn get_time_vote_price(&self) -> u64;
+
+    /// Sets the voting deadline for price changes
+    #[ink(message)]
+    fn set_time_vote_price(&mut self, time_vote_price: u64) -> Result<(), PSP22Error>;
+
+    /// Gets the voting deadline for fake news votes
+    #[ink(message)]
+    fn get_time_vote_fake(&self) -> u64;
+
+    /// Sets the voting deadline for fake news votes
+    #[ink(message)]
+    fn set_time_vote_fake(&mut self, time_vote_fake: u64) -> Result<(), PSP22Error>;
+
+    /// Gets the time block balance post
+    #[ink(message)]
+    fn get_time_block_balance_post(&self) -> u64;
+
+    /// Sets the time block balance post
+    #[ink(message)]
+    fn set_time_block_balance_post(&mut self, time_block_balance_post: u64) -> Result<(), PSP22Error>;
 }

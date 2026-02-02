@@ -50,3 +50,8 @@ export class PSP22ErrorBuilder {
 	}
 }
 
+export enum OwnableError {
+	callerIsNotOwner = 'CallerIsNotOwner',
+	newOwnerIsZero = 'NewOwnerIsZero'
+}
+

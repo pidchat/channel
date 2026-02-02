@@ -7,18 +7,23 @@
 //! - Fake channel detection and reporting
 
 #![cfg_attr(not(feature = "std"), no_std, no_main)]
+#[openbrush::implementation(Ownable)]
 #[openbrush::contract]
 pub mod governance {
     use ink::ToAccountId;
     use ink::env::call::FromAccountId;
-    use openbrush::{storage::Mapping, traits::Storage};
     use pidchat_pkg::impls::governance::{ governance::*, data };
     use channel::channel::ChannelContractRef;
     use ink_prelude::vec::Vec;
     use openbrush::{
-        contracts::psp22::PSP22Error,
+        contracts::{
+            ownable::self,
+            reentrancy_guard,
+            traits::psp22::PSP22Error,
+        },
+        storage::Mapping,
         traits::{
-            String
+            Storage, String
         },
     };
     /// Main storage struct for the governance contract
@@ -28,10 +33,16 @@ pub mod governance {
         /// Core governance data storage
         #[storage_field]
         governance_data: data::Data,
+        /// Reentrancy guard for security
+        #[storage_field]
+        guard: reentrancy_guard::Data,
+        /// Ownable data for access control
+        #[storage_field]
+        ownable: ownable::Data,
     }
  
     impl GovernanceImp for GovernanceContract {}
-    impl Internal for GovernanceContract {
+    impl InternalImp for GovernanceContract {
         /// Creates a new channel contract instance
         /// 
         /// # Arguments
@@ -82,7 +93,7 @@ pub mod governance {
         type_transfer: u8
     )  -> Result<(), PSP22Error> {
         let mut channel = ChannelContractRef::from_account_id(channel_id);
-        let _ = channel.transfer_balance(address_token, to, type_transfer)
+        channel.transfer_balance(address_token, to, type_transfer)
          .map_err(|_| PSP22Error::Custom(String::from("Transfer failed")))?;
         Ok(())
     }
@@ -100,7 +111,9 @@ pub mod governance {
         #[ink(constructor)]
         pub fn new(token_address: Option<AccountId>,channel_code_hash: Hash, price_per_channel: u128,qtd_total_per_vote: u128, fee_receiver: Option<AccountId>) -> Self {
             let mut instance = Self::default();
-
+            let caller = instance.env().caller();
+            // Initialize ownership to contract creator
+            ownable::InternalImpl::_init_with_owner(&mut instance, caller);
             // Initialize core contract data
             instance.governance_data.token_address = token_address;
             instance.governance_data.channel_id = 0;
@@ -130,6 +143,12 @@ pub mod governance {
             instance.governance_data.fee_receiver = fee_receiver;
             instance.governance_data.fee_balance = 0;
             instance.governance_data.channel_contract_code_hash = channel_code_hash;
+            // voting deadline for price changes
+            instance.governance_data.time_vote_price = 1;
+            // voting deadline for fake news votes
+            instance.governance_data.time_vote_fake = 1;
+            // Time block balance post
+            instance.governance_data.time_block_balance_post = 1;
             
             instance
         }

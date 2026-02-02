@@ -70,31 +70,40 @@ export default class Methods {
 	}
 
 	/**
-	* getTotalMessages
+	* getIsPrivate
 	*
-	* @returns { Result<ReturnNumber | null, ReturnTypes.LangError> }
+	* @returns { Result<boolean, ReturnTypes.LangError> }
 	*/
-	"getTotalMessages" (
+	"getIsPrivate" (
 		__options: GasLimit,
-	): Promise< QueryReturnType< Result<ReturnNumber | null, ReturnTypes.LangError> > >{
-		return queryOkJSON( this.__apiPromise, this.__nativeContract, this.__callerAddress, "channelImpl::getTotalMessages", [], __options, (result) => { return handleReturnType(result, getTypeDescription(16, DATA_TYPE_DESCRIPTIONS)); });
+	): Promise< QueryReturnType< Result<boolean, ReturnTypes.LangError> > >{
+		return queryOkJSON( this.__apiPromise, this.__nativeContract, this.__callerAddress, "channelImpl::getIsPrivate", [], __options, (result) => { return handleReturnType(result, getTypeDescription(16, DATA_TYPE_DESCRIPTIONS)); });
 	}
 
 	/**
-	* addPermission
+	* getTypeMessage
 	*
-	* @param { ArgumentTypes.AccountId } address,
-	* @param { boolean } typePermission,
+	* @returns { Result<string, ReturnTypes.LangError> }
+	*/
+	"getTypeMessage" (
+		__options: GasLimit,
+	): Promise< QueryReturnType< Result<string, ReturnTypes.LangError> > >{
+		return queryOkJSON( this.__apiPromise, this.__nativeContract, this.__callerAddress, "channelImpl::getTypeMessage", [], __options, (result) => { return handleReturnType(result, getTypeDescription(17, DATA_TYPE_DESCRIPTIONS)); });
+	}
+
+	/**
+	* setAddressGovernance
+	*
+	* @param { ArgumentTypes.AccountId } addressGovernance,
 	* @returns { void }
 	*/
-	"addPermission" (
-		address: ArgumentTypes.AccountId,
-		typePermission: boolean,
+	"setAddressGovernance" (
+		addressGovernance: ArgumentTypes.AccountId,
 		__options: GasLimit,
 	){
-		return txSignAndSend( this.__apiPromise, this.__nativeContract, this.__keyringPair, "channelImpl::addPermission", (events: EventRecord) => {
+		return txSignAndSend( this.__apiPromise, this.__nativeContract, this.__keyringPair, "channelImpl::setAddressGovernance", (events: EventRecord) => {
 			return decodeEvents(events, this.__nativeContract, EVENT_DATA_TYPE_DESCRIPTIONS);
-		}, [address, typePermission], __options);
+		}, [addressGovernance], __options);
 	}
 
 	/**
@@ -106,6 +115,41 @@ export default class Methods {
 		__options: GasLimit,
 	): Promise< QueryReturnType< Result<Result<ReturnNumber, ReturnTypes.PSP22Error>, ReturnTypes.LangError> > >{
 		return queryOkJSON( this.__apiPromise, this.__nativeContract, this.__callerAddress, "channelImpl::getIdChannelPublic", [], __options, (result) => { return handleReturnType(result, getTypeDescription(18, DATA_TYPE_DESCRIPTIONS)); });
+	}
+
+	/**
+	* getDefaultMessage
+	*
+	* @returns { Result<Result<Array<string> | null, ReturnTypes.PSP22Error>, ReturnTypes.LangError> }
+	*/
+	"getDefaultMessage" (
+		__options: GasLimit,
+	): Promise< QueryReturnType< Result<Result<Array<string> | null, ReturnTypes.PSP22Error>, ReturnTypes.LangError> > >{
+		return queryOkJSON( this.__apiPromise, this.__nativeContract, this.__callerAddress, "channelImpl::getDefaultMessage", [], __options, (result) => { return handleReturnType(result, getTypeDescription(20, DATA_TYPE_DESCRIPTIONS)); });
+	}
+
+	/**
+	* getAddressGovernance
+	*
+	* @returns { Result<ReturnTypes.AccountId | null, ReturnTypes.LangError> }
+	*/
+	"getAddressGovernance" (
+		__options: GasLimit,
+	): Promise< QueryReturnType< Result<ReturnTypes.AccountId | null, ReturnTypes.LangError> > >{
+		return queryOkJSON( this.__apiPromise, this.__nativeContract, this.__callerAddress, "channelImpl::getAddressGovernance", [], __options, (result) => { return handleReturnType(result, getTypeDescription(22, DATA_TYPE_DESCRIPTIONS)); });
+	}
+
+	/**
+	* getBalanceToken
+	*
+	* @param { ArgumentTypes.AccountId } addressToken,
+	* @returns { Result<Result<ReturnNumber, ReturnTypes.PSP22Error>, ReturnTypes.LangError> }
+	*/
+	"getBalanceToken" (
+		addressToken: ArgumentTypes.AccountId,
+		__options: GasLimit,
+	): Promise< QueryReturnType< Result<Result<ReturnNumber, ReturnTypes.PSP22Error>, ReturnTypes.LangError> > >{
+		return queryOkJSON( this.__apiPromise, this.__nativeContract, this.__callerAddress, "channelImpl::getBalanceToken", [addressToken], __options, (result) => { return handleReturnType(result, getTypeDescription(18, DATA_TYPE_DESCRIPTIONS)); });
 	}
 
 	/**
@@ -124,52 +168,6 @@ export default class Methods {
 	}
 
 	/**
-	* getIsPrivate
-	*
-	* @returns { Result<boolean, ReturnTypes.LangError> }
-	*/
-	"getIsPrivate" (
-		__options: GasLimit,
-	): Promise< QueryReturnType< Result<boolean, ReturnTypes.LangError> > >{
-		return queryOkJSON( this.__apiPromise, this.__nativeContract, this.__callerAddress, "channelImpl::getIsPrivate", [], __options, (result) => { return handleReturnType(result, getTypeDescription(20, DATA_TYPE_DESCRIPTIONS)); });
-	}
-
-	/**
-	* getAddressGovernance
-	*
-	* @returns { Result<ReturnTypes.AccountId | null, ReturnTypes.LangError> }
-	*/
-	"getAddressGovernance" (
-		__options: GasLimit,
-	): Promise< QueryReturnType< Result<ReturnTypes.AccountId | null, ReturnTypes.LangError> > >{
-		return queryOkJSON( this.__apiPromise, this.__nativeContract, this.__callerAddress, "channelImpl::getAddressGovernance", [], __options, (result) => { return handleReturnType(result, getTypeDescription(21, DATA_TYPE_DESCRIPTIONS)); });
-	}
-
-	/**
-	* getBalanceToken
-	*
-	* @param { ArgumentTypes.AccountId } addressToken,
-	* @returns { Result<Result<ReturnNumber, ReturnTypes.PSP22Error>, ReturnTypes.LangError> }
-	*/
-	"getBalanceToken" (
-		addressToken: ArgumentTypes.AccountId,
-		__options: GasLimit,
-	): Promise< QueryReturnType< Result<Result<ReturnNumber, ReturnTypes.PSP22Error>, ReturnTypes.LangError> > >{
-		return queryOkJSON( this.__apiPromise, this.__nativeContract, this.__callerAddress, "channelImpl::getBalanceToken", [addressToken], __options, (result) => { return handleReturnType(result, getTypeDescription(18, DATA_TYPE_DESCRIPTIONS)); });
-	}
-
-	/**
-	* getDefaultMessage
-	*
-	* @returns { Result<Result<Array<string> | null, ReturnTypes.PSP22Error>, ReturnTypes.LangError> }
-	*/
-	"getDefaultMessage" (
-		__options: GasLimit,
-	): Promise< QueryReturnType< Result<Result<Array<string> | null, ReturnTypes.PSP22Error>, ReturnTypes.LangError> > >{
-		return queryOkJSON( this.__apiPromise, this.__nativeContract, this.__callerAddress, "channelImpl::getDefaultMessage", [], __options, (result) => { return handleReturnType(result, getTypeDescription(22, DATA_TYPE_DESCRIPTIONS)); });
-	}
-
-	/**
 	* getEmotions
 	*
 	* @returns { Result<Result<Array<[string, ReturnNumber]>, ReturnTypes.PSP22Error>, ReturnTypes.LangError> }
@@ -177,35 +175,18 @@ export default class Methods {
 	"getEmotions" (
 		__options: GasLimit,
 	): Promise< QueryReturnType< Result<Result<Array<[string, ReturnNumber]>, ReturnTypes.PSP22Error>, ReturnTypes.LangError> > >{
-		return queryOkJSON( this.__apiPromise, this.__nativeContract, this.__callerAddress, "channelImpl::getEmotions", [], __options, (result) => { return handleReturnType(result, getTypeDescription(24, DATA_TYPE_DESCRIPTIONS)); });
+		return queryOkJSON( this.__apiPromise, this.__nativeContract, this.__callerAddress, "channelImpl::getEmotions", [], __options, (result) => { return handleReturnType(result, getTypeDescription(23, DATA_TYPE_DESCRIPTIONS)); });
 	}
 
 	/**
-	* getTypeMessage
+	* getTotalMessages
 	*
-	* @returns { Result<string, ReturnTypes.LangError> }
+	* @returns { Result<ReturnNumber | null, ReturnTypes.LangError> }
 	*/
-	"getTypeMessage" (
+	"getTotalMessages" (
 		__options: GasLimit,
-	): Promise< QueryReturnType< Result<string, ReturnTypes.LangError> > >{
-		return queryOkJSON( this.__apiPromise, this.__nativeContract, this.__callerAddress, "channelImpl::getTypeMessage", [], __options, (result) => { return handleReturnType(result, getTypeDescription(28, DATA_TYPE_DESCRIPTIONS)); });
-	}
-
-	/**
-	* editMessages
-	*
-	* @param { string } message,
-	* @param { (string | number | BN) } idMessagee,
-	* @returns { void }
-	*/
-	"editMessages" (
-		message: string,
-		idMessagee: (string | number | BN),
-		__options: GasLimit,
-	){
-		return txSignAndSend( this.__apiPromise, this.__nativeContract, this.__keyringPair, "channelImpl::editMessages", (events: EventRecord) => {
-			return decodeEvents(events, this.__nativeContract, EVENT_DATA_TYPE_DESCRIPTIONS);
-		}, [message, idMessagee], __options);
+	): Promise< QueryReturnType< Result<ReturnNumber | null, ReturnTypes.LangError> > >{
+		return queryOkJSON( this.__apiPromise, this.__nativeContract, this.__callerAddress, "channelImpl::getTotalMessages", [], __options, (result) => { return handleReturnType(result, getTypeDescription(27, DATA_TYPE_DESCRIPTIONS)); });
 	}
 
 	/**
@@ -237,18 +218,37 @@ export default class Methods {
 	}
 
 	/**
-	* setAddressGovernance
+	* editMessages
 	*
-	* @param { ArgumentTypes.AccountId } addressGovernance,
+	* @param { string } message,
+	* @param { (string | number | BN) } idMessagee,
 	* @returns { void }
 	*/
-	"setAddressGovernance" (
-		addressGovernance: ArgumentTypes.AccountId,
+	"editMessages" (
+		message: string,
+		idMessagee: (string | number | BN),
 		__options: GasLimit,
 	){
-		return txSignAndSend( this.__apiPromise, this.__nativeContract, this.__keyringPair, "channelImpl::setAddressGovernance", (events: EventRecord) => {
+		return txSignAndSend( this.__apiPromise, this.__nativeContract, this.__keyringPair, "channelImpl::editMessages", (events: EventRecord) => {
 			return decodeEvents(events, this.__nativeContract, EVENT_DATA_TYPE_DESCRIPTIONS);
-		}, [addressGovernance], __options);
+		}, [message, idMessagee], __options);
+	}
+
+	/**
+	* addPermission
+	*
+	* @param { ArgumentTypes.AccountId } address,
+	* @param { boolean } typePermission,
+	* @returns { void }
+	*/
+	"addPermission" (
+		address: ArgumentTypes.AccountId,
+		typePermission: boolean,
+		__options: GasLimit,
+	){
+		return txSignAndSend( this.__apiPromise, this.__nativeContract, this.__keyringPair, "channelImpl::addPermission", (events: EventRecord) => {
+			return decodeEvents(events, this.__nativeContract, EVENT_DATA_TYPE_DESCRIPTIONS);
+		}, [address, typePermission], __options);
 	}
 
 	/**
@@ -259,7 +259,7 @@ export default class Methods {
 	"owner" (
 		__options: GasLimit,
 	): Promise< QueryReturnType< Result<ReturnTypes.AccountId | null, ReturnTypes.LangError> > >{
-		return queryOkJSON( this.__apiPromise, this.__nativeContract, this.__callerAddress, "ownable::owner", [], __options, (result) => { return handleReturnType(result, getTypeDescription(21, DATA_TYPE_DESCRIPTIONS)); });
+		return queryOkJSON( this.__apiPromise, this.__nativeContract, this.__callerAddress, "ownable::owner", [], __options, (result) => { return handleReturnType(result, getTypeDescription(22, DATA_TYPE_DESCRIPTIONS)); });
 	}
 
 	/**
