@@ -339,12 +339,15 @@ export const useGovernance = () => {
       if (verify) {
         return result.gasRequired.toHuman();
       }
+      if (result.value.ok?.err) {
+        throw new Error(result.value.ok?.err.custom || "");
+      }
       await sendTXToken(import.meta.env.VITE_CONTRACT_TOKEN, "psp22::approve", {
         spender: import.meta.env.VITE_CONTRACT_GOVERNANCE,
         value: price,
       });
       //send tx
-      /*await sendTXGovernance(
+      await sendTXGovernance(
         import.meta.env.VITE_CONTRACT_GOVERNANCE,
         "governanceImp::openVoteForFakeNews",
         {
@@ -352,7 +355,7 @@ export const useGovernance = () => {
           reason: reason,
         }
       );
-      return result.value.ok;*/
+      return result.value.ok;
     } catch (error: any) {
       throw new Error("Error at get votes kakes news");
     }
@@ -394,7 +397,7 @@ export const useGovernance = () => {
       );
       return result.value.ok;
     } catch (error: any) {
-      throw new Error(error);
+      throw new Error(error.message);
     }
   };
   const getReasonReport = async (channelID: number) => {

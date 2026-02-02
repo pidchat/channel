@@ -46,8 +46,6 @@ const ModalVotePost: React.FC<ModalVotePostProps> = ({ modal, modalToggle, reaso
       setDetails(details);
       const dataEnd = new Date();
       dataEnd.setTime(Number(details.dataCreate))
-      console.log("Date.now()",Date.now())
-      console.log("details.dataCreate",dataEnd.getTime() )
       if(dataEnd.getTime() < Date.now()){
         setOpenClaim(true);
       }     
@@ -74,7 +72,7 @@ const ModalVotePost: React.FC<ModalVotePostProps> = ({ modal, modalToggle, reaso
   const handleDoingVotesFakesNews = async (yesOuNo: boolean) => {
     if (!details) return;
     try {
-      if (balanceNative < 100000000) {
+      if (balanceNative < 0) {
         alert(t("TEXT_ERROR_BALANCE"), "error");
         return;
       }
@@ -85,11 +83,8 @@ const ModalVotePost: React.FC<ModalVotePostProps> = ({ modal, modalToggle, reaso
         if(!res) return;
         setDetails(res);
       });
-    } catch (error: any) {
-      if (error.message.includes("VoteDone")) {
-        alert(t("VoteDone"), "error");
-        return;
-      }
+    } catch (error: any) {      
+       alert(t(`${error.message}`), "error");
     } finally {
       setLoading(false);
     }

@@ -48,16 +48,19 @@ const ModalReportPost: React.FC<ModalReportPostProps> = ({
     setReason(postReported);
     feeSimulatedNetwork(100000000);
   }, [postReported]);
+  useEffect(() => {
+    if(!channelId) return;
+    getBalanceForAuditor().then((balance) => {
+      if(!balance) return;
+      setBalanceAuditor(Number(balance) / 1000000000000000000);
+    })
+  }, [channelId])
    const handleRecoveryFakesNews = async () =>{
     if(!channelId) return;
     try {
       setLoading(true);
       await recoverySafePublic(channelId);
-      alert(t("TEXT_REWARD_SEND_SUCCESS"), "success");
-      getBalanceForAuditor().then((balance) => {
-        if(!balance) return;
-        setBalanceAuditor(Number(balance) / 100000000000000000);
-      })
+      alert(t("TEXT_REWARD_SEND_SUCCESS"), "success");     
       modalToggle()
     } catch (error: any) {
       alert(t(`${error.message}`), "error");
@@ -68,8 +71,9 @@ const ModalReportPost: React.FC<ModalReportPostProps> = ({
    const handleOpenVotesFakesNews = async (reason: string) => {
     if (!channelId) return;
     try {
+      console.log(balanceToken, balanceAuditor, Number(value));
       if (balanceToken < balanceAuditor) {
-        alert(t("TEXT_BALANCE_AUDITOR"), "error");
+        alert(t("TEXT_BALANCE_AUDITOR", { value: balanceAuditor }), "error");
         return;
       }
       if (balanceToken < Number(value)) {
@@ -79,7 +83,7 @@ const ModalReportPost: React.FC<ModalReportPostProps> = ({
       setLoading(true);
       await openVotesFakesNews(channelId.toString(), reason, priceGuardian.toString());
       alert(t("TEXT_POST_REPORTED"), "success");
-       modalToggle()
+      modalToggle()
     } catch (error: any) {
       alert(t(`${error.message}`), "error");
     } finally {

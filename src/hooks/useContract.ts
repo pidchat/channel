@@ -97,7 +97,7 @@ export const useContract = () => {
       );
       const balanceToken = await token.query.balanceOf(account);
       const balanceNative = await api.query.system.account(account);
-      setBalanceToken(Number(balanceToken.value.ok || 0)/1000000000000000000);
+      setBalanceToken(Number(balanceToken.value.ok?.toHuman() || 0)/1000000000000000000);
       setBalanceNative(
         Number(balanceNative.data.free.toHuman().replace(/,/g, "") || 0) /
           100000000
@@ -435,8 +435,9 @@ export const useContract = () => {
       });
       api.query.system.events((events: any) => {
           events.forEach(async (record: any) => {
-            const { event } = record;            
+            const { event } = record;        
             if ((event.section === "balances" || event.section === "assets") && (event.method === "Transfer" || event.method === "Deposit" || event.method === "Transferred")) {
+             
               if (
                 event.data.toHuman().to === account ||
                 event.data.toHuman().from === account
@@ -1312,8 +1313,9 @@ export const useContract = () => {
     }
     return false;
   };
-  const transferToken = async (value: number, to: string) => {
+  const transferToken = async (value: string, to: string) => {
     try {
+      console.log(value.toString(), to);
       if (!api || !apiReady) {
         return;
       }
@@ -1323,8 +1325,7 @@ export const useContract = () => {
         "psp22::transfer",
         {
           to,
-          value: value.toString(),
-          data: "",
+          value: value.toString()
         }
       );
       //addLastMessage(addressContract);
@@ -1334,7 +1335,7 @@ export const useContract = () => {
       setLoading(false);
     }
   };
-  const feeSimulatedToken = async (value: number, to: string) => {
+  const feeSimulatedToken = async (value: string, to: string) => {
     try {
       if (!api || !apiReady) {
         return;
@@ -1345,8 +1346,7 @@ export const useContract = () => {
         "psp22::transfer",
         {
           to,
-          value: value.toString(),
-          data: "",
+          value: value.toString()
         }
       );
       setFeeGasNetWork(Number(tokenQUery?.storageDeposit || 0) / 10000000);

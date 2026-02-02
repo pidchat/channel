@@ -100,7 +100,12 @@ const WalletModal: React.FC<IWallet> = (props) => {
         alert(t("TEXT_ERROR_BALANCE"), "error");
         return;
       }
-      await transferToken(Math.round(amount * Math.pow(10, 8)), addressTO);
+      await transferToken(
+        Math.round(amount * Math.pow(10, 18)).toLocaleString("fullwide", {
+          useGrouping: false,
+        }),
+        addressTO,
+      );
     }
     alert(t("TEXT_ALERT_TRANSFER_SUCCESS"), "success");
     setAddressTo("");
@@ -343,7 +348,7 @@ const WalletModal: React.FC<IWallet> = (props) => {
               </IonSelect>
               {componentSelectWallet(
                 coinType === "LUNES" ? balanceNative : balanceToken,
-                coinType === "LUNES" ? "LUNES" : "PID"
+                coinType === "LUNES" ? "LUNES" : "PID",
               )}
               <FormGroup>
                 <Label for="address">{t("TEXT_ADDRESS_TO")}</Label>
@@ -373,14 +378,14 @@ const WalletModal: React.FC<IWallet> = (props) => {
                   onChange={(e: any) => {
                     setAmount(Number(e.target.value));
                     feeSimulatedNetwork(
-                      Math.round(Number(e.target.value || 0) * Math.pow(10, 8))
+                      Math.round(Number(e.target.value || 0) * Math.pow(10, 8)),
                     );
                     if (coinType === "PID" && addressTO)
                       feeSimulatedToken(
                         Math.round(
-                          Number(e.target.value || 0) * Math.pow(10, 8)
-                        ),
-                        addressTO
+                          Number(e.target.value || 0) * Math.pow(10, 8),
+                        ).toLocaleString("fullwide", { useGrouping: false }),
+                        addressTO,
                       );
                   }}
                   placeholder={t("TEXT_ENTER_AMOUNT")}

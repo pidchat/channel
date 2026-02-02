@@ -220,6 +220,7 @@ const ModalChatPost: React.FC<ModalChatPostProps> = ({
               disabled={loading}
               style={{
                 flex: 1,
+                color: "var(--ion-color-primary)",
                 marginRight: "8px",
                 "--padding-start": "10px",
                 background: "var(--ion-color-light)",
