@@ -147,6 +147,6 @@
   "BlockedBalance":"Solde bloqué !",
   "TEXT_ENTER_INFORMATION":"Remplissez les champs !",
   "TEXT_YOUR_AGREEMENT":"Accepter l'accord ?",
-  "TEXT_ENTER_DESCRIPTION_OR_IMAGE":"Veuillez entrer une description ou télécharger une image",
+  "TEXT_ENTER_INFORMATION_POST":"Veuillez entrer les informations de la publication",
   "TEXT_CHANNEL_PUBLISHED_SUCCESSFULLY":"Canal publié avec succès"
 }

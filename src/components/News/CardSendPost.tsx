@@ -4,18 +4,14 @@ import {
   IonCardContent,
   IonAvatar,
   IonButton,
-  IonIcon,
   IonItem,
   IonLabel,
-  IonTextarea,
 } from "@ionic/react";
-import { imageOutline, happyOutline } from "ionicons/icons";
 import { useTranslation } from "react-i18next";
 import useContract from "../../hooks/useContract";
 import Identicon from "@polkadot/react-identicon";
 import { truncateText } from "../../utils";
 import useGovernance from "../../hooks/useGovernance";
-import { Input } from "reactstrap";
 interface CardSendPostProp {
   reload: () => void;
 }
@@ -38,7 +34,6 @@ const CardSendPost: React.FC<CardSendPostProp> = ({ reload }) => {
   const [description, setDescription] = useState("");
   const [loading, setLoading] = useState(false);
   const [typeChannel, setTypeChannel] = useState("String");
-  const [image, setImage] = useState<string>("");
   useEffect(() => {
     calcFeeContract();
   }, [description]);
@@ -47,15 +42,7 @@ const CardSendPost: React.FC<CardSendPostProp> = ({ reload }) => {
     const value = await feeCreateChannel(descriptionArray, typeChannel);
     setFeeChannel(value + feeGasNetWork);
   };
-  useEffect(() => {
-     if(image?.length > 0){
-      () =>async () => {
-       const breakIn256:string[] = image.match(/.{1,256}/g) || [];
-        const value = await feeCreateChannel(breakIn256, typeChannel);
-        setFeeChannel(value + feeGasNetWork);
-      }
-     }
-  }, [image]);
+
   useEffect(() => {
     getPriceGuardian().then((value) => {
       setPriceGuardian(Number(value) / 1000000000000000000);
@@ -64,8 +51,8 @@ const CardSendPost: React.FC<CardSendPostProp> = ({ reload }) => {
   }, []);
   const handleCreate = async () => {
     try {
-      if (description.length === 0 && (typeChannel === "Image" && image.length === 0)) {
-        alert(t("TEXT_ENTER_DESCRIPTION_OR_IMAGE"), "error");
+      if (description.trim().length === 0) {
+        alert(t("TEXT_ENTER_INFORMATION_POST"), "error");
         return;
       }
       if (balanceNative < feeChannel) {
@@ -77,9 +64,9 @@ const CardSendPost: React.FC<CardSendPostProp> = ({ reload }) => {
         return;
       }
       
-      const breakIn256:string[] = image.match(/.{1,256}/g) || [];
+      //const breakIn256 = image.map((item) => item.slice(0, 256));
       setLoading(true);
-      let data_post = typeChannel === "Image" ? breakIn256 : description.split("\n");
+      let data_post = description.split("\n");
       let name =
         "[" +
         Math.random().toString(36).substring(2, 10) +
@@ -93,7 +80,6 @@ const CardSendPost: React.FC<CardSendPostProp> = ({ reload }) => {
       );
       setDescription("");
       setLoading(false);
-      setImage("");
       alert(t("TEXT_CHANNEL_PUBLISHED_SUCCESSFULLY"), "success");
       reload();
     } catch (error: any) {
@@ -120,7 +106,8 @@ const CardSendPost: React.FC<CardSendPostProp> = ({ reload }) => {
             {accountIdentity?.name || truncateText(account || "", 7, 10, false)}
           </IonLabel>
         </IonItem>
-        <IonItem lines="none" style={{ fontSize: "12px" }}>
+        {/** 
+         * <IonItem lines="none" style={{ fontSize: "12px" }}>
           {image.length > 0 ? (
             <img
               src={image[0]}
@@ -150,8 +137,11 @@ const CardSendPost: React.FC<CardSendPostProp> = ({ reload }) => {
             />
           )}
         </IonItem>
+        */}
         <div style={{ display: "flex", gap: "12px" }}>
-          <input
+          {/**
+           * 
+           * <input
             type="file"
             accept="image/*"
             style={{ display: "none" }}
@@ -163,6 +153,7 @@ const CardSendPost: React.FC<CardSendPostProp> = ({ reload }) => {
                 const reader = new FileReader();
                 reader.onloadend = () => {
                   const result = reader.result as string;
+                  console.log("bytes:", [result]);
                   setImage(result);
                   setTypeChannel("Image");
                 };
@@ -177,6 +168,8 @@ const CardSendPost: React.FC<CardSendPostProp> = ({ reload }) => {
           >
             <IonIcon icon={imageOutline} slot="icon-only" title="Image" />
           </IonButton>
+           */}
+          
 
           {/**
           <IonButton fill="clear" size="small">

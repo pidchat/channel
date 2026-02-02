@@ -210,7 +210,8 @@ export const useGovernance = () => {
     description: string[],
     price: string,
     name: string,
-    type: string = "String"
+    type: string = "String",
+    isFee: boolean = false,
   ) => {
     try {
       if (!api || !apiReady) {
@@ -239,6 +240,9 @@ export const useGovernance = () => {
       }
       if (result.value.ok?.err) {
         throw new Error(result.value.ok?.err.custom || "");
+      }
+      if(isFee){
+        return result.gasRequired?.toHuman() || 0;
       }
       var resp = await sendTXGovernance(
         import.meta.env.VITE_CONTRACT_GOVERNANCE,

@@ -147,6 +147,6 @@
   "BlockedBalance":"Blocked Balance!",
   "TEXT_ENTER_INFORMATION":"¡Ingresa los campos!",
   "TEXT_YOUR_AGREEMENT":"Aceptar el acuerdo?",
-  "TEXT_ENTER_DESCRIPTION_OR_IMAGE":"Por favor, ingresa una descripción o sube una imagen",
+  "TEXT_ENTER_INFORMATION_POST":"Por favor, ingresa las información de la publicación",
   "TEXT_CHANNEL_PUBLISHED_SUCCESSFULLY":"Canal publicado con éxito"
 }
