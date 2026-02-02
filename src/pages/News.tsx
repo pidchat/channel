@@ -8,7 +8,7 @@ import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { truncateText } from "../utils";
 import { copyOutline } from "ionicons/icons";
-import PerfectScrollbar from 'react-perfect-scrollbar';
+import PerfectScrollbar from "react-perfect-scrollbar";
 const CHUNK_SIZE = 10;
 const News: React.FC = () => {
   const { t } = useTranslation();
@@ -20,7 +20,6 @@ const News: React.FC = () => {
   const [channelIds, setChannelIds] = useState<number[]>([]);
   const [loading, setLoading] = useState(false);
   const [scrollEl, setScrollEl] = useState<any>();
-   const [loadingMore, setLoadingMore] = useState(false);
   const [infoGovernance, setInfoGovernance] = useState<InfoGovernance>({
     addressContract: import.meta.env.VITE_CONTRACT_GOVERNANCE,
     priceGuardian: "0",
@@ -43,6 +42,7 @@ const News: React.FC = () => {
     getMoreChannelIds();
   }, [page]);
   const reload = () => {
+    setLoading(true);
     getTotalNews().then((count) => {
       if (Number(count || 0) == totalNews) {
         return;
@@ -64,6 +64,9 @@ const News: React.FC = () => {
       } while (value > 0);
       setTotalNews(Number(count || 0));
       setChannelIds(newIds);
+      
+    }).finally(() => {
+      setLoading(false);
     });
     getInfoGovernance().then((res) => {
       if (res) {
@@ -72,7 +75,6 @@ const News: React.FC = () => {
     });
   };
   const getMoreChannelIds = () => {
-   
     if (channelIds.length >= totalNews) {
       return;
     }
@@ -110,18 +112,7 @@ const News: React.FC = () => {
       });
   };
   const handleOwnerPostsClick = () => {
-    setLoading(true);
-    setTotalNews(0);
-    setChannelIds([]);
-    getTotalNews()
-      .then((count) => {
-        setTotalNews(Number(count || 0));
-        setLoading(false);
-      })
-      .catch(() => {
-        setLoading(false);
-        alert(t("TEXT_ALERT_CHANNEL_NOT_FOUND"), "error");
-      });
+    reload();
   };
   return (
     <IonPage>
@@ -162,21 +153,24 @@ const News: React.FC = () => {
                   <strong>{t("PRICE_GUARDIAN")}:</strong>{" "}
                   {(
                     Number(infoGovernance.priceGuardian) / 1000000000000000000
-                  ).toFixed(0)} PID
+                  ).toFixed(0)}{" "}
+                  PID
                 </p>
                 <p>
                   <strong>{t("TOTAL_BALANCE_AUDITOR")}:</strong>{" "}
                   {(
                     Number(infoGovernance.totalBalanceAuditor) /
                     1000000000000000000
-                  ).toFixed(0)} PID
+                  ).toFixed(0)}{" "}
+                  PID
                 </p>
                 <p>
                   <strong>{t("TOTAL_BALANCE_BLOCK")}:</strong>{" "}
                   {(
                     Number(infoGovernance.totalBalanceBlock) /
                     1000000000000000000
-                  ).toFixed(0)} PID
+                  ).toFixed(0)}{" "}
+                  PID
                 </p>
                 <p>
                   <strong>{t("TOTAL_FAKE_NEWS")}:</strong>{" "}
@@ -190,18 +184,20 @@ const News: React.FC = () => {
           </div>
           <div style={{ marginTop: "1rem" }}></div>
           <PerfectScrollbar
-                    containerRef={(ref) => setScrollEl(ref)}
-                    onScroll={() => {
-                      
-                      const scrollBottom = scrollEl.scrollHeight - scrollEl.scrollTop - scrollEl.clientHeight;         
-                      if (scrollBottom == 0 && !loadingMore) {
-                        getMoreChannelIds();
-                      }
-                    }}
-                  >
-          {channelIds.map((channelId, index) => (
-            <CardItemPost key={index} channelId={channelId} />
-          ))}
+            containerRef={(ref) => setScrollEl(ref)}
+            onScroll={() => {
+              const scrollBottom =
+                scrollEl.scrollHeight -
+                scrollEl.scrollTop -
+                scrollEl.clientHeight;
+              if (scrollBottom == 0) {
+                getMoreChannelIds();
+              }
+            }}
+          >
+            {channelIds.map((channelId, index) => (
+              <CardItemPost key={index} channelId={channelId} />
+            ))}
           </PerfectScrollbar>
         </div>
         <IonLoading isOpen={loading} message={t("TEXT_WAIT")} />

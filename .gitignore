@@ -64,3 +64,4 @@ yarn-error.log*
 *.ipa
 *.xcarchive
 target/
+public/images/
