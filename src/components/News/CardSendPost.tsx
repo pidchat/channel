@@ -57,11 +57,11 @@ const CardSendPost: React.FC<CardSendPostProp> = ({ reload }) => {
         return;
       }
       if (balanceNative < feeChannel) {
-        alert(t("TEXT_ERROR_BALANCE_NATIVE"), "error");
+        alert(t("TEXT_ERROR_BALANCE"), "error");
         return;
       }
       if (balanceToken < priceGuardian) {
-        alert(t("TEXT_ERROR_BALANCE_TOKEN"), "error");
+        alert(t("TEXT_ERROR_BALANCE"), "error");
         return;
       }
 

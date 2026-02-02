@@ -55,7 +55,7 @@ StatusBar?.show();
 const queryClient = new QueryClient();
 
 const App: React.FC = () => {
- 
+
   return (
     <QueryClientProvider client={queryClient}>
     <UseProvider>

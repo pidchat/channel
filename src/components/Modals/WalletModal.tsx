@@ -23,6 +23,7 @@ import QRCode from "react-qr-code";
 import useContract from "../../hooks/useContract";
 import { IInfoAccount, IInfoAccountRegister } from "../../contexts/UseProvider";
 import { useTranslation } from "react-i18next";
+import logo from "../../assets/img/logo.svg";
 interface IWallet {
   modal: boolean;
   modalToggle: () => void;
@@ -303,7 +304,12 @@ const WalletModal: React.FC<IWallet> = (props) => {
         <Form>
           <TabContent activeTab={activeTab}>
             <TabPane tabId="1">
-              {componentSelectWallet(balanceToken, "PID")}
+              <FormGroup>
+              <IonButton expand="full" color={"light"}>
+                <img src={logo} alt="PIDCHAT" style={{ width: "32px" }} />{" "}
+                {t("TEXT_BALANCE")} {`${balanceToken} PID`}
+              </IonButton>
+            </FormGroup>
               <p className="text-center text-lg-center">
                 {t("TEXT_YOUR_BALANCE")} <b>{balanceNative}</b> LUNES
               </p>

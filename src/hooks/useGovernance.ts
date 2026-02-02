@@ -694,6 +694,48 @@ export const useGovernance = () => {
       throw new Error(error.message);
     }
   }
+   const getTimeVotePrice = async () => {
+    try {
+      if (!api || !apiReady) {
+        return;
+      }
+      const account_aux = await getAccountAux();
+      if (!account_aux) return;
+      const contract = new Governance(
+        import.meta.env.VITE_CONTRACT_GOVERNANCE,
+        account_aux,
+        api,
+      );
+      const result = await contract.query.getTimeVotePrice();
+      if (result.value.err) {
+        throw new Error(result.value.err);
+      }
+      return result.value.ok;
+    } catch (error: any) {
+      throw new Error(error.message);
+    }
+  }
+  const getTimeVoteFakeNews = async () => {
+    try {
+      if (!api || !apiReady) {
+        return;
+      }
+      const account_aux = await getAccountAux();
+      if (!account_aux) return;
+      const contract = new Governance(
+        import.meta.env.VITE_CONTRACT_GOVERNANCE,
+        account_aux,
+        api,
+      );
+      const result = await contract.query.getTimeVoteFake();
+      if (result.value.err) {
+        throw new Error(result.value.err);
+      }
+      return result.value.ok;
+    } catch (error: any) {
+      throw new Error(error.message);
+    }
+  }
   return {
     feeSimulatedNetwork,
     getTotalMessages,
@@ -716,7 +758,9 @@ export const useGovernance = () => {
     openVoteNewPriceAndBalanceAudit,
     doingVotesPrice,
     getTypeChannel,
-    syncVotePrice
+    syncVotePrice,
+    getTimeVoteFakeNews,
+    getTimeVotePrice,
   };
 };
 export default useGovernance;

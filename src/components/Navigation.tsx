@@ -185,7 +185,7 @@ useEffect(() => {
         </div>
       </nav>
     );
-  };
+  };  
   return (
     <IonTabs>
       <IonRouterOutlet>
@@ -205,7 +205,9 @@ useEffect(() => {
           <Post />
         </Route>
       </IonRouterOutlet>
-      <div className="layout">{enableNavigation && NavigationComponent()}</div>
+      <div className="layout">
+        {enableNavigation && NavigationComponent()}
+      </div>
       <SupportChannelModal modal={modelIssue} modalToggle={toggleIssueModal} />
       <ModalVotePriceAndAudit modal={modelVotePriceAndAudit} modalToggle={toggleVotePriceAndAuditModal} />
     </IonTabs>
