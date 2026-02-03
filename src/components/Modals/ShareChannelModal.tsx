@@ -1,6 +1,5 @@
 import React from "react";
 import {
-  Button,
   Modal,
   ModalHeader,
   ModalBody,
@@ -12,21 +11,17 @@ import { useTranslation } from "react-i18next";
 interface IShareChannel {
   modal: boolean;
   modalToggle: () => void;
-  address: string;
-  name: string;
   patch: string;
 }
 const ShareChannelModal: React.FC<IShareChannel> = ({
   modal,
   modalToggle,
-  address,
-  name,
   patch,
 }) => {
   const { t } = useTranslation();
   const{alert,account}= useContract();
   const handleShare = (type: string) => {
-    const value_link = `🌐 ${t("TEXT_LINK")} 🚀 https://${location.host}/${patch}`
+    const value_link = `🌐 ${t("TEXT_LINK")} 🚀 ${import.meta.env.VITE_URL_CHANNEL_WEB}${patch}`
     if(type=="copy"){
       navigator.clipboard.writeText(value_link)
       alert(t("TEXT_COPY_LINK"),"success")
@@ -43,7 +38,7 @@ const ShareChannelModal: React.FC<IShareChannel> = ({
       );   
     }else  if(type=="telegram"){
       window.open(
-        `https://t.me/share/url?url=https://${location.host}/${patch}`,
+        `https://t.me/share/url?url=${import.meta.env.VITE_URL_CHANNEL_WEB}${patch}`,
         "_blank"
       );
     }else if(type=="x"){

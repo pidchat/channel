@@ -184,10 +184,8 @@ const ChatHeader: React.FC<Props> = ({ ...props }) => {
         spinner="circles"
       />
       <ShareChannelModal
-        address={props.selectedChat}
         modal={modal}
         modalToggle={modalToggle}
-        name={name}
         patch={`login?invite=${props.selectedChat}&name=${name}`}
       />
       <AddMemberModal modal={modalAddUser} modalToggle={modalAddUserToggle} />

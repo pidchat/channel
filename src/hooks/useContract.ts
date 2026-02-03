@@ -965,7 +965,7 @@ export const useContract = () => {
       const value = Number(finalCost);
       return value;
     } catch (error: any) {
-      alert(error.message, "error");
+      //alert(error.message, "error");
     }
     return 0;
   };

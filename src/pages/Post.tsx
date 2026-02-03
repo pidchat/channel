@@ -250,10 +250,8 @@ const Post: React.FC = () => {
         addressChannel={addressChannel}
       />
       <ShareChannelModal
-        address={addressChannel}
         modal={modal}
         modalToggle={() => setModal(!modal)}
-        name={details?.info?.name || ""}
         patch={`post/${addressChannel}`}
       />
       <ModalReportPost

@@ -1,13 +1,18 @@
-import { IonContent, IonIcon, IonLoading, IonPage } from "@ionic/react";
+import {
+  IonContent,
+  IonIcon,
+  IonLoading,
+  IonPage,
+} from "@ionic/react";
 import CardSendPost from "../components/News/CardSendPost";
 import CardItemPost from "../components/News/CardItemPost";
 import HeaderHome from "../components/News/HeaderHome";
 import useContract from "../hooks/useContract";
 import useGovernance, { InfoGovernance } from "../hooks/useGovernance";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { truncateText } from "../utils";
-import { copyOutline } from "ionicons/icons";
+import { copyOutline, refresh } from "ionicons/icons";
 import PerfectScrollbar from "react-perfect-scrollbar";
 const CHUNK_SIZE = 10;
 const News: React.FC = () => {
@@ -20,6 +25,7 @@ const News: React.FC = () => {
   const [channelIds, setChannelIds] = useState<number[]>([]);
   const [loading, setLoading] = useState(false);
   const [scrollEl, setScrollEl] = useState<any>();
+  const contentRef = useRef<HTMLIonContentElement>(null);
   const [infoGovernance, setInfoGovernance] = useState<InfoGovernance>({
     addressContract: import.meta.env.VITE_CONTRACT_GOVERNANCE,
     priceGuardian: "0",
@@ -43,31 +49,32 @@ const News: React.FC = () => {
   }, [page]);
   const reload = () => {
     setLoading(true);
-    getTotalNews().then((count) => {
-      if (Number(count || 0) == totalNews) {
-        return;
-      }
-      const newIds: number[] = [];
-      let value = Number(count || 0);
-      let index = 0;
-      do {
-        if (channelIds[index] == value) {
-          newIds.push(channelIds[index]);
-        } else {
-          newIds.push(value);
+    getTotalNews()
+      .then((count) => {
+        if (Number(count || 0) == totalNews) {
+          return;
         }
-        value--;
-        index++;
-        if (index == CHUNK_SIZE) {
-          break;
-        }
-      } while (value > 0);
-      setTotalNews(Number(count || 0));
-      setChannelIds(newIds);
-      
-    }).finally(() => {
-      setLoading(false);
-    });
+        const newIds: number[] = [];
+        let value = Number(count || 0);
+        let index = 0;
+        do {
+          if (channelIds[index] == value) {
+            newIds.push(channelIds[index]);
+          } else {
+            newIds.push(value);
+          }
+          value--;
+          index++;
+          if (index == CHUNK_SIZE) {
+            break;
+          }
+        } while (value > 0);
+        setTotalNews(Number(count || 0));
+        setChannelIds(newIds);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
     getInfoGovernance().then((res) => {
       if (res) {
         setInfoGovernance(res);
@@ -116,7 +123,7 @@ const News: React.FC = () => {
   };
   return (
     <IonPage>
-      <IonContent>
+      <IonContent ref={contentRef}>
         <div className="contentNews">
           <HeaderHome
             handleSearch={handleSearch}
@@ -184,6 +191,7 @@ const News: React.FC = () => {
           </div>
           <div style={{ marginTop: "1rem" }}></div>
           <PerfectScrollbar
+            style={{ height: "100%" }}
             containerRef={(ref) => setScrollEl(ref)}
             onScroll={() => {
               const scrollBottom =
@@ -191,7 +199,7 @@ const News: React.FC = () => {
                 scrollEl.scrollTop -
                 scrollEl.clientHeight;
               if (scrollBottom == 0) {
-                getMoreChannelIds();
+                setPage(page + CHUNK_SIZE);
               }
             }}
           >
@@ -202,6 +210,27 @@ const News: React.FC = () => {
         </div>
         <IonLoading isOpen={loading} message={t("TEXT_WAIT")} />
       </IonContent>
+      {/* Scroll to top button */}
+      <IonIcon
+        icon={refresh}
+        className="scroll-to-top"
+        onClick={() => {
+          location.reload();
+        }}
+        style={{
+          position: "fixed",
+          bottom: "20px",
+          right: "20px",
+          fontSize: "28px",
+          background: isDarkMode ? "#333" : "#fff",
+          color: isDarkMode ? "#fff" : "#333",
+          borderRadius: "50%",
+          padding: "10px",
+          boxShadow: "0 2px 8px rgba(0,0,0,0.3)",
+          cursor: "pointer",
+          zIndex: 999,
+        }}
+      />
     </IonPage>
   );
 };

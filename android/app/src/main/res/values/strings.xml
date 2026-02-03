@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='utf-8'?>
 <resources>
-    <string name="app_name">pidchat-channel</string>
-    <string name="title_activity_main">pidchat-channel</string>
+    <string name="app_name">Pidchat Channel</string>
+    <string name="title_activity_main">Pidchat Channel</string>
     <string name="package_name">com.pidchat.channel</string>
     <string name="custom_url_scheme">com.pidchat.channel</string>
 </resources>
