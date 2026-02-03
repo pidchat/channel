@@ -7,6 +7,10 @@ export default defineConfig({
     react(),
     legacy(),
   ],
+  server: {
+      allowedHosts:["channel.pidchat.com","channel-1.pidchat.com"],
+      host: "0.0.0.0",
+  },
   build: {
     chunkSizeWarningLimit: 1000, // Ajusta o limite do aviso para 1000KB (opcional)
     target: 'esnext' ,
