@@ -41,57 +41,21 @@ export default class Methods {
 	}
 
 	/**
-	* getIdChannelPublic
+	* transferBalance
 	*
+	* @param { ArgumentTypes.AccountId | null } addressToken,
+	* @param { ArgumentTypes.AccountId } to,
+	* @param { (number | string | BN) } typeTransfer,
 	*/
-	"getIdChannelPublic" (
+	"transferBalance" (
+		addressToken: ArgumentTypes.AccountId | null,
+		to: ArgumentTypes.AccountId,
+		typeTransfer: (number | string | BN),
 		__options ? : GasLimit,
 	){
-		return txSignAndSend( this.__apiPromise, this.__nativeContract, this.__keyringPair, "channelImpl::getIdChannelPublic", (events: EventRecord) => {
+		return txSignAndSend( this.__apiPromise, this.__nativeContract, this.__keyringPair, "transferBalance", (events: EventRecord) => {
 			return decodeEvents(events, this.__nativeContract, EVENT_DATA_TYPE_DESCRIPTIONS);
-		}, [], __options);
-	}
-
-	/**
-	* setAddressGovernance
-	*
-	* @param { ArgumentTypes.AccountId } addressGovernance,
-	*/
-	"setAddressGovernance" (
-		addressGovernance: ArgumentTypes.AccountId,
-		__options ? : GasLimit,
-	){
-		return txSignAndSend( this.__apiPromise, this.__nativeContract, this.__keyringPair, "channelImpl::setAddressGovernance", (events: EventRecord) => {
-			return decodeEvents(events, this.__nativeContract, EVENT_DATA_TYPE_DESCRIPTIONS);
-		}, [addressGovernance], __options);
-	}
-
-	/**
-	* getTotalMessages
-	*
-	*/
-	"getTotalMessages" (
-		__options ? : GasLimit,
-	){
-		return txSignAndSend( this.__apiPromise, this.__nativeContract, this.__keyringPair, "channelImpl::getTotalMessages", (events: EventRecord) => {
-			return decodeEvents(events, this.__nativeContract, EVENT_DATA_TYPE_DESCRIPTIONS);
-		}, [], __options);
-	}
-
-	/**
-	* addPermission
-	*
-	* @param { ArgumentTypes.AccountId } address,
-	* @param { boolean } typePermission,
-	*/
-	"addPermission" (
-		address: ArgumentTypes.AccountId,
-		typePermission: boolean,
-		__options ? : GasLimit,
-	){
-		return txSignAndSend( this.__apiPromise, this.__nativeContract, this.__keyringPair, "channelImpl::addPermission", (events: EventRecord) => {
-			return decodeEvents(events, this.__nativeContract, EVENT_DATA_TYPE_DESCRIPTIONS);
-		}, [address, typePermission], __options);
+		}, [addressToken, to, typeTransfer], __options);
 	}
 
 	/**
@@ -119,59 +83,41 @@ export default class Methods {
 	}
 
 	/**
-	* receivedMessages
-	*
-	* @param { (string | number | BN) } idMessage,
-	*/
-	"receivedMessages" (
-		idMessage: (string | number | BN),
-		__options ? : GasLimit,
-	){
-		return txSignAndSend( this.__apiPromise, this.__nativeContract, this.__keyringPair, "channelImpl::receivedMessages", (events: EventRecord) => {
-			return decodeEvents(events, this.__nativeContract, EVENT_DATA_TYPE_DESCRIPTIONS);
-		}, [idMessage], __options);
-	}
-
-	/**
-	* transferBalance
-	*
-	* @param { ArgumentTypes.AccountId | null } addressToken,
-	* @param { (number | string | BN) } typeTransfer,
-	*/
-	"transferBalance" (
-		addressToken: ArgumentTypes.AccountId | null,
-		typeTransfer: (number | string | BN),
-		__options ? : GasLimit,
-	){
-		return txSignAndSend( this.__apiPromise, this.__nativeContract, this.__keyringPair, "channelImpl::transferBalance", (events: EventRecord) => {
-			return decodeEvents(events, this.__nativeContract, EVENT_DATA_TYPE_DESCRIPTIONS);
-		}, [addressToken, typeTransfer], __options);
-	}
-
-	/**
-	* getDefaultMessage
+	* getIdChannelPublic
 	*
 	*/
-	"getDefaultMessage" (
+	"getIdChannelPublic" (
 		__options ? : GasLimit,
 	){
-		return txSignAndSend( this.__apiPromise, this.__nativeContract, this.__keyringPair, "channelImpl::getDefaultMessage", (events: EventRecord) => {
+		return txSignAndSend( this.__apiPromise, this.__nativeContract, this.__keyringPair, "channelImpl::getIdChannelPublic", (events: EventRecord) => {
 			return decodeEvents(events, this.__nativeContract, EVENT_DATA_TYPE_DESCRIPTIONS);
 		}, [], __options);
 	}
 
 	/**
-	* addEmotion
+	* getAddressGovernance
 	*
-	* @param { string } emotion,
 	*/
-	"addEmotion" (
-		emotion: string,
+	"getAddressGovernance" (
 		__options ? : GasLimit,
 	){
-		return txSignAndSend( this.__apiPromise, this.__nativeContract, this.__keyringPair, "channelImpl::addEmotion", (events: EventRecord) => {
+		return txSignAndSend( this.__apiPromise, this.__nativeContract, this.__keyringPair, "channelImpl::getAddressGovernance", (events: EventRecord) => {
 			return decodeEvents(events, this.__nativeContract, EVENT_DATA_TYPE_DESCRIPTIONS);
-		}, [emotion], __options);
+		}, [], __options);
+	}
+
+	/**
+	* setAddressGovernance
+	*
+	* @param { ArgumentTypes.AccountId } addressGovernance,
+	*/
+	"setAddressGovernance" (
+		addressGovernance: ArgumentTypes.AccountId,
+		__options ? : GasLimit,
+	){
+		return txSignAndSend( this.__apiPromise, this.__nativeContract, this.__keyringPair, "channelImpl::setAddressGovernance", (events: EventRecord) => {
+			return decodeEvents(events, this.__nativeContract, EVENT_DATA_TYPE_DESCRIPTIONS);
+		}, [addressGovernance], __options);
 	}
 
 	/**
@@ -189,15 +135,31 @@ export default class Methods {
 	}
 
 	/**
-	* getAddressGovernance
+	* getBalanceToken
 	*
+	* @param { ArgumentTypes.AccountId } addressToken,
 	*/
-	"getAddressGovernance" (
+	"getBalanceToken" (
+		addressToken: ArgumentTypes.AccountId,
 		__options ? : GasLimit,
 	){
-		return txSignAndSend( this.__apiPromise, this.__nativeContract, this.__keyringPair, "channelImpl::getAddressGovernance", (events: EventRecord) => {
+		return txSignAndSend( this.__apiPromise, this.__nativeContract, this.__keyringPair, "channelImpl::getBalanceToken", (events: EventRecord) => {
 			return decodeEvents(events, this.__nativeContract, EVENT_DATA_TYPE_DESCRIPTIONS);
-		}, [], __options);
+		}, [addressToken], __options);
+	}
+
+	/**
+	* addEmotion
+	*
+	* @param { string } emotion,
+	*/
+	"addEmotion" (
+		emotion: string,
+		__options ? : GasLimit,
+	){
+		return txSignAndSend( this.__apiPromise, this.__nativeContract, this.__keyringPair, "channelImpl::addEmotion", (events: EventRecord) => {
+			return decodeEvents(events, this.__nativeContract, EVENT_DATA_TYPE_DESCRIPTIONS);
+		}, [emotion], __options);
 	}
 
 	/**
@@ -217,13 +179,79 @@ export default class Methods {
 	}
 
 	/**
-	* renounceOwnership
+	* addPermission
 	*
+	* @param { ArgumentTypes.AccountId } address,
+	* @param { boolean } typePermission,
 	*/
-	"renounceOwnership" (
+	"addPermission" (
+		address: ArgumentTypes.AccountId,
+		typePermission: boolean,
 		__options ? : GasLimit,
 	){
-		return txSignAndSend( this.__apiPromise, this.__nativeContract, this.__keyringPair, "ownable::renounceOwnership", (events: EventRecord) => {
+		return txSignAndSend( this.__apiPromise, this.__nativeContract, this.__keyringPair, "channelImpl::addPermission", (events: EventRecord) => {
+			return decodeEvents(events, this.__nativeContract, EVENT_DATA_TYPE_DESCRIPTIONS);
+		}, [address, typePermission], __options);
+	}
+
+	/**
+	* getTypeMessage
+	*
+	*/
+	"getTypeMessage" (
+		__options ? : GasLimit,
+	){
+		return txSignAndSend( this.__apiPromise, this.__nativeContract, this.__keyringPair, "channelImpl::getTypeMessage", (events: EventRecord) => {
+			return decodeEvents(events, this.__nativeContract, EVENT_DATA_TYPE_DESCRIPTIONS);
+		}, [], __options);
+	}
+
+	/**
+	* getDefaultMessage
+	*
+	*/
+	"getDefaultMessage" (
+		__options ? : GasLimit,
+	){
+		return txSignAndSend( this.__apiPromise, this.__nativeContract, this.__keyringPair, "channelImpl::getDefaultMessage", (events: EventRecord) => {
+			return decodeEvents(events, this.__nativeContract, EVENT_DATA_TYPE_DESCRIPTIONS);
+		}, [], __options);
+	}
+
+	/**
+	* getTotalMessages
+	*
+	*/
+	"getTotalMessages" (
+		__options ? : GasLimit,
+	){
+		return txSignAndSend( this.__apiPromise, this.__nativeContract, this.__keyringPair, "channelImpl::getTotalMessages", (events: EventRecord) => {
+			return decodeEvents(events, this.__nativeContract, EVENT_DATA_TYPE_DESCRIPTIONS);
+		}, [], __options);
+	}
+
+	/**
+	* receivedMessages
+	*
+	* @param { (string | number | BN) } idMessage,
+	*/
+	"receivedMessages" (
+		idMessage: (string | number | BN),
+		__options ? : GasLimit,
+	){
+		return txSignAndSend( this.__apiPromise, this.__nativeContract, this.__keyringPair, "channelImpl::receivedMessages", (events: EventRecord) => {
+			return decodeEvents(events, this.__nativeContract, EVENT_DATA_TYPE_DESCRIPTIONS);
+		}, [idMessage], __options);
+	}
+
+	/**
+	* owner
+	*
+	*/
+	"owner" (
+		__options ? : GasLimit,
+	){
+		return txSignAndSend( this.__apiPromise, this.__nativeContract, this.__keyringPair, "ownable::owner", (events: EventRecord) => {
 			return decodeEvents(events, this.__nativeContract, EVENT_DATA_TYPE_DESCRIPTIONS);
 		}, [], __options);
 	}
@@ -243,13 +271,13 @@ export default class Methods {
 	}
 
 	/**
-	* owner
+	* renounceOwnership
 	*
 	*/
-	"owner" (
+	"renounceOwnership" (
 		__options ? : GasLimit,
 	){
-		return txSignAndSend( this.__apiPromise, this.__nativeContract, this.__keyringPair, "ownable::owner", (events: EventRecord) => {
+		return txSignAndSend( this.__apiPromise, this.__nativeContract, this.__keyringPair, "ownable::renounceOwnership", (events: EventRecord) => {
 			return decodeEvents(events, this.__nativeContract, EVENT_DATA_TYPE_DESCRIPTIONS);
 		}, [], __options);
 	}

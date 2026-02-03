@@ -2,10 +2,11 @@ use openbrush::{
     contracts::psp22::PSP22Error,
     traits::{
         Balance, 
-        AccountId
+        AccountId,
+        String
     },
 };
-
+use ink_prelude::vec::Vec;
 /// Reference type for the Governance trait
 #[openbrush::wrapper]
 pub type GovernanceRef = dyn Governance;
@@ -23,7 +24,7 @@ pub trait Governance {
 
     /// Creates a new public channel with the given address
     #[ink(message)]
-    fn add_messages_public(&mut self, address_channel: AccountId) -> Result<u128, PSP22Error>;
+    fn add_messages_public(&mut self, default_message: Option<Vec<String>>,type_default_message_channel: String) -> Result<AccountId, PSP22Error>;
 
     /// Claims reward for correctly identifying fake news
     #[ink(message)]
@@ -51,7 +52,7 @@ pub trait Governance {
 
     /// Opens a new vote for changing the price
     #[ink(message)]
-    fn open_vote_for_price(&mut self, new_price: Balance) -> Result<(), PSP22Error>;
+    fn open_vote_for_price(&mut self, new_price: Balance,new_balance_of_auditor:Balance) -> Result<(), PSP22Error>;
 
     /// Gets details of current price vote
     #[ink(message)]
@@ -88,11 +89,52 @@ pub trait Governance {
     /// Synchronizes contract state
     #[ink(message)]
     fn sync(&mut self) -> Result<(), PSP22Error>;
-        /// Gets total votes allowed per voting round
+
+     /// Gets total votes allowed per voting round
     #[ink(message)]
     fn get_total_votes_allowed(&self) -> u128;
     
     /// Gets the current price per channel
     #[ink(message)]
     fn get_price_per_channel(&self) -> u128;
+
+    /// Transfers balance between token and native currency
+    #[ink(message)]
+    fn transfer_balance_channel(&mut self,address_token: Option<AccountId>, type_transfer: u8) -> Result<(), PSP22Error>;
+
+    /// Gets the current balance of the auditor
+    #[ink(message)]
+    fn get_balance_auditor(&self) -> u128;
+
+    /// Checks if a channel is marked as fake news
+    #[ink(message)]
+    fn check_channel_fake(&self, channel_id: u128) -> Result<(), PSP22Error>;
+
+     /// Opens a new vote for changing the price
+    #[ink(message)]
+    fn get_channel_fake(&self, channel_fake_id: u128) -> Result<(), PSP22Error>;
+
+    /// Gets the voting deadline for price changes
+    #[ink(message)]
+    fn get_time_vote_price(&self) -> u64;
+
+    /// Sets the voting deadline for price changes
+    #[ink(message)]
+    fn set_time_vote_price(&mut self, time_vote_price: u64) -> Result<(), PSP22Error>;
+
+    /// Gets the voting deadline for fake news votes
+    #[ink(message)]
+    fn get_time_vote_fake(&self) -> u64;
+
+    /// Sets the voting deadline for fake news votes
+    #[ink(message)]
+    fn set_time_vote_fake(&mut self, time_vote_fake: u64) -> Result<(), PSP22Error>;
+
+    /// Gets the time block balance post
+    #[ink(message)]
+    fn get_time_block_balance_post(&self) -> u64;
+
+    /// Sets the time block balance post
+    #[ink(message)]
+    fn set_time_block_balance_post(&mut self, time_block_balance_post: u64) -> Result<(), PSP22Error>;
 }

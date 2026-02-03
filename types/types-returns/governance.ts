@@ -3,6 +3,8 @@ import type {ReturnNumber} from '@727-ventures/typechain-types';
 
 export type AccountId = string | number[]
 
+export type Hash = string | number[]
+
 export enum LangError {
 	couldNotReadInput = 'CouldNotReadInput'
 }
@@ -47,5 +49,10 @@ export class PSP22ErrorBuilder {
 			safeTransferCheckFailed: value,
 		};
 	}
+}
+
+export enum OwnableError {
+	callerIsNotOwner = 'CallerIsNotOwner',
+	newOwnerIsZero = 'NewOwnerIsZero'
 }
 

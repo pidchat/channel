@@ -24,12 +24,14 @@ export default class Constructors {
 	* new
 	*
 	* @param { ArgumentTypes.AccountId | null } tokenAddress,
+	* @param { ArgumentTypes.Hash } channelCodeHash,
 	* @param { (string | number | BN) } pricePerChannel,
 	* @param { (string | number | BN) } qtdTotalPerVote,
 	* @param { ArgumentTypes.AccountId | null } feeReceiver,
 	*/
    	async "new" (
 		tokenAddress: ArgumentTypes.AccountId | null,
+		channelCodeHash: ArgumentTypes.Hash,
 		pricePerChannel: (string | number | BN),
 		qtdTotalPerVote: (string | number | BN),
 		feeReceiver: ArgumentTypes.AccountId | null,
@@ -40,7 +42,7 @@ export default class Constructors {
 		const gasLimit = (await _genValidGasLimitAndValue(this.nativeAPI, __options)).gasLimit as WeightV2;
 
 		const storageDepositLimit = __options?.storageDepositLimit;
-			const tx = code.tx["new"]!({ gasLimit, storageDepositLimit, value: __options?.value }, tokenAddress, pricePerChannel, qtdTotalPerVote, feeReceiver);
+			const tx = code.tx["new"]!({ gasLimit, storageDepositLimit, value: __options?.value }, tokenAddress, channelCodeHash, pricePerChannel, qtdTotalPerVote, feeReceiver);
 			let response;
 
 			try {

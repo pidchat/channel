@@ -14,7 +14,7 @@ i18n
 
   .init({
     debug: true,
-    supportedLngs: ['pt-BR', 'en', 'es', 'fr'],
+    supportedLngs: ['pt-BR', 'en', 'es', 'fr','pt'],
     fallbackLng: "pt-BR",
     detection: {
       order: ["queryString", "cookie"],
@@ -24,6 +24,9 @@ i18n
       "pt-BR": {
         translation: pt_BR,
       },      
+      "pt": {
+        translation: pt_BR,
+      },
       en: {
         translation: en_US,
       },

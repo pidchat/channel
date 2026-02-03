@@ -25,7 +25,7 @@ std = [
     "scale/std",
     "scale-info/std",
     "openbrush/std",
-    "pidchat_pkg/std"
+    "pidchat_pkg/std",
 ]
 ink-as-dependency = []
 

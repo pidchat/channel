@@ -21,33 +21,13 @@ export default class Methods {
 		this.__apiPromise = apiPromise;
 	}
 	/**
-	 * getPrices
+	 * getTotalChannel
 	 *
 	*/
-	"getPrices" (
+	"getTotalChannel" (
 		__options: GasLimit,
 	){
-		return buildSubmittableExtrinsic( this.__apiPromise, this.__nativeContract, "governanceImp::getPrices", [], __options);
-	}
-
-	/**
-	 * getVotesPrice
-	 *
-	*/
-	"getVotesPrice" (
-		__options: GasLimit,
-	){
-		return buildSubmittableExtrinsic( this.__apiPromise, this.__nativeContract, "governanceImp::getVotesPrice", [], __options);
-	}
-
-	/**
-	 * getFeeReceiverWithdrawal
-	 *
-	*/
-	"getFeeReceiverWithdrawal" (
-		__options: GasLimit,
-	){
-		return buildSubmittableExtrinsic( this.__apiPromise, this.__nativeContract, "governanceImp::getFeeReceiverWithdrawal", [], __options);
+		return buildSubmittableExtrinsic( this.__apiPromise, this.__nativeContract, "governanceImp::getTotalChannel", [], __options);
 	}
 
 	/**
@@ -61,6 +41,48 @@ export default class Methods {
 	}
 
 	/**
+	 * setTimeBlockBalancePost
+	 *
+	 * @param { (number | string | BN) } timeBlockBalancePost,
+	*/
+	"setTimeBlockBalancePost" (
+		timeBlockBalancePost: (number | string | BN),
+		__options: GasLimit,
+	){
+		return buildSubmittableExtrinsic( this.__apiPromise, this.__nativeContract, "governanceImp::setTimeBlockBalancePost", [timeBlockBalancePost], __options);
+	}
+
+	/**
+	 * getTimeVotePrice
+	 *
+	*/
+	"getTimeVotePrice" (
+		__options: GasLimit,
+	){
+		return buildSubmittableExtrinsic( this.__apiPromise, this.__nativeContract, "governanceImp::getTimeVotePrice", [], __options);
+	}
+
+	/**
+	 * getTimeBlockBalancePost
+	 *
+	*/
+	"getTimeBlockBalancePost" (
+		__options: GasLimit,
+	){
+		return buildSubmittableExtrinsic( this.__apiPromise, this.__nativeContract, "governanceImp::getTimeBlockBalancePost", [], __options);
+	}
+
+	/**
+	 * getFeeReceiverWallet
+	 *
+	*/
+	"getFeeReceiverWallet" (
+		__options: GasLimit,
+	){
+		return buildSubmittableExtrinsic( this.__apiPromise, this.__nativeContract, "governanceImp::getFeeReceiverWallet", [], __options);
+	}
+
+	/**
 	 * getTotalFakeOpen
 	 *
 	*/
@@ -71,51 +93,71 @@ export default class Methods {
 	}
 
 	/**
-	 * doingVotePrice
+	 * getBalanceAuditor
 	 *
-	 * @param { boolean } isProved,
 	*/
-	"doingVotePrice" (
-		isProved: boolean,
+	"getBalanceAuditor" (
 		__options: GasLimit,
 	){
-		return buildSubmittableExtrinsic( this.__apiPromise, this.__nativeContract, "governanceImp::doingVotePrice", [isProved], __options);
+		return buildSubmittableExtrinsic( this.__apiPromise, this.__nativeContract, "governanceImp::getBalanceAuditor", [], __options);
 	}
 
 	/**
 	 * openVoteForPrice
 	 *
 	 * @param { (string | number | BN) } newPrice,
+	 * @param { (string | number | BN) } newBalanceOfAuditor,
 	*/
 	"openVoteForPrice" (
 		newPrice: (string | number | BN),
+		newBalanceOfAuditor: (string | number | BN),
 		__options: GasLimit,
 	){
-		return buildSubmittableExtrinsic( this.__apiPromise, this.__nativeContract, "governanceImp::openVoteForPrice", [newPrice], __options);
+		return buildSubmittableExtrinsic( this.__apiPromise, this.__nativeContract, "governanceImp::openVoteForPrice", [newPrice, newBalanceOfAuditor], __options);
 	}
 
 	/**
-	 * rewardSafeForFakeNews
+	 * getTimeVoteFake
 	 *
-	 * @param { (string | number | BN) } channelId,
 	*/
-	"rewardSafeForFakeNews" (
-		channelId: (string | number | BN),
+	"getTimeVoteFake" (
 		__options: GasLimit,
 	){
-		return buildSubmittableExtrinsic( this.__apiPromise, this.__nativeContract, "governanceImp::rewardSafeForFakeNews", [channelId], __options);
+		return buildSubmittableExtrinsic( this.__apiPromise, this.__nativeContract, "governanceImp::getTimeVoteFake", [], __options);
 	}
 
 	/**
-	 * recoverySafeBalancePublic
+	 * checkChannelFake
 	 *
 	 * @param { (string | number | BN) } channelId,
 	*/
-	"recoverySafeBalancePublic" (
+	"checkChannelFake" (
 		channelId: (string | number | BN),
 		__options: GasLimit,
 	){
-		return buildSubmittableExtrinsic( this.__apiPromise, this.__nativeContract, "governanceImp::recoverySafeBalancePublic", [channelId], __options);
+		return buildSubmittableExtrinsic( this.__apiPromise, this.__nativeContract, "governanceImp::checkChannelFake", [channelId], __options);
+	}
+
+	/**
+	 * getVotesFakesNews
+	 *
+	 * @param { (string | number | BN) } channelId,
+	*/
+	"getVotesFakesNews" (
+		channelId: (string | number | BN),
+		__options: GasLimit,
+	){
+		return buildSubmittableExtrinsic( this.__apiPromise, this.__nativeContract, "governanceImp::getVotesFakesNews", [channelId], __options);
+	}
+
+	/**
+	 * getBalanceTokenLocked
+	 *
+	*/
+	"getBalanceTokenLocked" (
+		__options: GasLimit,
+	){
+		return buildSubmittableExtrinsic( this.__apiPromise, this.__nativeContract, "governanceImp::getBalanceTokenLocked", [], __options);
 	}
 
 	/**
@@ -128,6 +170,56 @@ export default class Methods {
 		__options: GasLimit,
 	){
 		return buildSubmittableExtrinsic( this.__apiPromise, this.__nativeContract, "governanceImp::getChannel", [channelId], __options);
+	}
+
+	/**
+	 * setTimeVotePrice
+	 *
+	 * @param { (number | string | BN) } timeVotePrice,
+	*/
+	"setTimeVotePrice" (
+		timeVotePrice: (number | string | BN),
+		__options: GasLimit,
+	){
+		return buildSubmittableExtrinsic( this.__apiPromise, this.__nativeContract, "governanceImp::setTimeVotePrice", [timeVotePrice], __options);
+	}
+
+	/**
+	 * transferBalanceChannel
+	 *
+	 * @param { ArgumentTypes.AccountId | null } addressToken,
+	 * @param { (number | string | BN) } typeTransfer,
+	 * @param { (string | number | BN) } channelId,
+	*/
+	"transferBalanceChannel" (
+		addressToken: ArgumentTypes.AccountId | null,
+		typeTransfer: (number | string | BN),
+		channelId: (string | number | BN),
+		__options: GasLimit,
+	){
+		return buildSubmittableExtrinsic( this.__apiPromise, this.__nativeContract, "governanceImp::transferBalanceChannel", [addressToken, typeTransfer, channelId], __options);
+	}
+
+	/**
+	 * getFeeReceiverWithdrawal
+	 *
+	*/
+	"getFeeReceiverWithdrawal" (
+		__options: GasLimit,
+	){
+		return buildSubmittableExtrinsic( this.__apiPromise, this.__nativeContract, "governanceImp::getFeeReceiverWithdrawal", [], __options);
+	}
+
+	/**
+	 * recoverySafeBalancePublic
+	 *
+	 * @param { (string | number | BN) } channelId,
+	*/
+	"recoverySafeBalancePublic" (
+		channelId: (string | number | BN),
+		__options: GasLimit,
+	){
+		return buildSubmittableExtrinsic( this.__apiPromise, this.__nativeContract, "governanceImp::recoverySafeBalancePublic", [channelId], __options);
 	}
 
 	/**
@@ -153,13 +245,93 @@ export default class Methods {
 	}
 
 	/**
-	 * getBalanceTokenLocked
+	 * getVotesPrice
 	 *
 	*/
-	"getBalanceTokenLocked" (
+	"getVotesPrice" (
 		__options: GasLimit,
 	){
-		return buildSubmittableExtrinsic( this.__apiPromise, this.__nativeContract, "governanceImp::getBalanceTokenLocked", [], __options);
+		return buildSubmittableExtrinsic( this.__apiPromise, this.__nativeContract, "governanceImp::getVotesPrice", [], __options);
+	}
+
+	/**
+	 * setTimeVoteFake
+	 *
+	 * @param { (number | string | BN) } timeVoteFake,
+	*/
+	"setTimeVoteFake" (
+		timeVoteFake: (number | string | BN),
+		__options: GasLimit,
+	){
+		return buildSubmittableExtrinsic( this.__apiPromise, this.__nativeContract, "governanceImp::setTimeVoteFake", [timeVoteFake], __options);
+	}
+
+	/**
+	 * getChannelFake
+	 *
+	 * @param { (string | number | BN) } channelFakeId,
+	*/
+	"getChannelFake" (
+		channelFakeId: (string | number | BN),
+		__options: GasLimit,
+	){
+		return buildSubmittableExtrinsic( this.__apiPromise, this.__nativeContract, "governanceImp::getChannelFake", [channelFakeId], __options);
+	}
+
+	/**
+	 * getPrices
+	 *
+	*/
+	"getPrices" (
+		__options: GasLimit,
+	){
+		return buildSubmittableExtrinsic( this.__apiPromise, this.__nativeContract, "governanceImp::getPrices", [], __options);
+	}
+
+	/**
+	 * doingVotePrice
+	 *
+	 * @param { boolean } isProved,
+	*/
+	"doingVotePrice" (
+		isProved: boolean,
+		__options: GasLimit,
+	){
+		return buildSubmittableExtrinsic( this.__apiPromise, this.__nativeContract, "governanceImp::doingVotePrice", [isProved], __options);
+	}
+
+	/**
+	 * getPricePerChannel
+	 *
+	*/
+	"getPricePerChannel" (
+		__options: GasLimit,
+	){
+		return buildSubmittableExtrinsic( this.__apiPromise, this.__nativeContract, "governanceImp::getPricePerChannel", [], __options);
+	}
+
+	/**
+	 * getTotalVotesAllowed
+	 *
+	*/
+	"getTotalVotesAllowed" (
+		__options: GasLimit,
+	){
+		return buildSubmittableExtrinsic( this.__apiPromise, this.__nativeContract, "governanceImp::getTotalVotesAllowed", [], __options);
+	}
+
+	/**
+	 * addMessagesPublic
+	 *
+	 * @param { Array<string> | null } defaultMessage,
+	 * @param { string } typeDefaultMessageChannel,
+	*/
+	"addMessagesPublic" (
+		defaultMessage: Array<string> | null,
+		typeDefaultMessageChannel: string,
+		__options: GasLimit,
+	){
+		return buildSubmittableExtrinsic( this.__apiPromise, this.__nativeContract, "governanceImp::addMessagesPublic", [defaultMessage, typeDefaultMessageChannel], __options);
 	}
 
 	/**
@@ -177,79 +349,61 @@ export default class Methods {
 	}
 
 	/**
-	 * getVotesFakesNews
+	 * rewardSafeForFakeNews
 	 *
 	 * @param { (string | number | BN) } channelId,
 	*/
-	"getVotesFakesNews" (
+	"rewardSafeForFakeNews" (
 		channelId: (string | number | BN),
 		__options: GasLimit,
 	){
-		return buildSubmittableExtrinsic( this.__apiPromise, this.__nativeContract, "governanceImp::getVotesFakesNews", [channelId], __options);
-	}
-
-	/**
-	 * addMessagesPublic
-	 *
-	 * @param { ArgumentTypes.AccountId } addressChannel,
-	*/
-	"addMessagesPublic" (
-		addressChannel: ArgumentTypes.AccountId,
-		__options: GasLimit,
-	){
-		return buildSubmittableExtrinsic( this.__apiPromise, this.__nativeContract, "governanceImp::addMessagesPublic", [addressChannel], __options);
-	}
-
-	/**
-	 * getTotalChannel
-	 *
-	*/
-	"getTotalChannel" (
-		__options: GasLimit,
-	){
-		return buildSubmittableExtrinsic( this.__apiPromise, this.__nativeContract, "governanceImp::getTotalChannel", [], __options);
+		return buildSubmittableExtrinsic( this.__apiPromise, this.__nativeContract, "governanceImp::rewardSafeForFakeNews", [channelId], __options);
 	}
 
 	/**
 	 * openVoteForFakeNews
 	 *
 	 * @param { (string | number | BN) } channelId,
+	 * @param { string } reason,
 	*/
 	"openVoteForFakeNews" (
 		channelId: (string | number | BN),
+		reason: string,
 		__options: GasLimit,
 	){
-		return buildSubmittableExtrinsic( this.__apiPromise, this.__nativeContract, "governanceImp::openVoteForFakeNews", [channelId], __options);
+		return buildSubmittableExtrinsic( this.__apiPromise, this.__nativeContract, "governanceImp::openVoteForFakeNews", [channelId, reason], __options);
 	}
 
 	/**
-	 * getFeeReceiverWallet
+	 * renounceOwnership
 	 *
 	*/
-	"getFeeReceiverWallet" (
+	"renounceOwnership" (
 		__options: GasLimit,
 	){
-		return buildSubmittableExtrinsic( this.__apiPromise, this.__nativeContract, "governanceImp::getFeeReceiverWallet", [], __options);
+		return buildSubmittableExtrinsic( this.__apiPromise, this.__nativeContract, "ownable::renounceOwnership", [], __options);
 	}
 
 	/**
-	 * getTotalVotesAllowed
+	 * transferOwnership
 	 *
+	 * @param { ArgumentTypes.AccountId } newOwner,
 	*/
-	"getTotalVotesAllowed" (
+	"transferOwnership" (
+		newOwner: ArgumentTypes.AccountId,
 		__options: GasLimit,
 	){
-		return buildSubmittableExtrinsic( this.__apiPromise, this.__nativeContract, "governanceImp::getTotalVotesAllowed", [], __options);
+		return buildSubmittableExtrinsic( this.__apiPromise, this.__nativeContract, "ownable::transferOwnership", [newOwner], __options);
 	}
 
 	/**
-	 * getPricePerChannel
+	 * owner
 	 *
 	*/
-	"getPricePerChannel" (
+	"owner" (
 		__options: GasLimit,
 	){
-		return buildSubmittableExtrinsic( this.__apiPromise, this.__nativeContract, "governanceImp::getPricePerChannel", [], __options);
+		return buildSubmittableExtrinsic( this.__apiPromise, this.__nativeContract, "ownable::owner", [], __options);
 	}
 
 }

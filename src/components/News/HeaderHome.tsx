@@ -13,18 +13,20 @@ import {
 } from "@ionic/react";
 import useContract from "../../hooks/useContract";
 import { globeOutline } from "ionicons/icons";
-
-const HeaderHome: React.FC = () => {
+import { useTranslation } from "react-i18next";
+import {
+  
+  Input,
+} from "reactstrap";
+interface HeaderHomeProps {
+  handleSearch: (searchText: string) => void;
+  handleOwnerPostsClick: () => void;
+}
+const HeaderHome: React.FC<HeaderHomeProps> = ({ handleSearch, handleOwnerPostsClick }) => {
+  const { t } = useTranslation();
   const [searchText, setSearchText] = useState("");
   const { isDarkMode } = useContract();
-  const handleSearchChange = (e: CustomEvent) => {
-    setSearchText(e.detail.value);
-  };
 
-  const handleOwnerPostsClick = () => {
-    // Implement the logic to filter posts by owner using searchText
-    console.log("Filter posts by owner with search text:", searchText);
-  };
 
   return (
     <IonCard
@@ -51,7 +53,7 @@ const HeaderHome: React.FC = () => {
                 gap: 5
               }}
             >
-              <IonTitle>Home</IonTitle>
+              <IonTitle>{t("TEXT_HOME")}</IonTitle>
             </IonCol>
             <IonCol 
               size="10"
@@ -62,11 +64,17 @@ const HeaderHome: React.FC = () => {
                 width: "100%"
               }}
             >
-              <IonSearchbar
+              <Input
                 value={searchText}                
-                onIonChange={handleSearchChange}
-                placeholder="Search"
+                onChange={(e) => setSearchText(e.target.value || "")}
+                placeholder={t("TEXT_SEARCH_CHANNEL")}
                 style={{ width: "100%" }}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    handleSearch(searchText);
+                    setSearchText("");
+                  }
+                }}
               />
             </IonCol>
             <IonCol 

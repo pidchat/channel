@@ -27,8 +27,8 @@ import "@ionic/react/css/display.css";
  */
 
 /* import '@ionic/react/css/palettes/dark.always.css'; */
-/* import '@ionic/react/css/palettes/dark.class.css'; */
-import "@ionic/react/css/palettes/dark.system.css";
+ import '@ionic/react/css/palettes/dark.class.css'; 
+/*import "@ionic/react/css/palettes/dark.system.css";*/
 
 /* Theme variables */
 import "./theme/variables.css";
@@ -48,14 +48,14 @@ setupIonicReact({
   mode: 'md',
   animated: true,
 });
-StatusBar.setOverlaysWebView({ overlay: false });
-StatusBar.setStyle({ style: Style.Dark });
-StatusBar.setBackgroundColor({ color: '#fffff' });
-StatusBar.show();
+StatusBar?.setOverlaysWebView({ overlay: false });
+StatusBar?.setStyle({ style: Style.Dark });
+StatusBar?.setBackgroundColor({ color: 'transparent' });
+StatusBar?.show();
 const queryClient = new QueryClient();
 
 const App: React.FC = () => {
- 
+
   return (
     <QueryClientProvider client={queryClient}>
     <UseProvider>

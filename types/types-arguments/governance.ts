@@ -2,6 +2,8 @@ import type BN from 'bn.js';
 
 export type AccountId = string | number[]
 
+export type Hash = string | number[]
+
 export enum LangError {
 	couldNotReadInput = 'CouldNotReadInput'
 }
@@ -46,5 +48,10 @@ export class PSP22ErrorBuilder {
 			safeTransferCheckFailed: value,
 		};
 	}
+}
+
+export enum OwnableError {
+	callerIsNotOwner = 'CallerIsNotOwner',
+	newOwnerIsZero = 'NewOwnerIsZero'
 }
 

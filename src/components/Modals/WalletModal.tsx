@@ -23,6 +23,7 @@ import QRCode from "react-qr-code";
 import useContract from "../../hooks/useContract";
 import { IInfoAccount, IInfoAccountRegister } from "../../contexts/UseProvider";
 import { useTranslation } from "react-i18next";
+import logo from "../../assets/img/logo.svg";
 interface IWallet {
   modal: boolean;
   modalToggle: () => void;
@@ -100,7 +101,12 @@ const WalletModal: React.FC<IWallet> = (props) => {
         alert(t("TEXT_ERROR_BALANCE"), "error");
         return;
       }
-      await transferToken(Math.round(amount * Math.pow(10, 8)), addressTO);
+      await transferToken(
+        Math.round(amount * Math.pow(10, 18)).toLocaleString("fullwide", {
+          useGrouping: false,
+        }),
+        addressTO,
+      );
     }
     alert(t("TEXT_ALERT_TRANSFER_SUCCESS"), "success");
     setAddressTo("");
@@ -298,7 +304,12 @@ const WalletModal: React.FC<IWallet> = (props) => {
         <Form>
           <TabContent activeTab={activeTab}>
             <TabPane tabId="1">
-              {componentSelectWallet(balanceToken, "PID")}
+              <FormGroup>
+              <IonButton expand="full" color={"light"}>
+                <img src={logo} alt="PIDCHAT" style={{ width: "32px" }} />{" "}
+                {t("TEXT_BALANCE")} {`${balanceToken} PID`}
+              </IonButton>
+            </FormGroup>
               <p className="text-center text-lg-center">
                 {t("TEXT_YOUR_BALANCE")} <b>{balanceNative}</b> LUNES
               </p>
@@ -343,7 +354,7 @@ const WalletModal: React.FC<IWallet> = (props) => {
               </IonSelect>
               {componentSelectWallet(
                 coinType === "LUNES" ? balanceNative : balanceToken,
-                coinType === "LUNES" ? "LUNES" : "PID"
+                coinType === "LUNES" ? "LUNES" : "PID",
               )}
               <FormGroup>
                 <Label for="address">{t("TEXT_ADDRESS_TO")}</Label>
@@ -373,14 +384,14 @@ const WalletModal: React.FC<IWallet> = (props) => {
                   onChange={(e: any) => {
                     setAmount(Number(e.target.value));
                     feeSimulatedNetwork(
-                      Math.round(Number(e.target.value || 0) * Math.pow(10, 8))
+                      Math.round(Number(e.target.value || 0) * Math.pow(10, 8)),
                     );
                     if (coinType === "PID" && addressTO)
                       feeSimulatedToken(
                         Math.round(
-                          Number(e.target.value || 0) * Math.pow(10, 8)
-                        ),
-                        addressTO
+                          Number(e.target.value || 0) * Math.pow(10, 8),
+                        ).toLocaleString("fullwide", { useGrouping: false }),
+                        addressTO,
                       );
                   }}
                   placeholder={t("TEXT_ENTER_AMOUNT")}

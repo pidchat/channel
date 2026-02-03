@@ -10,13 +10,23 @@ use openbrush::{
         String
     },
 };
+use openbrush::contracts::{
+    ownable,
+    ownable::only_owner,
+    reentrancy_guard
+};
 use ink_prelude::vec::Vec;
 use super::data::GovError;
+use ink::{
+    env::hash::Blake2x256,
+    primitives::Hash,
+};
 
 /// Governance implementation trait that provides functionality for managing channels,
 /// voting on fake news, and handling token payments
+
 #[openbrush::trait_definition]
-pub trait GovernanceImp : Storage<Data> {
+pub trait GovernanceImp : Storage<Data> + Storage<reentrancy_guard::Data> + Storage<ownable::Data> + InternalImp{
     
     /// Gets channel details by ID
     /// Returns tuple of (owner, balance, expiry timestamp, creator) if found
@@ -33,12 +43,13 @@ pub trait GovernanceImp : Storage<Data> {
     #[ink(message)] 
     fn get_total_channel(&self) -> Result<u128, PSP22Error>{
         Ok(self.data::<Data>().channel_id)    
-    }    
+    } 
+
 
     /// Creates a new public channel with payment
     /// Takes channel address as input and returns channel ID
     #[ink(message)]
-    fn add_messages_public(&mut self,address_channel: AccountId) -> Result<u128, PSP22Error>{
+    fn add_messages_public(&mut self,default_message: Option<Vec<String>>,type_default_message_channel: String) -> Result<AccountId, PSP22Error>{
         let caller = Self::env().caller();
         
         // Get token address and price
@@ -56,14 +67,20 @@ pub trait GovernanceImp : Storage<Data> {
 
         // Create new channel
         self.data::<Data>().channel_id +=1;
-        let date_block = Self::env().block_timestamp() + (86624000*10); // 10 days expiry        
+        let date_block = Self::env().block_timestamp() + (86624000 * self.data::<Data>().time_block_balance_post); // 10 days expiry        
         let id_channel = self.data::<Data>().channel_id.clone();        
-        
+        //create channel 
+         let address_this_contract = Self::env().account_id();
+        let date_salt = (default_message.clone(),type_default_message_channel.clone(),address_this_contract.clone());
+        let salt = Self::env().hash_encoded::<Blake2x256, _>(&date_salt);
+        let contract_code_hash =  self.data::<Data>().channel_contract_code_hash;
+       
+        let address_channel = self.create_channel(address_this_contract,default_message.clone(),type_default_message_channel.clone(),contract_code_hash,salt)?;
         // Store channel data
         self.data::<Data>().channels.insert(&id_channel, &(address_channel,price,date_block,caller));
         self.data::<Data>().channels_for_addrress.insert(&address_channel,&id_channel);
         
-        Ok(id_channel)
+        Ok(address_channel)
     }
 
     /// Claims reward for correctly identifying fake news
@@ -127,7 +144,7 @@ pub trait GovernanceImp : Storage<Data> {
 
     /// Opens voting period for marking content as fake news
     #[ink(message)]
-    fn open_vote_for_fake_news(&mut self,channel_id: u128) -> Result<(), PSP22Error>{
+    fn open_vote_for_fake_news(&mut self,channel_id: u128, reason: String) -> Result<(), PSP22Error>{
         let caller = Self::env().caller();        
         
         // Verify channel exists and not expired
@@ -149,16 +166,20 @@ pub trait GovernanceImp : Storage<Data> {
              return Err(PSP22Error::Custom(GovError::YouAreNotAuditor.as_str()));
          }
         // Process stake payment
-        let adddress_this_contract = Self::env().account_id();
+        let address_this_contract = Self::env().account_id();
         let token_address = self.data::<Data>().token_address;
         if token_address == Default::default() {
             return Err(PSP22Error::Custom(GovError::NotFoundToken.as_str()));
         }
-        PSP22Ref::transfer_from(&token_address.unwrap(),caller, adddress_this_contract, channel.1, Vec::<u8>::new())
+        PSP22Ref::transfer_from(&token_address.unwrap(),caller, address_this_contract, channel.1, Vec::<u8>::new())
         .map_err(|_| PSP22Error::Custom(GovError::PaymentFail.as_str()))?;
 
-        // Initialize vote
-        date_block = date_block + (86624000); // 1 day voting period
+        // Initialize vote period
+        let time_vote_fake = self.data::<Data>().time_vote_fake;
+        if time_vote_fake == 0 {
+            return Err(PSP22Error::Custom(GovError::NotFound.as_str()));
+        }
+        date_block = date_block + (86624000 * time_vote_fake); 
         self.data::<Data>().qtd_fake_yes.insert(&channel_id, &1);
         self.data::<Data>().qtd_fake_no.insert(&channel_id, &0);
         self.data::<Data>().deadlines_fake.insert(&channel_id, &date_block);
@@ -167,17 +188,20 @@ pub trait GovernanceImp : Storage<Data> {
         self.data::<Data>().channel_fake_id+=1;
         let id_fake = self.data::<Data>().channel_fake_id;
         self.data::<Data>().open_fake.insert(&id_fake,&channel_id);
+        self.data::<Data>().reason_fake.insert(&channel_id,&reason);
+
         Ok(())
     }
 
     /// Gets current vote counts and deadline for fake news vote
     #[ink(message)]
-    fn get_votes_fakes_news(&self,channel_id: u128) -> Result<(u128,u128,u64), PSP22Error>{
+    fn get_votes_fakes_news(&self,channel_id: u128) -> Result<(u128,u128,u64,String), PSP22Error>{
         let date_end = self.data::<Data>().deadlines_fake.get(&channel_id)
             .ok_or_else(|| PSP22Error::Custom(GovError::NotFound.as_str()))?;
         let quantity_yes = self.data::<Data>().qtd_fake_yes.get(&channel_id).unwrap();
         let quantity_no = self.data::<Data>().qtd_fake_no.get(&channel_id).unwrap();       
-        Ok((quantity_yes,quantity_no,date_end))
+         let channel_reason = self.data::<Data>().reason_fake.get(&channel_id);
+        Ok((quantity_yes,quantity_no,date_end,channel_reason.unwrap()))
     }
 
     /// Casts vote for fake news
@@ -214,7 +238,7 @@ pub trait GovernanceImp : Storage<Data> {
         let everybody  =  qtd_yes + qtd_no +1;
         let qtd_total_per_vote = self.data::<Data>().qtd_total_per_vote;
         if everybody > qtd_total_per_vote {
-            return Err(PSP22Error::Custom(GovError::VotoFull.as_str()));
+            return Err(PSP22Error::Custom(GovError::VoteFull.as_str()));
         }
 
         // Record vote
@@ -236,7 +260,7 @@ pub trait GovernanceImp : Storage<Data> {
 
     /// Opens voting period for changing channel price
     #[ink(message)]
-    fn open_vote_for_price(&mut self, new_price:Balance) -> Result<(), PSP22Error>{
+    fn open_vote_for_price(&mut self, new_price:Balance,new_balance_of_auditor:Balance) -> Result<(), PSP22Error>{
         let date = Self::env().block_timestamp();
         let vote_price_end =  self.data::<Data>().vote_price_end;
         if date <= vote_price_end {
@@ -249,29 +273,42 @@ pub trait GovernanceImp : Storage<Data> {
         if balance_of < self.data::<Data>().balance_of_auditor {
             return Err(PSP22Error::Custom(GovError::YouAreNotAuditor.as_str()));
         }
-
+        //new date 
+        let time_vote_price = self.data::<Data>().time_vote_price;
+        if time_vote_price == 0 {
+            return Err(PSP22Error::Custom(GovError::NotFound.as_str()));
+        }
+        let new_date = Self::env().block_timestamp() + (86624000 * time_vote_price);
         // Initialize price vote
         self.data::<Data>().new_price = new_price;
-        self.data::<Data>().vote_price_end = date;
+        self.data::<Data>().new_balance_of_auditor = new_balance_of_auditor;
+        self.data::<Data>().vote_price_end = new_date;
         self.data::<Data>().vote_id+=1u128;
         let vote_id = self.data::<Data>().vote_id;
-        self.data::<Data>().qtd_price_no.insert(&vote_id, &1u128);
-        self.data::<Data>().qtd_price_yes.insert(&vote_id, &1u128);
+        self.data::<Data>().qtd_price_no.insert(&vote_id, &0u128);
+        self.data::<Data>().qtd_price_yes.insert(&vote_id, &0u128);
         Ok(())
     }
 
     /// Gets current vote counts and details for price change vote
     #[ink(message)]
-    fn get_votes_price(&self) -> Result<(u128,u128,Balance,u64), PSP22Error>{        
+    fn get_votes_price(&self) -> Result<(u128,u128,Balance,Balance,u64), PSP22Error>{        
         let vote_id = self.data::<Data>().vote_id;
         if vote_id == 0 {
             return Err(PSP22Error::Custom(GovError::NotFound.as_str()));
         }
+       
+
         let qtd_price_yes = self.data::<Data>().qtd_price_yes.get(&vote_id).unwrap();
         let qtd_price_no = self.data::<Data>().qtd_price_no.get(&vote_id).unwrap();
         let new_price = self.data::<Data>().new_price;
+        let new_balance_of_auditor = self.data::<Data>().new_balance_of_auditor;
         let data_end  = self.data::<Data>().vote_price_end;        
-        Ok((qtd_price_yes,qtd_price_no,new_price,data_end))
+
+         if new_price == 0u128 {
+            return Err(PSP22Error::Custom(GovError::NotFound.as_str()));
+        }
+        Ok((qtd_price_yes,qtd_price_no,new_price,new_balance_of_auditor,data_end))
     }
 
     /// Casts vote for price change
@@ -294,7 +331,7 @@ pub trait GovernanceImp : Storage<Data> {
         }
 
         // Check if user already voted
-        let user_in_vote = self.data::<Data>().price_vote_auditor.get(&(caller,vote_id)).unwrap();
+        let user_in_vote = self.data::<Data>().price_vote_auditor.get(&(caller,vote_id)).unwrap_or_default();
         if user_in_vote != Default::default() {
             return Err(PSP22Error::Custom(GovError::VoteDone.as_str()));
         }
@@ -323,6 +360,7 @@ pub trait GovernanceImp : Storage<Data> {
     fn sync(&mut self) -> Result<(), PSP22Error>{
         let date = Self::env().block_timestamp();
         let vote_price_end =  self.data::<Data>().vote_price_end;
+        let new_balance_of_auditor = self.data::<Data>().new_balance_of_auditor;
         let price_new = self.data::<Data>().new_price;
         let price = self.data::<Data>().price;
         let vote_id = self.data::<Data>().vote_id;
@@ -332,7 +370,11 @@ pub trait GovernanceImp : Storage<Data> {
             let qtd_price_no= self.data::<Data>().qtd_price_no.get(&vote_id).unwrap();
             let qtd_price_yes = self.data::<Data>().qtd_price_yes.get(&vote_id).unwrap();
             if qtd_price_yes > qtd_price_no {
-                self.data::<Data>().price = price_new;                
+                // Update price and auditor balance                
+                self.data::<Data>().balance_of_auditor = new_balance_of_auditor;
+                self.data::<Data>().price = price_new;     
+                self.data::<Data>().new_price = 0u128;     
+                self.data::<Data>().new_balance_of_auditor = 0u128;      
             }
         }        
         Ok(())
@@ -350,22 +392,8 @@ pub trait GovernanceImp : Storage<Data> {
         if channel.3 != caller {
             return Err(PSP22Error::Custom(GovError::NotChannelOwner.as_str()));
         }
-        
-        // Check if channel expired
-        let time_block = channel.2;
-        let date = Self::env().block_timestamp();
-        if time_block > date {
-            return Err(PSP22Error::Custom(GovError::BlockedBalance.as_str()));
-        }        
-
-        // Check if already claimed
-        let recovery_in_user_payment = self.data::<Data>().recovery_in_user_payment.get(&(caller,channel_id));
-        if recovery_in_user_payment != Default::default() {
-            return Err(PSP22Error::Custom(GovError::DepositDone.as_str()));
-        }
-
         let mut balance = channel.1;
-
+        let mut forceDepositForVote = false;
         // Check if channel has open fake news vote
         let channel_in_vote = self.data::<Data>().who_open_fake.get(&channel_id);
         if channel_in_vote != Default::default() {
@@ -379,8 +407,22 @@ pub trait GovernanceImp : Storage<Data> {
             if qtd_yes > qtd_no {
                 return Err(PSP22Error::Custom(GovError::NoApproval.as_str()));
             }
-            balance = balance + channel.1;
+            forceDepositForVote = true;
+            balance = balance + channel.1;            
         }
+        
+        // Check if channel expired
+        let time_block = channel.2;
+        let date = Self::env().block_timestamp();
+        if time_block > date && !forceDepositForVote{
+            return Err(PSP22Error::Custom(GovError::BlockedBalance.as_str()));
+        }        
+
+        // Check if already claimed
+        let recovery_in_user_payment = self.data::<Data>().recovery_in_user_payment.get(&(caller,channel_id));
+        if recovery_in_user_payment != Default::default() {
+            return Err(PSP22Error::Custom(GovError::DepositDone.as_str()));
+        }       
 
         // Process fee if receiver set
         let fee_receiver = self.data::<Data>().fee_receiver;
@@ -451,5 +493,101 @@ pub trait GovernanceImp : Storage<Data> {
     fn get_price_per_channel(&self) -> u128{
         self.data::<Data>().price
     }
-    
+
+    /// Gets the current balance of the auditor
+    #[ink(message)]
+    fn get_balance_auditor(&self) -> u128{
+        self.data::<Data>().balance_of_auditor
+    }
+     #[ink(message)]
+    fn transfer_balance_channel(&mut self,address_token: Option<AccountId>, type_transfer: u8, channel_id: u128) -> Result<(), PSP22Error>{
+        let caller = Self::env().caller();
+        let channel = self.data::<Data>().channels.get(&channel_id);
+        // Verify channel exists
+        if channel == None {
+            return Err(PSP22Error::Custom(GovError::PaymentFail.as_str()));
+        }
+        if channel.unwrap().3 != caller {
+            return Err(PSP22Error::Custom(GovError::NotChannelOwner.as_str()));
+        }         
+        self.transfer_balance(channel.unwrap().0,address_token,caller, type_transfer);
+        Ok(())
+    }
+    /// Checks if a channel is marked as fake news
+    #[ink(message)]
+    fn check_channel_fake(&self, channel_id: u128) -> Result<String, PSP22Error>{
+        let channel_reason = self.data::<Data>().reason_fake.get(&channel_id);
+        if channel_reason == Default::default() {
+            return Err(PSP22Error::Custom(GovError::NotOpenVoteInFake.as_str()));
+        }
+        Ok(channel_reason.unwrap())
+    }
+    /// Gets channel ID on fake news vote ID
+    #[ink(message)]
+    fn get_channel_fake(&self, channel_fake_id: u128) -> Result<(u128), PSP22Error>{
+        let channel_id = self.data::<Data>().open_fake.get(&channel_fake_id);
+        if channel_id == Default::default() {
+            return Err(PSP22Error::Custom(GovError::NotFoundChannel.as_str()));
+        }
+        Ok(channel_id.unwrap())
+    }
+    /// Gets the voting deadline for price changes
+    #[ink(message)]
+    fn get_time_vote_price(&self) -> u64{
+        self.data::<Data>().time_vote_price
+    }
+    /// Sets the voting deadline for price changes
+    #[ink(message)]
+    #[openbrush::modifiers(only_owner)]
+    fn set_time_vote_price(&mut self, time_vote_price: u64) -> Result<(), PSP22Error>{
+        self.data::<Data>().time_vote_price = time_vote_price;
+        Ok(())
+    }
+    /// Gets the voting deadline for fake news votes
+    #[ink(message)]
+    fn get_time_vote_fake(&self) -> u64{
+        self.data::<Data>().time_vote_fake
+    }
+    /// Sets the voting deadline for fake news votes
+    #[ink(message)]
+    #[openbrush::modifiers(only_owner)]
+    fn set_time_vote_fake(&mut self, time_vote_fake: u64) -> Result<(), PSP22Error>{
+        self.data::<Data>().time_vote_fake = time_vote_fake;
+        Ok(())
+    }
+    /// Gets the time block balance post
+    #[ink(message)]
+    fn get_time_block_balance_post(&self) -> u64{
+        self.data::<Data>().time_block_balance_post
+    }
+    /// Sets the time block balance post   
+    #[ink(message)]
+    #[openbrush::modifiers(only_owner)]
+    fn set_time_block_balance_post(&mut self, time_block_balance_post: u64) -> Result<(), PSP22Error>{
+        self.data::<Data>().time_block_balance_post = time_block_balance_post;
+        Ok(())
+    }
+}
+
+pub trait InternalImp {
+    fn create_channel(
+        &self,
+        address_this_contract: AccountId,
+        default_message: Option<Vec<String>>,
+        type_default_message_channel: String,
+        pair_hash: Hash,
+        salt_bytes: [u8; 32],
+    ) -> Result<AccountId, PSP22Error>;
+    fn  destroy_channel(
+        &self,
+        channel_id: AccountId,
+    ) -> Result<(), PSP22Error>;
+    fn transfer_balance(
+        &self,
+        channel_id: AccountId,
+        address_token: Option<AccountId>,
+        to: AccountId,
+        type_transfer: u8
+    ) -> Result<(), PSP22Error>;
+
 }

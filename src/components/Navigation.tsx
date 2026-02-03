@@ -19,6 +19,7 @@ import {
   powerOutline,
   globeOutline,
   bugOutline,
+  shieldHalfOutline
 } from "ionicons/icons";
 import { Redirect, Route } from "react-router";
 import Home from "../pages/Home";
@@ -26,6 +27,8 @@ import Web3Auth from "../pages/Web3Auth";
 import { useTranslation } from "react-i18next";
 import SupportChannelModal from "./Modals/SupportChannelModal";
 import News from "../pages/News";
+import Post from "../pages/Post";
+import ModalVotePriceAndAudit from "./News/ModalVotePriceAndAudit";
 const Navigation: React.FC = () => {
   const { t } = useTranslation();
   const { disconnectWallet } = useContract();
@@ -34,6 +37,10 @@ const Navigation: React.FC = () => {
   
   const [modelIssue, setModelIssue] = useState(false);
   const toggleIssueModal = () => setModelIssue(!modelIssue);
+
+  const [modelVotePriceAndAudit, setModelVotePriceAndAudit] = useState(false);
+  const toggleVotePriceAndAuditModal = () => setModelVotePriceAndAudit(!modelVotePriceAndAudit);
+
   const {
     setRouter,
     setMobileSidebar,
@@ -84,7 +91,7 @@ useEffect(() => {
     e.stopPropagation();
     
     // If on login page, allow default back behavior
-    if (window.location.pathname === '/login' || location.pathname == "/") {
+    if (window.location.pathname === '/login' || location.pathname == "/" || window.location.pathname === '/news' || window.location.pathname === '/post/:newsId' ) {
       setEnableNavigation(false);
     }
     
@@ -107,8 +114,9 @@ useEffect(() => {
             mode="md"
             style={{
               flexDirection: "column",
-              background: "transparent",
-              height: "650px",
+              height: "100vh",
+              overflowY: "auto",
+              overflowX: "hidden",
             }}
           >
             <IonTabButton>
@@ -154,6 +162,16 @@ useEffect(() => {
               <IonLabel>{t("TEXT_SUPPORT")}</IonLabel>
             </IonTabButton>
             <IonTabButton
+              onClick={() => setModelVotePriceAndAudit(true)}
+              tab="Issue"
+              className="bt_dark_theme"
+            >
+              <IonIcon icon={shieldHalfOutline} />
+              <IonLabel>{t("TEXT_GOVERNANCE")}</IonLabel>
+            </IonTabButton>
+
+
+            <IonTabButton
               onClick={handleLogout}
               tab="Logout"
               className="bt_dark_theme"
@@ -167,7 +185,7 @@ useEffect(() => {
         </div>
       </nav>
     );
-  };
+  };  
   return (
     <IonTabs>
       <IonRouterOutlet>
@@ -183,9 +201,15 @@ useEffect(() => {
         <Route exact path="/">
           <Redirect to="/login" />
         </Route>
+        <Route exact path="/post/:newsId">
+          <Post />
+        </Route>
       </IonRouterOutlet>
-      <div className="layout">{enableNavigation && NavigationComponent()}</div>
+      <div className="layout">
+        {enableNavigation && NavigationComponent()}
+      </div>
       <SupportChannelModal modal={modelIssue} modalToggle={toggleIssueModal} />
+      <ModalVotePriceAndAudit modal={modelVotePriceAndAudit} modalToggle={toggleVotePriceAndAuditModal} />
     </IonTabs>
   );
 };

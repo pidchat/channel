@@ -1,5 +1,6 @@
 import { formatRelative } from 'date-fns';
-
+import * as ptBR from 'date-fns/locale/pt-BR';
+import * as enUS from 'date-fns/locale/en-US';
 export const truncateText = (str:string, qtd:number, qtd_tru:number, isEnd:boolean = false) =>{
     if(!str)    
         return ""
@@ -9,11 +10,14 @@ export const truncateText = (str:string, qtd:number, qtd_tru:number, isEnd:boole
         return str.length > qtd ? str.substring(0, qtd_tru) + "..."+str.substring((str.length - qtd_tru), str.length) : str;
 }
 
-export const getDateView = (dateTime: string) => {
+export const getDateView = (dateTime: string, lang: string = "pt-BR") => {
     
     let dateRaffle = new Date()
     dateRaffle.setTime(Number(dateTime))
-    return formatRelative(dateRaffle, new Date())
+    if(lang == "pt-BR")
+        return formatRelative(dateRaffle, new Date(), { locale: ptBR.ptBR  })
+    else
+        return formatRelative(dateRaffle, new Date(), { locale: enUS.enUS  })
 
 }
 export const calc_fee = (fee_deposit: string) => {

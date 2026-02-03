@@ -56,14 +56,6 @@ pub trait Channel {
     #[ink(message)]
     fn get_total_messages(&self) -> Option<u128>;    
 
-    /// Gets the channel ID from governance contract
-    /// 
-    /// # Returns
-    /// * Channel ID if found in governance
-    /// * Error if governance not set or channel not found
-    #[ink(message)]
-    fn get_id_channel_public(&self) -> Result<u128, PSP22Error>;
-
     /// Gets the governance contract address if set
     #[ink(message)]
     fn get_address_governance(&self) -> Option<AccountId>; 
@@ -80,17 +72,6 @@ pub trait Channel {
     #[ink(message)]
     fn set_address_governance(&mut self, address_governance: AccountId) -> Result<(), PSP22Error>;
 
-    /// Transfers owner Token and native balance
-    /// 
-    /// # Arguments
-    /// * `address_token` - Address of token contract
-    /// * `type_transfer` - 0 for token, 1 for native
-    /// 
-    /// # Returns
-    /// * `Ok(())` if transfer was successful
-    /// * `Err` if transfer failed
-    #[ink(message)]
-    fn transferBalance(&mut self,address_token: Option<AccountId>, type_transfer: u8) -> Result<(), PSP22Error>;
 
     /// Get Balance Token 
     ///
@@ -98,7 +79,7 @@ pub trait Channel {
     /// * `Ok(())` if transfer was successful
     /// * `Err` if transfer failed
     #[ink(message)]
-    fn getBalanceToken(&self, address_token: AccountId) -> Result<u128, PSP22Error>;    
+    fn get_balance_token(&self, address_token: AccountId) -> Result<u128, PSP22Error>;    
 
     /// Add Permission
     ///
@@ -137,4 +118,11 @@ pub trait Channel {
      /// * `Err` if transfer failed
      #[ink(message)]
      fn get_is_private(&self) -> bool;
+     /// Get Type Message
+     /// 
+     /// # Returns
+     /// * `Ok(())` if transfer was successful
+     /// * `Err` if transfer failed
+     #[ink(message)]
+     fn get_type_message(&self) -> String;
 }

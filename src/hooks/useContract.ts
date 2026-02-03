@@ -12,10 +12,11 @@ import { mnemonicGenerate, mnemonicValidate } from "@polkadot/util-crypto";
 import { ApiPromise, Keyring } from "@polkadot/api";
 import { ContractPromise } from "@polkadot/api-contract";
 import ABI_Channel from "../../artifacts/channel.json";
-import ABI_psp22 from "../../artifacts/pidchat_psp22.json";
+import ABI_psp22 from "../../artifacts/psp22_token.json";
+import ABI_Governance from "../../artifacts/governance.json";
 import Channel_factory from "../../types/constructors/channel";
 import Channel from "../../types/contracts/channel";
-import Token from "../../types/contracts/pidchat_psp22";
+import Token from "../../types/contracts/psp22_token";
 import CryptoJS from "crypto-js";
 import { calc_fee } from "../utils";
 import { useTranslation } from "react-i18next";
@@ -50,12 +51,7 @@ export const useContract = () => {
   const [balanceNativeAgent, setBalanceNativeAgent] = useState<number>(0);
   const [feeIdentityNetWork, setFeeIdentityNetWork] = useState<number>(0);
   useEffect(() => {
-    const session = sessionStorage.getItem("PIDCHAT_session");
-    const path = window.location.pathname;
-    if (!session && path !== "/login" && window.location.pathname != "/") {
-      location.href = "/";
-      return;
-    }
+    const session = sessionStorage.getItem("PIDCHAT_session");    
     setPassword(session || "");
     const savedAccount = localStorage.getItem("PIDCHAT_accountId");
     if (savedAccount && apiReady) {
@@ -101,8 +97,7 @@ export const useContract = () => {
       );
       const balanceToken = await token.query.balanceOf(account);
       const balanceNative = await api.query.system.account(account);
-      //console.log("Check Balance", balanceToken.value.ok);
-      setBalanceToken(Number(balanceToken.value.ok || 0)/1000000000000000000);
+      setBalanceToken(Number(balanceToken.value.ok?.toHuman() || 0)/1000000000000000000);
       setBalanceNative(
         Number(balanceNative.data.free.toHuman().replace(/,/g, "") || 0) /
           100000000
@@ -432,12 +427,17 @@ export const useContract = () => {
 
             if (event.section === "contracts" && event.method === "Called") {
               if (event.data.toHuman().contract === el.address) {
-                console.log("Channel: ", el.address);
-                console.log("caller: ", event.data.toHuman().caller);
                 addLastMessage(el.address);
               }
-            }
-            if (event.section === "balances" && event.method === "Transfer") {
+            }           
+          });
+        });
+      });
+      api.query.system.events((events: any) => {
+          events.forEach(async (record: any) => {
+            const { event } = record;        
+            if ((event.section === "balances" || event.section === "assets") && (event.method === "Transfer" || event.method === "Deposit" || event.method === "Transferred")) {
+             
               if (
                 event.data.toHuman().to === account ||
                 event.data.toHuman().from === account
@@ -448,7 +448,6 @@ export const useContract = () => {
             }
           });
         });
-      });
     }
   };
   const connectWallet = async () => {
@@ -574,6 +573,7 @@ export const useContract = () => {
         });
       });
     } catch (error: any) {
+      console.log(error);
       alert(error.message, "error");
       return null;
     }
@@ -657,6 +657,94 @@ export const useContract = () => {
         });
       });
     } catch (error: any) {
+      alert(error.message, "error");
+      return null;
+    }
+  };
+
+  const getQueryGovernance = async (address: string, router: string, param: any) => {
+    try {
+      if (!api || !apiReady || !account) {
+        return;
+      }
+      let error = "";
+      const contract = new ContractPromise(api, ABI_Governance, address);
+      const gasLimit: any = getGasLimit(api);
+      const { storageDeposit, result, gasRequired, output }: any =
+        await contract.query[router](
+          account,
+          {
+            gasLimit,
+            storageDepositLimit: null,
+          },
+          ...Object.values(param)
+        );
+      if (result.isErr) {
+        if (result.asErr.isModule) {
+          const dispatchError = api.registry.findMetaError(
+            result.asErr.asModule
+          );
+          error = dispatchError.docs.length
+            ? dispatchError.docs.concat().toString()
+            : dispatchError.name;
+        } else {
+          error = result.asErr.toString();
+        }
+        throw new Error(error);
+      }
+      if (result.isOk) {
+        return {
+          contract,
+          storageDeposit: calc_fee(storageDeposit.toHuman().Charge),
+          gasRequired,
+          result,
+          output,
+        };
+      }
+    } catch (error: any) {
+      console.log(error);
+      alert(error.message, "error");
+      return null;
+    }
+  };
+
+  const sendTXGovernance = async (address: string, router: string, param: any) => {
+    try {
+      if (!api || !apiReady || !account) {
+        return "";
+      }
+      const contracts = await getQueryGovernance(address, router, param);
+      if (!contracts) {
+        return "";
+      }
+      const account_aux = getAccountAux();
+      if(!account_aux) return "";
+      await new Promise<string>((resolve, reject) => {
+        contracts.contract.tx[router](
+          {
+            gasLimit: contracts.gasRequired,
+            storageDepositLimit: null,
+          },
+          ...Object.values(param)
+        ).signAndSend(account_aux, async (res) => {
+          if (res.status.isInBlock) {
+            console.log("in a block");
+          }
+          if (res.status.isFinalized) {
+            console.log("finalized");
+            resolve(res.status.asFinalized.toString());
+          }
+          if (res.isError) {
+            console.log(`Error at blockHash ${res.isError}`);
+            reject("Error at blockHash");
+          }
+        });
+      });
+       const object = contracts.output.toHuman().Ok?.Ok;
+      console.log("contracts",object);
+      return object;
+    } catch (error: any) {
+      console.log(error);
       alert(error.message, "error");
       return null;
     }
@@ -835,13 +923,9 @@ export const useContract = () => {
 
       // Calculate base storage size
       const contractSize = wasm.length;
-      console.log(`Contract WASM size: ${contractSize} bytes`);
 
       // Get storage deposit per byte from chain constants
-      const storageDepositPerByte = api.consts.contracts.depositPerByte;
-      console.log(
-        `Storage deposit per byte: ${storageDepositPerByte.toString()}`
-      );
+      const storageDepositPerByte = api.consts.contracts.depositPerByte;      
 
       // Calculate storage costs
       let totalStorageCost = 0;
@@ -849,7 +933,6 @@ export const useContract = () => {
       // 1. Base contract storage cost
       const baseStorageCost =
         Number(contractSize) * Number(storageDepositPerByte.toString());
-      console.log(`Base storage cost: ${baseStorageCost}`);
       totalStorageCost += baseStorageCost;
 
       // 2. Message storage cost
@@ -860,21 +943,18 @@ export const useContract = () => {
           acc + Number(messageSize) * Number(storageDepositPerByte.toString())
         );
       }, 0);
-      console.log(`Messages storage cost: ${messageStorageCost}`);
       totalStorageCost += messageStorageCost;
 
       // 3. Type storage cost (including length prefix)
       const typeSize = new TextEncoder().encode(type).length + 4;
       const typeStorageCost =
         Number(typeSize) * Number(storageDepositPerByte.toString());
-      console.log(`Type storage cost: ${typeStorageCost}`);
       totalStorageCost += typeStorageCost;
 
       // 4. Additional metadata storage
       const metadataOverhead = 100; // Estimated overhead for contract metadata
       const metadataStorageCost =
         metadataOverhead * Number(storageDepositPerByte.toString());
-      console.log(`Metadata storage cost: ${metadataStorageCost}`);
       totalStorageCost += metadataStorageCost + 500;
 
       // Add safety margin (10%)
@@ -882,11 +962,10 @@ export const useContract = () => {
       //fee transfer contract to owner
       const feeTransferContract = 12500000 * 2;
       const finalCost = totalStorageCost + safetyMargin + feeTransferContract;
-      console.log(`Final cost with safety margin: ${finalCost}`);
       const value = Number(finalCost);
       return value;
     } catch (error: any) {
-      alert(error.message, "error");
+      //alert(error.message, "error");
     }
     return 0;
   };
@@ -1234,8 +1313,9 @@ export const useContract = () => {
     }
     return false;
   };
-  const transferToken = async (value: number, to: string) => {
+  const transferToken = async (value: string, to: string) => {
     try {
+      console.log(value.toString(), to);
       if (!api || !apiReady) {
         return;
       }
@@ -1245,8 +1325,7 @@ export const useContract = () => {
         "psp22::transfer",
         {
           to,
-          value: value.toString(),
-          data: "",
+          value: value.toString()
         }
       );
       //addLastMessage(addressContract);
@@ -1256,7 +1335,7 @@ export const useContract = () => {
       setLoading(false);
     }
   };
-  const feeSimulatedToken = async (value: number, to: string) => {
+  const feeSimulatedToken = async (value: string, to: string) => {
     try {
       if (!api || !apiReady) {
         return;
@@ -1267,8 +1346,7 @@ export const useContract = () => {
         "psp22::transfer",
         {
           to,
-          value: value.toString(),
-          data: "",
+          value: value.toString()
         }
       );
       setFeeGasNetWork(Number(tokenQUery?.storageDeposit || 0) / 10000000);
@@ -1542,7 +1620,14 @@ export const useContract = () => {
     transferFromAgent,
     authenticate,
     createAccount,
-    password
+    password,
+    decryptMessage,
+    sendTXChannel,
+    getQueryGovernance,
+    sendTXGovernance,
+    getQueryToken,
+    sendTXToken,
+    getAccountCompleteInNetWork,
 
   };
 };
