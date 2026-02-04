@@ -25,6 +25,7 @@
     "@capacitor/ios": "^7.4.0",
     "@capacitor/keyboard": "^7.0.1",
     "@capacitor/status-bar": "7.0.1",
+    "@capawesome/capacitor-app-update": "^7.0.0",
     "@ethersproject/hdnode": "^5.8.0",
     "@icon/themify-icons": "^1.0.1-alpha.3",
     "@ionic/react": "^8.0.0",

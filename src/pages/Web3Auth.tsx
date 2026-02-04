@@ -27,6 +27,11 @@ import { useLocation } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { truncateText } from "../utils";
 import CreateAccountModal from "../components/Modals/CreateAccountModal";
+import {
+  AppUpdate,
+  AppUpdateAvailability,
+} from "@capawesome/capacitor-app-update";
+import { Capacitor } from "@capacitor/core";
 const size = "32px";
 const Web3Auth: React.FC = () => {
   const { t, i18n } = useTranslation();
@@ -46,7 +51,20 @@ const Web3Auth: React.FC = () => {
     setMenuBar(false);
     setMobileSidebar(false);
   });
-
+  const performImmediateUpdate = async () => {
+    const result = await AppUpdate.getAppUpdateInfo();
+    if (result.updateAvailability !== AppUpdateAvailability.UPDATE_AVAILABLE) {
+      return;
+    }
+    if (result.immediateUpdateAllowed) {
+      await AppUpdate.performImmediateUpdate();
+    }
+  };
+  useEffect(() => {
+     if (Capacitor.getPlatform() === "android") {
+      performImmediateUpdate();
+    }
+  }, []);
   useEffect(() => {
     if (apiReady) {
       if (account) {
