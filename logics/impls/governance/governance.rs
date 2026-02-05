@@ -171,7 +171,7 @@ pub trait GovernanceImp : Storage<Data> + Storage<reentrancy_guard::Data> + Stor
         if token_address == Default::default() {
             return Err(PSP22Error::Custom(GovError::NotFoundToken.as_str()));
         }
-        PSP22Ref::transfer_from(&token_address.unwrap(),caller, address_this_contract, channel.1, Vec::<u8>::new())
+        PSP22Ref::transfer_from(&token_address,caller, address_this_contract, channel.1, Vec::<u8>::new())
         .map_err(|_| PSP22Error::Custom(GovError::PaymentFail.as_str()))?;
 
         // Initialize vote period
@@ -433,7 +433,7 @@ pub trait GovernanceImp : Storage<Data> + Storage<reentrancy_guard::Data> + Stor
         }
 
         // Transfer balance
-        let token_address = self.data::<Data>().token_address.unwrap();
+        let token_address = self.data::<Data>().token_address;
         PSP22Ref::transfer(&token_address, caller, balance, Vec::<u8>::new())
             .map_err(|_| PSP22Error::Custom(GovError::PaymentFail.as_str()))?;
 
@@ -472,7 +472,7 @@ pub trait GovernanceImp : Storage<Data> + Storage<reentrancy_guard::Data> + Stor
         }
 
         let balance = self.data::<Data>().fee_balance;
-        let token_address = self.data::<Data>().token_address.unwrap();
+        let token_address = self.data::<Data>().token_address;
 
         // Transfer fees
         PSP22Ref::transfer(&token_address, caller, balance, Vec::<u8>::new())

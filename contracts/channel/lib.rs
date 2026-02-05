@@ -117,7 +117,7 @@ pub mod channel {
             if balance_token == 0 {
                 return Err(PSP22Error::Custom(String::from("Token balance not found")));
             }
-            PSP22Ref::transfer(&address_token.unwrap(), to, balance_token,Vec::new()).map_err(|_| PSP22Error::Custom(String::from("Transfer failed")))?;
+            PSP22Ref::transfer(&address_token, to, balance_token,Vec::new())?;
         }
         Ok(())
     }
