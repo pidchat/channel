@@ -460,6 +460,7 @@ export const useGovernance = () => {
       }
       const account_aux = await getAccountAuxContract();
       if (!account_aux) return;
+
       const contract = new Governance(
         import.meta.env.VITE_CONTRACT_GOVERNANCE,
         account_aux,
@@ -473,6 +474,7 @@ export const useGovernance = () => {
         console.log("result.value.ok?.err.custom",result.value.ok?.err.custom)
         throw new Error(result.value.ok?.err.custom || "");
       }
+      
       //send tx
       await sendTXGovernance(
         import.meta.env.VITE_CONTRACT_GOVERNANCE,
@@ -482,6 +484,7 @@ export const useGovernance = () => {
         },
       );
     } catch (error: any) {
+      console.log("error.message",error)
       throw new Error(error.message);
     }
   };
