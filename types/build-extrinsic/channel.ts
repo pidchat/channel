@@ -33,17 +33,113 @@ export default class Methods {
 	/**
 	 * transferBalance
 	 *
-	 * @param { ArgumentTypes.AccountId | null } addressToken,
+	 * @param { ArgumentTypes.AccountId } addressToken,
 	 * @param { ArgumentTypes.AccountId } to,
 	 * @param { (number | string | BN) } typeTransfer,
+	 * @param { (string | number | BN) } amount,
 	*/
 	"transferBalance" (
-		addressToken: ArgumentTypes.AccountId | null,
+		addressToken: ArgumentTypes.AccountId,
 		to: ArgumentTypes.AccountId,
 		typeTransfer: (number | string | BN),
+		amount: (string | number | BN),
 		__options: GasLimit,
 	){
-		return buildSubmittableExtrinsic( this.__apiPromise, this.__nativeContract, "transferBalance", [addressToken, to, typeTransfer], __options);
+		return buildSubmittableExtrinsic( this.__apiPromise, this.__nativeContract, "transferBalance", [addressToken, to, typeTransfer, amount], __options);
+	}
+
+	/**
+	 * getTypeMessage
+	 *
+	*/
+	"getTypeMessage" (
+		__options: GasLimit,
+	){
+		return buildSubmittableExtrinsic( this.__apiPromise, this.__nativeContract, "channelImpl::getTypeMessage", [], __options);
+	}
+
+	/**
+	 * editMessages
+	 *
+	 * @param { string } message,
+	 * @param { (string | number | BN) } idMessagee,
+	*/
+	"editMessages" (
+		message: string,
+		idMessagee: (string | number | BN),
+		__options: GasLimit,
+	){
+		return buildSubmittableExtrinsic( this.__apiPromise, this.__nativeContract, "channelImpl::editMessages", [message, idMessagee], __options);
+	}
+
+	/**
+	 * receivedMessages
+	 *
+	 * @param { (string | number | BN) } idMessage,
+	*/
+	"receivedMessages" (
+		idMessage: (string | number | BN),
+		__options: GasLimit,
+	){
+		return buildSubmittableExtrinsic( this.__apiPromise, this.__nativeContract, "channelImpl::receivedMessages", [idMessage], __options);
+	}
+
+	/**
+	 * getTotalMessages
+	 *
+	*/
+	"getTotalMessages" (
+		__options: GasLimit,
+	){
+		return buildSubmittableExtrinsic( this.__apiPromise, this.__nativeContract, "channelImpl::getTotalMessages", [], __options);
+	}
+
+	/**
+	 * getDefaultMessage
+	 *
+	*/
+	"getDefaultMessage" (
+		__options: GasLimit,
+	){
+		return buildSubmittableExtrinsic( this.__apiPromise, this.__nativeContract, "channelImpl::getDefaultMessage", [], __options);
+	}
+
+	/**
+	 * addPermission
+	 *
+	 * @param { ArgumentTypes.AccountId } address,
+	 * @param { boolean } typePermission,
+	*/
+	"addPermission" (
+		address: ArgumentTypes.AccountId,
+		typePermission: boolean,
+		__options: GasLimit,
+	){
+		return buildSubmittableExtrinsic( this.__apiPromise, this.__nativeContract, "channelImpl::addPermission", [address, typePermission], __options);
+	}
+
+	/**
+	 * setAddressGovernance
+	 *
+	 * @param { ArgumentTypes.AccountId } addressGovernance,
+	*/
+	"setAddressGovernance" (
+		addressGovernance: ArgumentTypes.AccountId,
+		__options: GasLimit,
+	){
+		return buildSubmittableExtrinsic( this.__apiPromise, this.__nativeContract, "channelImpl::setAddressGovernance", [addressGovernance], __options);
+	}
+
+	/**
+	 * addEmotion
+	 *
+	 * @param { string } emotion,
+	*/
+	"addEmotion" (
+		emotion: string,
+		__options: GasLimit,
+	){
+		return buildSubmittableExtrinsic( this.__apiPromise, this.__nativeContract, "channelImpl::addEmotion", [emotion], __options);
 	}
 
 	/**
@@ -54,6 +150,28 @@ export default class Methods {
 		__options: GasLimit,
 	){
 		return buildSubmittableExtrinsic( this.__apiPromise, this.__nativeContract, "channelImpl::getEmotions", [], __options);
+	}
+
+	/**
+	 * getAddressGovernance
+	 *
+	*/
+	"getAddressGovernance" (
+		__options: GasLimit,
+	){
+		return buildSubmittableExtrinsic( this.__apiPromise, this.__nativeContract, "channelImpl::getAddressGovernance", [], __options);
+	}
+
+	/**
+	 * sendMessages
+	 *
+	 * @param { string } message,
+	*/
+	"sendMessages" (
+		message: string,
+		__options: GasLimit,
+	){
+		return buildSubmittableExtrinsic( this.__apiPromise, this.__nativeContract, "channelImpl::sendMessages", [message], __options);
 	}
 
 	/**
@@ -77,40 +195,6 @@ export default class Methods {
 	}
 
 	/**
-	 * getAddressGovernance
-	 *
-	*/
-	"getAddressGovernance" (
-		__options: GasLimit,
-	){
-		return buildSubmittableExtrinsic( this.__apiPromise, this.__nativeContract, "channelImpl::getAddressGovernance", [], __options);
-	}
-
-	/**
-	 * setAddressGovernance
-	 *
-	 * @param { ArgumentTypes.AccountId } addressGovernance,
-	*/
-	"setAddressGovernance" (
-		addressGovernance: ArgumentTypes.AccountId,
-		__options: GasLimit,
-	){
-		return buildSubmittableExtrinsic( this.__apiPromise, this.__nativeContract, "channelImpl::setAddressGovernance", [addressGovernance], __options);
-	}
-
-	/**
-	 * sendMessages
-	 *
-	 * @param { string } message,
-	*/
-	"sendMessages" (
-		message: string,
-		__options: GasLimit,
-	){
-		return buildSubmittableExtrinsic( this.__apiPromise, this.__nativeContract, "channelImpl::sendMessages", [message], __options);
-	}
-
-	/**
 	 * getBalanceToken
 	 *
 	 * @param { ArgumentTypes.AccountId } addressToken,
@@ -123,85 +207,15 @@ export default class Methods {
 	}
 
 	/**
-	 * addEmotion
+	 * transferOwnership
 	 *
-	 * @param { string } emotion,
+	 * @param { ArgumentTypes.AccountId } newOwner,
 	*/
-	"addEmotion" (
-		emotion: string,
+	"transferOwnership" (
+		newOwner: ArgumentTypes.AccountId,
 		__options: GasLimit,
 	){
-		return buildSubmittableExtrinsic( this.__apiPromise, this.__nativeContract, "channelImpl::addEmotion", [emotion], __options);
-	}
-
-	/**
-	 * editMessages
-	 *
-	 * @param { string } message,
-	 * @param { (string | number | BN) } idMessagee,
-	*/
-	"editMessages" (
-		message: string,
-		idMessagee: (string | number | BN),
-		__options: GasLimit,
-	){
-		return buildSubmittableExtrinsic( this.__apiPromise, this.__nativeContract, "channelImpl::editMessages", [message, idMessagee], __options);
-	}
-
-	/**
-	 * addPermission
-	 *
-	 * @param { ArgumentTypes.AccountId } address,
-	 * @param { boolean } typePermission,
-	*/
-	"addPermission" (
-		address: ArgumentTypes.AccountId,
-		typePermission: boolean,
-		__options: GasLimit,
-	){
-		return buildSubmittableExtrinsic( this.__apiPromise, this.__nativeContract, "channelImpl::addPermission", [address, typePermission], __options);
-	}
-
-	/**
-	 * getTypeMessage
-	 *
-	*/
-	"getTypeMessage" (
-		__options: GasLimit,
-	){
-		return buildSubmittableExtrinsic( this.__apiPromise, this.__nativeContract, "channelImpl::getTypeMessage", [], __options);
-	}
-
-	/**
-	 * getDefaultMessage
-	 *
-	*/
-	"getDefaultMessage" (
-		__options: GasLimit,
-	){
-		return buildSubmittableExtrinsic( this.__apiPromise, this.__nativeContract, "channelImpl::getDefaultMessage", [], __options);
-	}
-
-	/**
-	 * getTotalMessages
-	 *
-	*/
-	"getTotalMessages" (
-		__options: GasLimit,
-	){
-		return buildSubmittableExtrinsic( this.__apiPromise, this.__nativeContract, "channelImpl::getTotalMessages", [], __options);
-	}
-
-	/**
-	 * receivedMessages
-	 *
-	 * @param { (string | number | BN) } idMessage,
-	*/
-	"receivedMessages" (
-		idMessage: (string | number | BN),
-		__options: GasLimit,
-	){
-		return buildSubmittableExtrinsic( this.__apiPromise, this.__nativeContract, "channelImpl::receivedMessages", [idMessage], __options);
+		return buildSubmittableExtrinsic( this.__apiPromise, this.__nativeContract, "ownable::transferOwnership", [newOwner], __options);
 	}
 
 	/**
@@ -212,18 +226,6 @@ export default class Methods {
 		__options: GasLimit,
 	){
 		return buildSubmittableExtrinsic( this.__apiPromise, this.__nativeContract, "ownable::owner", [], __options);
-	}
-
-	/**
-	 * transferOwnership
-	 *
-	 * @param { ArgumentTypes.AccountId } newOwner,
-	*/
-	"transferOwnership" (
-		newOwner: ArgumentTypes.AccountId,
-		__options: GasLimit,
-	){
-		return buildSubmittableExtrinsic( this.__apiPromise, this.__nativeContract, "ownable::transferOwnership", [newOwner], __options);
 	}
 
 	/**
