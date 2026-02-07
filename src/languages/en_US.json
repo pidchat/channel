@@ -151,5 +151,6 @@
   "TEXT_CHANNEL_PUBLISHED_SUCCESSFULLY":"Channel published successfully",
   "TEXT_SYNC_SUCCESS":"Synchronization performed successfully",
   "TEXT_CLOSE_VOTE":"Close Vote",
-  "TEXT_POST_KEYWORDS":"PIDCHAT, PID, PIDTOKEN"
+  "TEXT_POST_KEYWORDS":"PIDCHAT, PID, PIDTOKEN",
+  "TEXT_DECENTRALIZED_MESSAGE":"Private messages with on-chain security"
 }

@@ -1,8 +1,7 @@
 import React, { useEffect } from "react";
-import { Button, Input } from "reactstrap";
+import { Input } from "reactstrap";
 import {
   IonButton,
-  isPlatform,
   useIonAlert,
 } from "@ionic/react";
 import useContract from "../../hooks/useContract";

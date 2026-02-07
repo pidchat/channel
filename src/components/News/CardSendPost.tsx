@@ -56,7 +56,7 @@ const CardSendPost: React.FC<CardSendPostProp> = ({ reload }) => {
         alert(t("TEXT_ENTER_INFORMATION_POST"), "error");
         return;
       }
-      if (balanceNative < feeChannel) {
+      if (balanceNative < (feeChannel/100000000)) {
         alert(t("TEXT_ERROR_BALANCE"), "error");
         return;
       }

@@ -152,6 +152,9 @@
   "TEXT_CHANNEL_PUBLISHED_SUCCESSFULLY":"Canal publicado com sucesso",
   "TEXT_SYNC_SUCCESS":"Sincronização realizada com sucesso",
   "TEXT_CLOSE_VOTE":"Fechar Votação",
-  "TEXT_POST_KEYWORDS":"PIDCHAT, PID, PIDTOKEN, PIDTOKENDAO"
+  "TEXT_POST_KEYWORDS":"PIDCHAT, PID, PIDTOKEN, PIDTOKENDAO",
+  "TEXT_DECENTRALIZED_MESSAGE":"Mensagens privadas com segurança on-chain",
+  "TEXT_EMOJI":"Emoji",
+  "TEXT_ERROR_EMOJI":"Informe um emoji"
 
 }
