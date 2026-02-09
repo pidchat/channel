@@ -152,5 +152,8 @@
   "TEXT_SYNC_SUCCESS":"Sincronización realizada con éxito",
   "TEXT_CLOSE_VOTE":"Cerrar Votação",
   "TEXT_POST_KEYWORDS":"PIDCHAT, PID, PIDTOKEN",
-  "TEXT_DECENTRALIZED_MESSAGE":"Mensajes privadas con seguridad on-chain"
+  "TEXT_DECENTRALIZED_MESSAGE":"Mensajes privadas con seguridad on-chain",
+  "TEXT_EMOJI":"Emoji",
+  "TEXT_ERROR_EMOJI":"Informe um emoji",
+  "TEXT_SEARCH":"Buscar"
 }

@@ -36,6 +36,10 @@ pub trait GovernanceImp : Storage<Data> + Storage<reentrancy_guard::Data> + Stor
         if channel == Default::default() {
             return Err(PSP22Error::Custom(GovError::NotFound.as_str()));
         }            
+        let recovery_in_user_payment = self.data::<Data>().recovery_in_user_payment.get(&(channel.unwrap().3,channel_id));
+        if recovery_in_user_payment != Default::default() {
+            channel.unwrap().1 = 0u128;
+        }
         Ok(channel)    
     }
 
@@ -437,7 +441,7 @@ pub trait GovernanceImp : Storage<Data> + Storage<reentrancy_guard::Data> + Stor
             .map_err(|_| PSP22Error::Custom(GovError::PaymentFail.as_str()))?;
 
         self.data::<Data>().recovery_in_user_payment.insert(&(caller,channel_id),&balance);
-
+        
         Ok(balance)
     }
 

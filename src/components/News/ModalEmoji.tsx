@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { IonToolbar, IonButton, IonButtons, IonLoading } from "@ionic/react";
-import { Modal, ModalHeader, ModalBody, ModalFooter } from "reactstrap";
+import { IonToolbar, IonButton, IonButtons, IonLoading, IonIcon } from "@ionic/react";
+import { Modal, ModalHeader, ModalBody, ModalFooter, Input } from "reactstrap";
 import { useTranslation } from "react-i18next";
 import useGovernance, {
   IEmoji
@@ -9,6 +9,7 @@ import useGovernance, {
 import useContract from "../../hooks/useContract";
 
 import emoji from "../../assets/emoji.json";
+import { search } from "ionicons/icons";
 
 interface ModalVotePostProps {
   modal: boolean;
@@ -85,6 +86,13 @@ const ModalEmoji: React.FC<ModalVotePostProps> = ({
     ),
     [visibleEmojis, index],
   );
+  const searchEmoji = (query: string) => {
+    if (query) {
+      setVisibleEmojis(emoji.filter((item) => item.name.includes(query) || item.group.includes(query) || item.category.includes(query)).map((item: any) => item.char));
+    } else {
+      setVisibleEmojis(emotions.slice(0, CHUNK_SIZE));
+    }
+  };
   const handleSendEmojis = async (stringEmoji: string) => {
     try {
       console.log(stringEmoji);
@@ -103,7 +111,6 @@ const ModalEmoji: React.FC<ModalVotePostProps> = ({
       setLoading(true);
       await sendEmotions(address,stringEmoji);
       reload();
-      modalToggle();
       setLoading(false);
     } catch (error: any) {
       alert(t(`${error.message}`), "error");
@@ -120,12 +127,34 @@ const ModalEmoji: React.FC<ModalVotePostProps> = ({
     >
       <ModalHeader toggle={modalToggle}>{t("TEXT_EMOJI")}</ModalHeader>
       <ModalBody>
-        {emojis.map((item, idx) => (
-          <tr key={idx} style={{ borderBottom: "1px solid #eee" }}>
-            <td style={{ padding: "8px", fontSize: "24px" }}>{item.emoji}</td>
-            <td style={{ padding: "8px" }}>{item.quantity || 0}</td>
-          </tr>
-        ))}
+        <div
+          style={{
+            display: "flex",
+            flexWrap: "wrap",
+            gap: "8px",
+            marginBottom: "12px",
+          }}
+        >
+          {emojis.map((item, idx) => (
+            <div
+              key={idx}
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: "4px",
+                padding: "4px 8px",
+                border: "1px solid #eee",
+                borderRadius: "4px",
+                backgroundColor: "#fafafa",
+              }}
+            >
+              <span style={{ fontSize: "24px" }}>{item.emoji}</span>
+              <span style={{ fontSize: "14px", color: "#555" }}>
+                {item.quantity || 0}
+              </span>
+            </div>
+          ))}
+        </div>
 
         <p
           style={{
@@ -135,6 +164,25 @@ const ModalEmoji: React.FC<ModalVotePostProps> = ({
         >
           {t("TEXT_FEE")} <b>{feeChannel}</b> LUNES
         </p>
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: "4px",
+            padding: "4px 8px",
+            border: "1px solid #eee",
+            borderRadius: "4px",
+            backgroundColor: "#fafafa",
+          }}
+        >
+          <IonIcon icon={search} style={{ fontSize: "24px" }} />
+          <Input
+            placeholder={t("TEXT_SEARCH")}
+            onChange={(e) => {
+              searchEmoji(e.target.value || "");
+            }}
+          />
+        </div>
          <div
             style={{
               maxHeight: "20vh",

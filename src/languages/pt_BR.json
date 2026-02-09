@@ -155,6 +155,7 @@
   "TEXT_POST_KEYWORDS":"PIDCHAT, PID, PIDTOKEN, PIDTOKENDAO",
   "TEXT_DECENTRALIZED_MESSAGE":"Mensagens privadas com segurança on-chain",
   "TEXT_EMOJI":"Emoji",
-  "TEXT_ERROR_EMOJI":"Informe um emoji"
+  "TEXT_ERROR_EMOJI":"Informe um emoji",
+  "TEXT_SEARCH":"Pesquisar"
 
 }

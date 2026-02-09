@@ -65,6 +65,7 @@ const CardItemPost: React.FC<CardItemPostProps> = ({ channelId }) => {
       }
       setImage(img);
     }
+    console.log("details", details);
   }, [typeChannel]);
   useEffect(() => {
     getNewsId(channelId).then((res) => {
@@ -312,6 +313,7 @@ const CardItemPost: React.FC<CardItemPostProps> = ({ channelId }) => {
           channelId={details?.id || 0}
           dataLimit={details?.dataCreate}
           isOwner={account === details?.addressOwner}
+          enableRecoveryAndOpenVotes={Number(details?.balanceSafe || 0) > 0}
           modalToggle={() => {
             setOpenReportPostModal(!openReportPostModal);
             getReasonReport(channelId).then((res) => {

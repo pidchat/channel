@@ -9,7 +9,7 @@ import {
 import { Modal, ModalHeader, ModalBody, ModalFooter, Input } from "reactstrap";
 import { useTranslation } from "react-i18next";
 import useContract from "../../hooks/useContract";
-import { getDateView } from "../../utils";
+import { formatMillion, getDateView } from "../../utils";
 import useGovernance from "../../hooks/useGovernance";
 
 interface ModalReportPostProps {
@@ -21,6 +21,7 @@ interface ModalReportPostProps {
   postReported: string;
   isOwner: boolean;
   priceGuardian: string;
+  enableRecoveryAndOpenVotes: boolean;
 }
 
 const ModalReportPost: React.FC<ModalReportPostProps> = ({
@@ -31,7 +32,8 @@ const ModalReportPost: React.FC<ModalReportPostProps> = ({
   postReported,
   isOwner,
   channelId,
-  priceGuardian
+  priceGuardian,
+  enableRecoveryAndOpenVotes,
 }) => {
   const { t, i18n } = useTranslation();
   const [reason, setReason] = useState("");
@@ -104,7 +106,7 @@ const ModalReportPost: React.FC<ModalReportPostProps> = ({
         {t("TEXT_DESCRIPTION_REPORT_POST")}
         <br />
         <ul>
-          <li>1. {t("TEXT_1_REPORT_POST", { value: balanceAuditor })} </li>
+          <li>1. {t("TEXT_1_REPORT_POST", { value: formatMillion(balanceAuditor.toString()) })} </li>
           <li>2. {t("TEXT_2_REPORT_POST", { value: value })}</li>
           <li>3. {t("TEXT_3_REPORT_POST")}</li>
           <li>4. {t("TEXT_4_REPORT_POST")}</li>
