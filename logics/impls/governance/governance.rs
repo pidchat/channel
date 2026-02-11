@@ -32,7 +32,7 @@ pub trait GovernanceImp : Storage<Data> + Storage<reentrancy_guard::Data> + Stor
     /// Returns tuple of (owner, balance, expiry timestamp, creator) if found
     #[ink(message)]
     fn get_channel(&self,channel_id: u128) -> Result<Option<(AccountId, Balance,u64,AccountId)>, PSP22Error>{        
-        let channel = self.data::<Data>().channels.get(&channel_id);
+        let mut channel = self.data::<Data>().channels.get(&channel_id);
         if channel == Default::default() {
             return Err(PSP22Error::Custom(GovError::NotFound.as_str()));
         }            
