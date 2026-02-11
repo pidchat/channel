@@ -260,11 +260,11 @@ const Web3Auth: React.FC = () => {
           <IonRow className="ion-justify-content-center">
             <IonCol size="12" className="socialLinks">
               <a
-                href="https://www.instagram.com/pidchat.token"
+                href="https://t.me/pidchat"
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                <i className="ti ti-instagram"></i>
+                <i className="ti ti-headphone-alt"></i>
               </a>
               <a
                 href="https://x.com/TokenPidchat"
