@@ -38,3 +38,19 @@ export const extractNumbersAndColorize = (text:string) => {
     const color = `hsl(${hash % 360}, 100%, 50%)`;
     return color;
 };
+export const formatMillion = (value: string) => {
+    let index = 0;
+    let newFormat = "";
+
+    for (let i = value.length - 1; i >= 0; i--) {
+        index++;
+        const item = value[i];
+        if (index === 4) {
+            newFormat = "." + newFormat;
+            index = 1;
+        }
+        newFormat = item + newFormat;
+    }
+
+    return newFormat;
+}

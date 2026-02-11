@@ -16,7 +16,7 @@ import useGovernance, {
   InfoGovernance,
   InfoVotePriceAndAuditor,
 } from "../../hooks/useGovernance";
-import { getDateView } from "../../utils";
+import { formatMillion, getDateView } from "../../utils";
 import useContract from "../../hooks/useContract";
 interface IIssueChannel {
   modal: boolean;
@@ -110,7 +110,7 @@ const ModalVotePriceAndAudit: React.FC<IIssueChannel> = ({
   const handleOpenVotePrice = async () => {
     try {
       if (balanceToken < (Number(infoGovernance?.totalBalanceAuditor) / 1000000000000000000)) {
-        alert(t("TEXT_BALANCE_AUDITOR", { value: (Number(infoGovernance?.totalBalanceAuditor) / 1000000000000000000).toFixed(0) }), "error");
+        alert(t("TEXT_BALANCE_AUDITOR", { value: formatMillion((Number(infoGovernance?.totalBalanceAuditor) / 1000000000000000000).toFixed(0)) }), "error");
         return;
       }
       if (!valuePrice || !valueBalanceAudit) {
@@ -152,9 +152,9 @@ const ModalVotePriceAndAudit: React.FC<IIssueChannel> = ({
       <ModalBody>
         <p>
           {t("TEXT_AUDITOR_OPEN_VOTE", {
-            value: (
-              Number(infoGovernance?.priceGuardian) / 1000000000000000000
-            ).toFixed(0),
+            value: formatMillion((
+              Number(infoGovernance?.totalBalanceAuditor) / 1000000000000000000
+            ).toFixed(0)),
           })}
         </p>
         {!infoVotePrice && (
@@ -225,15 +225,15 @@ const ModalVotePriceAndAudit: React.FC<IIssueChannel> = ({
               <div className="text-center mt-1">
                 <p>
                   {t("TEXT_PRICE_PER_POST")}: 
-                  {(
+                  {formatMillion((
                     Number(infoVotePrice?.votePrice) / 1000000000000000000
-                  ).toFixed(0)} PID
+                  ).toFixed(0))} PID
                 </p> 
                 <p>
                   {t("TEXT_BALANCE_PER_AUDIT")}: 
-                  {(
+                  {formatMillion((
                     Number(infoVotePrice.balanceAuditor) / 1000000000000000000
-                  ).toFixed(0)} PID
+                  ).toFixed(0))} PID
                 </p>
                 <p className="text-center">
                   <strong>{t("TEXT_YOUR_AGREEMENT")}</strong>

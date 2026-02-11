@@ -166,8 +166,8 @@ const Web3Auth: React.FC = () => {
           <IonRow>
             <IonCol size="12" className="textContainer">
               <IonText>
-                <h2 className="title">{t("TEXT_MESSAGE_BLOCKCHAIN")}</h2>
-                <p className="subtitle">{t("TEXT_CONNECT_TO_YOUR_WALLET")}</p>
+                <h2 className="title">{"PIDCHAT"}</h2>
+                <p className="subtitle">{t("TEXT_DECENTRALIZED_MESSAGE")}</p>
                 <div style={{ display: "flex", justifyContent: "center" }}>
                   <IonButton
                     fill="clear"
@@ -227,6 +227,7 @@ const Web3Auth: React.FC = () => {
               <IonButton
                 expand="block"
                 size="large"
+                style={{width:"50%", margin:"0 auto"}}
                 disabled={!apiReady}
                 onClick={handleConnect}
               >

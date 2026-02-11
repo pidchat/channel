@@ -18,7 +18,7 @@ pub struct Data {
     // id_channel, (address_channel,Babalnce safe, date,address_autor)
     pub channels: Mapping<u128,(AccountId, Balance,u64,AccountId)>,
     // address_channel, (id_channel,Babalnce safe, date,address_autor)
-    pub channels_for_addrress: Mapping<AccountId, u128>,
+    pub channels_for_address: Mapping<AccountId, u128>,
     pub price: Balance,
     pub vote_id: u128,
     pub new_price:Balance,

@@ -24,6 +24,7 @@ import useContract from "../../hooks/useContract";
 import { IInfoAccount, IInfoAccountRegister } from "../../contexts/UseProvider";
 import { useTranslation } from "react-i18next";
 import logo from "../../assets/img/logo.svg";
+import { formatMillion } from "../../utils";
 interface IWallet {
   modal: boolean;
   modalToggle: () => void;
@@ -230,7 +231,7 @@ const WalletModal: React.FC<IWallet> = (props) => {
       <FormGroup>
         <IonButton expand="full" color={"light"}>
           <Identicon value={account} theme="substrate" size={32} />{" "}
-          {t("TEXT_BALANCE")} {`${balance} ${coin}`}
+          {t("TEXT_BALANCE")} {`${formatMillion(balance.toFixed(0).toString())} ${coin}`}
         </IonButton>
       </FormGroup>
     );
@@ -307,11 +308,11 @@ const WalletModal: React.FC<IWallet> = (props) => {
               <FormGroup>
               <IonButton expand="full" color={"light"}>
                 <img src={logo} alt="PIDCHAT" style={{ width: "32px" }} />{" "}
-                {t("TEXT_BALANCE")} {`${balanceToken} PID`}
+                {t("TEXT_BALANCE")} {`${formatMillion(balanceToken.toString())} PID`}
               </IonButton>
             </FormGroup>
               <p className="text-center text-lg-center">
-                {t("TEXT_YOUR_BALANCE")} <b>{balanceNative}</b> LUNES
+                {t("TEXT_YOUR_BALANCE")} <b>{formatMillion(balanceNative.toFixed(0).toString())}</b> LUNES
               </p>
               {account && (
                 <QRCode

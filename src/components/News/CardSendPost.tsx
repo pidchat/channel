@@ -10,7 +10,7 @@ import {
 import { useTranslation } from "react-i18next";
 import useContract from "../../hooks/useContract";
 import Identicon from "@polkadot/react-identicon";
-import { truncateText } from "../../utils";
+import { formatMillion, truncateText } from "../../utils";
 import useGovernance from "../../hooks/useGovernance";
 import { Input } from "reactstrap";
 interface CardSendPostProp {
@@ -56,7 +56,7 @@ const CardSendPost: React.FC<CardSendPostProp> = ({ reload }) => {
         alert(t("TEXT_ENTER_INFORMATION_POST"), "error");
         return;
       }
-      if (balanceNative < feeChannel) {
+      if (balanceNative < (feeChannel/100000000)) {
         alert(t("TEXT_ERROR_BALANCE"), "error");
         return;
       }
@@ -217,7 +217,7 @@ const CardSendPost: React.FC<CardSendPostProp> = ({ reload }) => {
               marginLeft: "auto",
             }}
           >
-            {t("TEXT_FEE_SAFE")} <b>{priceGuardian}</b> PID
+            {t("TEXT_FEE_SAFE")} <b> {formatMillion(priceGuardian.toFixed(0))}</b> PID
           </p>
           <IonButton color="primary" shape="round" onClick={handleCreate}>
             {loading ? t("TEXT_WAIT") : t("TEXT_SEND_POST")}

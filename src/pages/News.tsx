@@ -11,7 +11,7 @@ import useContract from "../hooks/useContract";
 import useGovernance, { InfoGovernance } from "../hooks/useGovernance";
 import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { truncateText } from "../utils";
+import { formatMillion, truncateText } from "../utils";
 import { copyOutline, refresh } from "ionicons/icons";
 import PerfectScrollbar from "react-perfect-scrollbar";
 const CHUNK_SIZE = 10;
@@ -158,25 +158,25 @@ const News: React.FC = () => {
                 </p>
                 <p>
                   <strong>{t("PRICE_GUARDIAN")}:</strong>{" "}
-                  {(
+                  {formatMillion((
                     Number(infoGovernance.priceGuardian) / 1000000000000000000
-                  ).toFixed(0)}{" "}
+                  ).toFixed(0))}{" "}
                   PID
                 </p>
                 <p>
                   <strong>{t("TOTAL_BALANCE_AUDITOR")}:</strong>{" "}
-                  {(
+                  {formatMillion((
                     Number(infoGovernance.totalBalanceAuditor) /
                     1000000000000000000
-                  ).toFixed(0)}{" "}
+                  ).toFixed(0))}{" "}
                   PID
                 </p>
                 <p>
                   <strong>{t("TOTAL_BALANCE_BLOCK")}:</strong>{" "}
-                  {(
+                  {formatMillion((
                     Number(infoGovernance.totalBalanceBlock) /
                     1000000000000000000
-                  ).toFixed(0)}{" "}
+                  ).toFixed(0))}{" "}
                   PID
                 </p>
                 <p>

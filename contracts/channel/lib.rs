@@ -82,45 +82,42 @@ pub mod channel {
             // Terminate contract and transfer remaining balance to caller
             self.env().terminate_contract(self.env().caller())
         }  
-        /// Transfers owner Token and native balance
-    /// 
-    /// # Arguments
-    /// * `address_token` - Address of token contract
-    /// * `to` - Address to transfer to
-    /// * `type_transfer` - 0 for token, 1 for native
-    /// 
-    /// # Returns
-    /// * `Ok(())` if transfer was successful
-    /// * `Err` if transfer failed
-    #[ink(message)]
-    #[openbrush::modifiers(only_owner)]
-    pub fn transfer_balance(&mut self,address_token: Option<AccountId>, to: AccountId, type_transfer: u8) -> Result<(), PSP22Error> {
-        let caller = self.env().caller();
-
-        if type_transfer == 0 {
-            // balance available
-            let balance = self.env().balance();
-            let current_balance = balance
-                    .checked_sub(self.env().minimum_balance())
-                    .unwrap_or_default();
-            if current_balance == 0 {
-                return Err(PSP22Error::Custom(String::from("Balance not found")));
-            }    
-            self.env()
-                .transfer(to, current_balance)
-                .map_err(|_| PSP22Error::Custom(String::from("Transfer failed")))?;
-        } else {
-            if address_token.is_none() {
-                return Err(PSP22Error::Custom(String::from("Token not found")));
+        /// Transfers owner Token 
+        /// 
+        /// # Arguments
+        /// * `address_token` - Address of token contract
+        /// * `to` - Address to transfer to
+        /// * `type_transfer` - 0 for token, 1 for native
+        /// 
+        /// # Returns
+        /// * `Ok(())` if transfer was successful
+        /// * `Err` if transfer failed
+        #[ink(message)]
+        #[openbrush::modifiers(only_owner)]
+        pub fn transfer_balance(&mut self,address_token: AccountId, to: AccountId, type_transfer: u8, amount: Balance) -> Result<(), PSP22Error> {
+            let caller = self.env().caller();
+            if type_transfer == 0 {
+                // balance available
+                let balance = self.env().balance();
+                let current_balance = balance
+                        .checked_sub(self.env().minimum_balance())
+                        .unwrap_or_default();
+                if current_balance == 0 {
+                    return Err(PSP22Error::Custom(String::from("Balance not found")));
+                }    
+                self.env()
+                    .transfer(to, current_balance)
+                    .map_err(|_| PSP22Error::Custom(String::from("Transfer failed")))?;
+            } else {               
+                let mut balance_token: u128 = PSP22Ref::balance_of(&address_token, self.env().account_id());            
+                if balance_token < amount {
+                    return Err(PSP22Error::Custom(String::from("Token balance not found")));
+                }            
+                PSP22Ref::transfer(&address_token, to, amount,Vec::<u8>::new())
+                .map_err(|_| PSP22Error::Custom(String::from("Token transfer failed")))?;
             }
-            let balance_token = PSP22Ref::balance_of(&address_token.unwrap(), caller);
-            if balance_token == 0 {
-                return Err(PSP22Error::Custom(String::from("Token balance not found")));
-            }
-            PSP22Ref::transfer(&address_token, to, balance_token,Vec::new())?;
+            Ok(())
         }
-        Ok(())
-    }
     }
 
     #[cfg(test)]
@@ -230,6 +227,23 @@ pub mod channel {
     
             // Assert - Should return successfully
             assert!(result.is_ok());
+        }
+        #[ink::test]
+        #[should_panic]
+        fn transfer_psp22_panics_if_token_invalid() {
+            let accounts = default_accounts();
+            set_caller(accounts.alice);
+
+             let channel = ChannelContract::new(Some(vec!["Hello, world!".to_string()]), None, "String".to_string());
+
+            // endereço inválido = vai entrar em CalleeTrapped
+            let fake_token = AccountId::from([0x1; 32]);
+
+            let _ = channel.transfer_balance(
+                Some(fake_token),
+                accounts.bob,
+                1,
+            );
         }
     }
 }

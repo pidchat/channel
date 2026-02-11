@@ -88,12 +88,13 @@ pub mod governance {
        fn transfer_balance(
         &self,
         channel_id: AccountId,
-        address_token: Option<AccountId>,
+        address_token: AccountId,
         to: AccountId,
-        type_transfer: u8
+        type_transfer: u8,
+        amount: Balance,
     )  -> Result<(), PSP22Error> {
         let mut channel = ChannelContractRef::from_account_id(channel_id);
-        channel.transfer_balance(address_token, to, type_transfer)
+        channel.transfer_balance(address_token, to, type_transfer, amount)
          .map_err(|_| PSP22Error::Custom(String::from("Transfer failed")))?;
         Ok(())
     }

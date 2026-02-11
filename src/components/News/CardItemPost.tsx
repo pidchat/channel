@@ -15,6 +15,8 @@ import {
   alertCircle,
   skullOutline,
   copyOutline,
+  happyOutline,
+  cashOutline,
 } from "ionicons/icons";
 
 import useContract from "../../hooks/useContract";
@@ -23,8 +25,10 @@ import { getDateView, truncateText } from "../../utils";
 import ModalChatPost from "./ModalChatPost";
 import ModalReportPost from "./ModalReportPost";
 import ModalVotePost from "./ModalVotePost";
-import useGovernance, { ChannelInfo } from "../../hooks/useGovernance";
+import useGovernance, { ChannelInfo, IEmoji } from "../../hooks/useGovernance";
 import { useTranslation } from "react-i18next";
+import ModalEmoji from "./ModalEmoji";
+import ModalTip from "./ModalTip";
 interface CardItemPostProps {
   channelId: number;
 }
@@ -39,6 +43,7 @@ const CardItemPost: React.FC<CardItemPostProps> = ({ channelId }) => {
     getPriceGuardian,
     getReasonReport,
     getTypeChannel,
+    getEmotions,
   } = useGovernance();
   const [openMessagesModal, setOpenMessagesModal] = useState(false);
   const [openReportPostModal, setOpenReportPostModal] = useState(false);
@@ -51,6 +56,9 @@ const CardItemPost: React.FC<CardItemPostProps> = ({ channelId }) => {
   const [quantityMessages, setQuantityMessages] = useState(0);
   const [typeChannel, setTypeChannel] = useState("String");
   const [image, setImage] = useState<string>();
+  const [emotions, setEmotions] = useState<IEmoji[]>([]);
+  const [openEmojiModal, setOpenEmojiModal] = useState(false);
+  const [openTipModal, setOpenTipModal] = useState(false);
   useEffect(() => {
     if (!details || messages.length == 0) return;
     if (typeChannel != "String") {
@@ -59,7 +67,7 @@ const CardItemPost: React.FC<CardItemPostProps> = ({ channelId }) => {
         img += messages[i];
       }
       setImage(img);
-    }
+    }    
   }, [typeChannel]);
   useEffect(() => {
     getNewsId(channelId).then((res) => {
@@ -89,6 +97,7 @@ const CardItemPost: React.FC<CardItemPostProps> = ({ channelId }) => {
         }
       });
     });
+    loadingEmojis();
   }, [details]);
   useEffect(() => {
     handleQtdMessages();
@@ -101,6 +110,14 @@ const CardItemPost: React.FC<CardItemPostProps> = ({ channelId }) => {
       }
     });
   };
+  const loadingEmojis = () => {
+    if (!details) return;
+    getEmotions(details.channelAddress).then((res) => {
+      if (res) {
+        setEmotions(res);
+      }
+    });
+  }
   if (!details)
     return (
       <div className="loading-more">
@@ -240,6 +257,26 @@ const CardItemPost: React.FC<CardItemPostProps> = ({ channelId }) => {
             >
               <IonIcon icon={chatbubbleOutline} /> {quantityMessages}
             </IonButton>
+            <IonButton 
+              fill="clear" 
+              title="emoji" 
+              size="small" 
+              onClick={() => setOpenEmojiModal(true)}
+              style={{ color: "#536471" }}>
+              {emotions.length > 0 ? (
+                <>               
+                  {emotions.slice(0, 5).map((emoji, idx) => (
+                    <span key={idx} style={{ marginRight: 2 }}>
+                      {emoji.emoji}
+                    </span>
+                  ))}
+                   <span>{emotions.reduce((sum, e) => sum + e.quantity, 0)}</span>
+                </>
+              ) : (
+                <IonIcon icon={happyOutline} />
+              )}
+
+            </IonButton>
             <IonButton
               fill="clear"
               size="small"
@@ -248,6 +285,15 @@ const CardItemPost: React.FC<CardItemPostProps> = ({ channelId }) => {
             >
               <IonIcon icon={alertCircle} />
             </IonButton>
+            <IonButton
+              fill="clear"
+              size="small"
+              style={{ color: "#536471" }}
+              onClick={() => setOpenTipModal(true)}
+            >
+              <IonIcon icon={cashOutline} />
+            </IonButton>            
+
             {reason && (
               <IonButton
                 fill="clear"
@@ -276,6 +322,7 @@ const CardItemPost: React.FC<CardItemPostProps> = ({ channelId }) => {
           channelId={details?.id || 0}
           dataLimit={details?.dataCreate}
           isOwner={account === details?.addressOwner}
+          enableRecoveryAndOpenVotes={Number(details?.balanceSafe || 0) > 0}
           modalToggle={() => {
             setOpenReportPostModal(!openReportPostModal);
             getReasonReport(channelId).then((res) => {
@@ -293,6 +340,22 @@ const CardItemPost: React.FC<CardItemPostProps> = ({ channelId }) => {
             setOpenVotePostModal(!openVotePostModal);
             console.log("closeModal");
           }}
+        />
+        <ModalEmoji
+          modal={openEmojiModal}
+          modalToggle={() => {
+            setOpenEmojiModal(!openEmojiModal);
+          }}
+          emojis={emotions}
+          reload={() => loadingEmojis()}
+          address={details?.channelAddress || ""}
+        />
+        <ModalTip
+          modal={openTipModal}
+          modalToggle={() => {
+            setOpenTipModal(!openTipModal);
+          }}
+          address={details?.addressOwner || ""}
         />
       </IonCardContent>
     </IonCard>

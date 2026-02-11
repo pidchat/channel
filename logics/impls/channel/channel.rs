@@ -162,7 +162,7 @@ pub trait ChannelImpl: Storage<Data> + Storage<reentrancy_guard::Data> + Storage
     /// * Error if token not found
      #[ink(message)]
     fn get_balance_token(&self, address_token: AccountId) -> Result<u128, PSP22Error> {
-        Ok(PSP22Ref::balance_of(&address_token, Self::env().caller()))
+        Ok(PSP22Ref::balance_of(&address_token, Self::env().account_id()).checked_sub(10_000_000_000).unwrap_or_default())
     }
 
     /// Add Permission

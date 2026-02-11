@@ -32,10 +32,14 @@ pub trait GovernanceImp : Storage<Data> + Storage<reentrancy_guard::Data> + Stor
     /// Returns tuple of (owner, balance, expiry timestamp, creator) if found
     #[ink(message)]
     fn get_channel(&self,channel_id: u128) -> Result<Option<(AccountId, Balance,u64,AccountId)>, PSP22Error>{        
-        let channel = self.data::<Data>().channels.get(&channel_id);
+        let mut channel = self.data::<Data>().channels.get(&channel_id);
         if channel == Default::default() {
             return Err(PSP22Error::Custom(GovError::NotFound.as_str()));
         }            
+        let recovery_in_user_payment = self.data::<Data>().recovery_in_user_payment.get(&(channel.unwrap().3,channel_id));
+        if recovery_in_user_payment != Default::default() {
+            channel.unwrap().1 = 0u128;
+        }
         Ok(channel)    
     }
 
@@ -61,8 +65,8 @@ pub trait GovernanceImp : Storage<Data> + Storage<reentrancy_guard::Data> + Stor
         }
 
         // Process payment
-        let adddress_this_contract = Self::env().account_id();        
-        PSP22Ref::transfer_from(&token_address,caller, adddress_this_contract, price, Vec::<u8>::new())
+        let address_this_contract = Self::env().account_id();        
+        PSP22Ref::transfer_from(&token_address,caller, address_this_contract, price, Vec::<u8>::new())
             .map_err(|_| PSP22Error::Custom(GovError::PaymentFail.as_str()))?;
 
         // Create new channel
@@ -70,7 +74,6 @@ pub trait GovernanceImp : Storage<Data> + Storage<reentrancy_guard::Data> + Stor
         let date_block = Self::env().block_timestamp() + (86624000 * self.data::<Data>().time_block_balance_post); // 10 days expiry        
         let id_channel = self.data::<Data>().channel_id.clone();        
         //create channel 
-         let address_this_contract = Self::env().account_id();
         let date_salt = (default_message.clone(),type_default_message_channel.clone(),address_this_contract.clone());
         let salt = Self::env().hash_encoded::<Blake2x256, _>(&date_salt);
         let contract_code_hash =  self.data::<Data>().channel_contract_code_hash;
@@ -78,7 +81,7 @@ pub trait GovernanceImp : Storage<Data> + Storage<reentrancy_guard::Data> + Stor
         let address_channel = self.create_channel(address_this_contract,default_message.clone(),type_default_message_channel.clone(),contract_code_hash,salt)?;
         // Store channel data
         self.data::<Data>().channels.insert(&id_channel, &(address_channel,price,date_block,caller));
-        self.data::<Data>().channels_for_addrress.insert(&address_channel,&id_channel);
+        self.data::<Data>().channels_for_address.insert(&address_channel,&id_channel);
         
         Ok(address_channel)
     }
@@ -171,7 +174,7 @@ pub trait GovernanceImp : Storage<Data> + Storage<reentrancy_guard::Data> + Stor
         if token_address == Default::default() {
             return Err(PSP22Error::Custom(GovError::NotFoundToken.as_str()));
         }
-        PSP22Ref::transfer_from(&token_address,caller, address_this_contract, channel.1, Vec::<u8>::new())
+        PSP22Ref::transfer_from(&token_address.unwrap(),caller, address_this_contract, channel.1, Vec::<u8>::new())
         .map_err(|_| PSP22Error::Custom(GovError::PaymentFail.as_str()))?;
 
         // Initialize vote period
@@ -392,7 +395,7 @@ pub trait GovernanceImp : Storage<Data> + Storage<reentrancy_guard::Data> + Stor
         if channel.3 != caller {
             return Err(PSP22Error::Custom(GovError::NotChannelOwner.as_str()));
         }
-        let mut balance = channel.1;
+        let mut balance:Balance = channel.1;
         let mut forceDepositForVote = false;
         // Check if channel has open fake news vote
         let channel_in_vote = self.data::<Data>().who_open_fake.get(&channel_id);
@@ -433,19 +436,19 @@ pub trait GovernanceImp : Storage<Data> + Storage<reentrancy_guard::Data> + Stor
         }
 
         // Transfer balance
-        let token_address = self.data::<Data>().token_address;
+        let token_address = self.data::<Data>().token_address.unwrap();
         PSP22Ref::transfer(&token_address, caller, balance, Vec::<u8>::new())
             .map_err(|_| PSP22Error::Custom(GovError::PaymentFail.as_str()))?;
 
         self.data::<Data>().recovery_in_user_payment.insert(&(caller,channel_id),&balance);
-
+        
         Ok(balance)
     }
 
     /// Gets channel ID for given contract address
     #[ink(message)]
     fn get_id_channel(&self, address_contract: AccountId) -> Option<u128>{
-        self.data::<Data>().channels_for_addrress.get(&address_contract)
+        self.data::<Data>().channels_for_address.get(&address_contract)
     }
 
     /// Gets fee receiver wallet address
@@ -472,7 +475,7 @@ pub trait GovernanceImp : Storage<Data> + Storage<reentrancy_guard::Data> + Stor
         }
 
         let balance = self.data::<Data>().fee_balance;
-        let token_address = self.data::<Data>().token_address;
+        let token_address = self.data::<Data>().token_address.unwrap();
 
         // Transfer fees
         PSP22Ref::transfer(&token_address, caller, balance, Vec::<u8>::new())
@@ -500,7 +503,7 @@ pub trait GovernanceImp : Storage<Data> + Storage<reentrancy_guard::Data> + Stor
         self.data::<Data>().balance_of_auditor
     }
      #[ink(message)]
-    fn transfer_balance_channel(&mut self,address_token: Option<AccountId>, type_transfer: u8, channel_id: u128) -> Result<(), PSP22Error>{
+    fn transfer_balance_channel(&mut self,address_token: AccountId, type_transfer: u8, channel_id: u128, amount: Balance) -> Result<(), PSP22Error>{
         let caller = Self::env().caller();
         let channel = self.data::<Data>().channels.get(&channel_id);
         // Verify channel exists
@@ -510,7 +513,7 @@ pub trait GovernanceImp : Storage<Data> + Storage<reentrancy_guard::Data> + Stor
         if channel.unwrap().3 != caller {
             return Err(PSP22Error::Custom(GovError::NotChannelOwner.as_str()));
         }         
-        self.transfer_balance(channel.unwrap().0,address_token,caller, type_transfer);
+        self.transfer_balance(channel.unwrap().0,address_token,caller, type_transfer, amount);
         Ok(())
     }
     /// Checks if a channel is marked as fake news
@@ -585,9 +588,10 @@ pub trait InternalImp {
     fn transfer_balance(
         &self,
         channel_id: AccountId,
-        address_token: Option<AccountId>,
+        address_token: AccountId,
         to: AccountId,
-        type_transfer: u8
+        type_transfer: u8,
+        amount: Balance,
     ) -> Result<(), PSP22Error>;
 
 }

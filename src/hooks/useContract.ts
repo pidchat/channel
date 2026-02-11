@@ -1352,6 +1352,7 @@ export const useContract = () => {
       setFeeGasNetWork(Number(tokenQUery?.storageDeposit || 0) / 10000000);
       //addLastMessage(addressContract);
     } catch (error: any) {
+      console.log(error)
       alert(error.message, "error");
     } finally {
       setLoading(false);
