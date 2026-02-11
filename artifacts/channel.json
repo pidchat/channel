@@ -1,6 +1,6 @@
 {
   "source": {
-    "hash": "0x349723574a96ef7a4894f51f737eb17647d401a4ee33a5b83734696da843a2fa",
+    "hash": "0x520887a2ea265bce0bc45546c9af76ba95da4e378a682d202686c7eb6b3f0aa5",
     "language": "ink! 4.3.0",
     "compiler": "rustc 1.94.0-nightly",
     "build_info": {
@@ -220,29 +220,16 @@
         "selector": "0x980dffd9"
       },
       {
-        "args": [
-          {
-            "label": "id_message",
-            "type": {
-              "displayName": [
-                "channelimpl_external",
-                "ReceivedMessagesInput1"
-              ],
-              "type": 1
-            }
-          }
-        ],
+        "args": [],
         "default": false,
         "docs": [
-          " Retrieves a message by its ID",
-          " ",
-          " # Arguments",
-          " * `id_message` - ID of the message to retrieve",
+          " Get Type Message",
           " ",
           " # Returns",
-          " * Message data including owner, content and timestamps if found"
+          " * `Ok(String)` if type message was successful",
+          " * `Err` if transfer failed"
         ],
-        "label": "ChannelImpl::received_messages",
+        "label": "ChannelImpl::get_type_message",
         "mutates": false,
         "payable": false,
         "returnType": {
@@ -252,7 +239,61 @@
           ],
           "type": 16
         },
-        "selector": "0x790e8dd0"
+        "selector": "0x5801f32d"
+      },
+      {
+        "args": [],
+        "default": false,
+        "docs": [
+          " Gets the default messages set for this channel"
+        ],
+        "label": "ChannelImpl::get_default_message",
+        "mutates": false,
+        "payable": false,
+        "returnType": {
+          "displayName": [
+            "ink",
+            "MessageResult"
+          ],
+          "type": 17
+        },
+        "selector": "0x3e73d99a"
+      },
+      {
+        "args": [
+          {
+            "label": "address_token",
+            "type": {
+              "displayName": [
+                "channelimpl_external",
+                "GetBalanceTokenInput1"
+              ],
+              "type": 5
+            }
+          }
+        ],
+        "default": false,
+        "docs": [
+          " Gets the balance of a token",
+          " ",
+          " # Arguments",
+          " * `address_token` - Address of token contract",
+          " ",
+          " # Returns",
+          " * Token balance if found",
+          " * Error if token not found"
+        ],
+        "label": "ChannelImpl::get_balance_token",
+        "mutates": false,
+        "payable": false,
+        "returnType": {
+          "displayName": [
+            "ink",
+            "MessageResult"
+          ],
+          "type": 19
+        },
+        "selector": "0x9d7284da"
       },
       {
         "args": [
@@ -302,6 +343,24 @@
         "selector": "0xe0d82663"
       },
       {
+        "args": [],
+        "default": false,
+        "docs": [
+          " Gets the governance contract address if set"
+        ],
+        "label": "ChannelImpl::get_address_governance",
+        "mutates": false,
+        "payable": false,
+        "returnType": {
+          "displayName": [
+            "ink",
+            "MessageResult"
+          ],
+          "type": 21
+        },
+        "selector": "0x9c097f27"
+      },
+      {
         "args": [
           {
             "label": "emotion",
@@ -341,13 +400,13 @@
         "args": [],
         "default": false,
         "docs": [
-          " Get Type Message",
-          " ",
+          " List emotions",
+          "",
           " # Returns",
-          " * `Ok(String)` if type message was successful",
+          " * `Ok(Vec<(String, u128)>)` if transfer was successful",
           " * `Err` if transfer failed"
         ],
-        "label": "ChannelImpl::get_type_message",
+        "label": "ChannelImpl::get_emotions",
         "mutates": false,
         "payable": false,
         "returnType": {
@@ -355,63 +414,9 @@
             "ink",
             "MessageResult"
           ],
-          "type": 20
+          "type": 22
         },
-        "selector": "0x5801f32d"
-      },
-      {
-        "args": [],
-        "default": false,
-        "docs": [
-          " Gets the total number of messages in the channel"
-        ],
-        "label": "ChannelImpl::get_total_messages",
-        "mutates": false,
-        "payable": false,
-        "returnType": {
-          "displayName": [
-            "ink",
-            "MessageResult"
-          ],
-          "type": 21
-        },
-        "selector": "0xb7fba8a7"
-      },
-      {
-        "args": [],
-        "default": false,
-        "docs": [
-          " Gets the governance contract address if set"
-        ],
-        "label": "ChannelImpl::get_address_governance",
-        "mutates": false,
-        "payable": false,
-        "returnType": {
-          "displayName": [
-            "ink",
-            "MessageResult"
-          ],
-          "type": 23
-        },
-        "selector": "0x9c097f27"
-      },
-      {
-        "args": [],
-        "default": false,
-        "docs": [
-          " Gets the default messages set for this channel"
-        ],
-        "label": "ChannelImpl::get_default_message",
-        "mutates": false,
-        "payable": false,
-        "returnType": {
-          "displayName": [
-            "ink",
-            "MessageResult"
-          ],
-          "type": 24
-        },
-        "selector": "0x3e73d99a"
+        "selector": "0xa4b65534"
       },
       {
         "args": [
@@ -454,28 +459,6 @@
         "args": [],
         "default": false,
         "docs": [
-          " List emotions",
-          "",
-          " # Returns",
-          " * `Ok(Vec<(String, u128)>)` if transfer was successful",
-          " * `Err` if transfer failed"
-        ],
-        "label": "ChannelImpl::get_emotions",
-        "mutates": false,
-        "payable": false,
-        "returnType": {
-          "displayName": [
-            "ink",
-            "MessageResult"
-          ],
-          "type": 26
-        },
-        "selector": "0xa4b65534"
-      },
-      {
-        "args": [],
-        "default": false,
-        "docs": [
           " Is Private",
           " ",
           " # Returns",
@@ -490,31 +473,9 @@
             "ink",
             "MessageResult"
           ],
-          "type": 30
+          "type": 26
         },
         "selector": "0x9373b6f6"
-      },
-      {
-        "args": [],
-        "default": false,
-        "docs": [
-          " Gets the channel ID from governance contract",
-          " ",
-          " # Returns",
-          " * Channel ID if found in governance",
-          " * Error if governance not set or channel not found"
-        ],
-        "label": "ChannelImpl::get_id_channel_public",
-        "mutates": false,
-        "payable": false,
-        "returnType": {
-          "displayName": [
-            "ink",
-            "MessageResult"
-          ],
-          "type": 31
-        },
-        "selector": "0x7bbf2aff"
       },
       {
         "args": [
@@ -551,6 +512,46 @@
           "type": 13
         },
         "selector": "0x909a7dfb"
+      },
+      {
+        "args": [],
+        "default": false,
+        "docs": [
+          " Gets the total number of messages in the channel"
+        ],
+        "label": "ChannelImpl::get_total_messages",
+        "mutates": false,
+        "payable": false,
+        "returnType": {
+          "displayName": [
+            "ink",
+            "MessageResult"
+          ],
+          "type": 27
+        },
+        "selector": "0xb7fba8a7"
+      },
+      {
+        "args": [],
+        "default": false,
+        "docs": [
+          " Gets the channel ID from governance contract",
+          " ",
+          " # Returns",
+          " * Channel ID if found in governance",
+          " * Error if governance not set or channel not found"
+        ],
+        "label": "ChannelImpl::get_id_channel_public",
+        "mutates": false,
+        "payable": false,
+        "returnType": {
+          "displayName": [
+            "ink",
+            "MessageResult"
+          ],
+          "type": 19
+        },
+        "selector": "0x7bbf2aff"
       },
       {
         "args": [
@@ -602,28 +603,27 @@
       {
         "args": [
           {
-            "label": "address_token",
+            "label": "id_message",
             "type": {
               "displayName": [
                 "channelimpl_external",
-                "GetBalanceTokenInput1"
+                "ReceivedMessagesInput1"
               ],
-              "type": 5
+              "type": 1
             }
           }
         ],
         "default": false,
         "docs": [
-          " Gets the balance of a token",
+          " Retrieves a message by its ID",
           " ",
           " # Arguments",
-          " * `address_token` - Address of token contract",
+          " * `id_message` - ID of the message to retrieve",
           " ",
           " # Returns",
-          " * Token balance if found",
-          " * Error if token not found"
+          " * Message data including owner, content and timestamps if found"
         ],
-        "label": "ChannelImpl::get_balance_token",
+        "label": "ChannelImpl::received_messages",
         "mutates": false,
         "payable": false,
         "returnType": {
@@ -631,9 +631,9 @@
             "ink",
             "MessageResult"
           ],
-          "type": 31
+          "type": 29
         },
-        "selector": "0x9d7284da"
+        "selector": "0x790e8dd0"
       },
       {
         "args": [
@@ -666,6 +666,22 @@
         "args": [],
         "default": false,
         "docs": [],
+        "label": "Ownable::owner",
+        "mutates": false,
+        "payable": false,
+        "returnType": {
+          "displayName": [
+            "ink",
+            "MessageResult"
+          ],
+          "type": 21
+        },
+        "selector": "0x4fa43c8c"
+      },
+      {
+        "args": [],
+        "default": false,
+        "docs": [],
         "label": "Ownable::renounce_ownership",
         "mutates": true,
         "payable": false,
@@ -677,22 +693,6 @@
           "type": 33
         },
         "selector": "0x5e228753"
-      },
-      {
-        "args": [],
-        "default": false,
-        "docs": [],
-        "label": "Ownable::owner",
-        "mutates": false,
-        "payable": false,
-        "returnType": {
-          "displayName": [
-            "ink",
-            "MessageResult"
-          ],
-          "type": 23
-        },
-        "selector": "0x4fa43c8c"
       }
     ]
   },
@@ -1332,136 +1332,6 @@
               {
                 "fields": [
                   {
-                    "type": 17
-                  }
-                ],
-                "index": 0,
-                "name": "Ok"
-              },
-              {
-                "fields": [
-                  {
-                    "type": 12
-                  }
-                ],
-                "index": 1,
-                "name": "Err"
-              }
-            ]
-          }
-        },
-        "params": [
-          {
-            "name": "T",
-            "type": 17
-          },
-          {
-            "name": "E",
-            "type": 12
-          }
-        ],
-        "path": [
-          "Result"
-        ]
-      }
-    },
-    {
-      "id": 17,
-      "type": {
-        "def": {
-          "variant": {
-            "variants": [
-              {
-                "fields": [
-                  {
-                    "type": 18
-                  }
-                ],
-                "index": 0,
-                "name": "Ok"
-              },
-              {
-                "fields": [
-                  {
-                    "type": 15
-                  }
-                ],
-                "index": 1,
-                "name": "Err"
-              }
-            ]
-          }
-        },
-        "params": [
-          {
-            "name": "T",
-            "type": 18
-          },
-          {
-            "name": "E",
-            "type": 15
-          }
-        ],
-        "path": [
-          "Result"
-        ]
-      }
-    },
-    {
-      "id": 18,
-      "type": {
-        "def": {
-          "variant": {
-            "variants": [
-              {
-                "index": 0,
-                "name": "None"
-              },
-              {
-                "fields": [
-                  {
-                    "type": 19
-                  }
-                ],
-                "index": 1,
-                "name": "Some"
-              }
-            ]
-          }
-        },
-        "params": [
-          {
-            "name": "T",
-            "type": 19
-          }
-        ],
-        "path": [
-          "Option"
-        ]
-      }
-    },
-    {
-      "id": 19,
-      "type": {
-        "def": {
-          "tuple": [
-            5,
-            3,
-            4,
-            4
-          ]
-        }
-      }
-    },
-    {
-      "id": 20,
-      "type": {
-        "def": {
-          "variant": {
-            "variants": [
-              {
-                "fields": [
-                  {
                     "type": 3
                   }
                 ],
@@ -1496,7 +1366,7 @@
       }
     },
     {
-      "id": 21,
+      "id": 17,
       "type": {
         "def": {
           "variant": {
@@ -1504,7 +1374,7 @@
               {
                 "fields": [
                   {
-                    "type": 22
+                    "type": 18
                   }
                 ],
                 "index": 0,
@@ -1525,7 +1395,7 @@
         "params": [
           {
             "name": "T",
-            "type": 22
+            "type": 18
           },
           {
             "name": "E",
@@ -1538,124 +1408,7 @@
       }
     },
     {
-      "id": 22,
-      "type": {
-        "def": {
-          "variant": {
-            "variants": [
-              {
-                "index": 0,
-                "name": "None"
-              },
-              {
-                "fields": [
-                  {
-                    "type": 1
-                  }
-                ],
-                "index": 1,
-                "name": "Some"
-              }
-            ]
-          }
-        },
-        "params": [
-          {
-            "name": "T",
-            "type": 1
-          }
-        ],
-        "path": [
-          "Option"
-        ]
-      }
-    },
-    {
-      "id": 23,
-      "type": {
-        "def": {
-          "variant": {
-            "variants": [
-              {
-                "fields": [
-                  {
-                    "type": 9
-                  }
-                ],
-                "index": 0,
-                "name": "Ok"
-              },
-              {
-                "fields": [
-                  {
-                    "type": 12
-                  }
-                ],
-                "index": 1,
-                "name": "Err"
-              }
-            ]
-          }
-        },
-        "params": [
-          {
-            "name": "T",
-            "type": 9
-          },
-          {
-            "name": "E",
-            "type": 12
-          }
-        ],
-        "path": [
-          "Result"
-        ]
-      }
-    },
-    {
-      "id": 24,
-      "type": {
-        "def": {
-          "variant": {
-            "variants": [
-              {
-                "fields": [
-                  {
-                    "type": 25
-                  }
-                ],
-                "index": 0,
-                "name": "Ok"
-              },
-              {
-                "fields": [
-                  {
-                    "type": 12
-                  }
-                ],
-                "index": 1,
-                "name": "Err"
-              }
-            ]
-          }
-        },
-        "params": [
-          {
-            "name": "T",
-            "type": 25
-          },
-          {
-            "name": "E",
-            "type": 12
-          }
-        ],
-        "path": [
-          "Result"
-        ]
-      }
-    },
-    {
-      "id": 25,
+      "id": 18,
       "type": {
         "def": {
           "variant": {
@@ -1697,7 +1450,7 @@
       }
     },
     {
-      "id": 26,
+      "id": 19,
       "type": {
         "def": {
           "variant": {
@@ -1705,7 +1458,7 @@
               {
                 "fields": [
                   {
-                    "type": 27
+                    "type": 20
                   }
                 ],
                 "index": 0,
@@ -1726,7 +1479,7 @@
         "params": [
           {
             "name": "T",
-            "type": 27
+            "type": 20
           },
           {
             "name": "E",
@@ -1739,7 +1492,7 @@
       }
     },
     {
-      "id": 27,
+      "id": 20,
       "type": {
         "def": {
           "variant": {
@@ -1747,7 +1500,7 @@
               {
                 "fields": [
                   {
-                    "type": 28
+                    "type": 1
                   }
                 ],
                 "index": 0,
@@ -1768,7 +1521,7 @@
         "params": [
           {
             "name": "T",
-            "type": 28
+            "type": 1
           },
           {
             "name": "E",
@@ -1781,17 +1534,143 @@
       }
     },
     {
-      "id": 28,
+      "id": 21,
+      "type": {
+        "def": {
+          "variant": {
+            "variants": [
+              {
+                "fields": [
+                  {
+                    "type": 9
+                  }
+                ],
+                "index": 0,
+                "name": "Ok"
+              },
+              {
+                "fields": [
+                  {
+                    "type": 12
+                  }
+                ],
+                "index": 1,
+                "name": "Err"
+              }
+            ]
+          }
+        },
+        "params": [
+          {
+            "name": "T",
+            "type": 9
+          },
+          {
+            "name": "E",
+            "type": 12
+          }
+        ],
+        "path": [
+          "Result"
+        ]
+      }
+    },
+    {
+      "id": 22,
+      "type": {
+        "def": {
+          "variant": {
+            "variants": [
+              {
+                "fields": [
+                  {
+                    "type": 23
+                  }
+                ],
+                "index": 0,
+                "name": "Ok"
+              },
+              {
+                "fields": [
+                  {
+                    "type": 12
+                  }
+                ],
+                "index": 1,
+                "name": "Err"
+              }
+            ]
+          }
+        },
+        "params": [
+          {
+            "name": "T",
+            "type": 23
+          },
+          {
+            "name": "E",
+            "type": 12
+          }
+        ],
+        "path": [
+          "Result"
+        ]
+      }
+    },
+    {
+      "id": 23,
+      "type": {
+        "def": {
+          "variant": {
+            "variants": [
+              {
+                "fields": [
+                  {
+                    "type": 24
+                  }
+                ],
+                "index": 0,
+                "name": "Ok"
+              },
+              {
+                "fields": [
+                  {
+                    "type": 15
+                  }
+                ],
+                "index": 1,
+                "name": "Err"
+              }
+            ]
+          }
+        },
+        "params": [
+          {
+            "name": "T",
+            "type": 24
+          },
+          {
+            "name": "E",
+            "type": 15
+          }
+        ],
+        "path": [
+          "Result"
+        ]
+      }
+    },
+    {
+      "id": 24,
       "type": {
         "def": {
           "sequence": {
-            "type": 29
+            "type": 25
           }
         }
       }
     },
     {
-      "id": 29,
+      "id": 25,
       "type": {
         "def": {
           "tuple": [
@@ -1802,7 +1681,7 @@
       }
     },
     {
-      "id": 30,
+      "id": 26,
       "type": {
         "def": {
           "variant": {
@@ -1844,7 +1723,7 @@
       }
     },
     {
-      "id": 31,
+      "id": 27,
       "type": {
         "def": {
           "variant": {
@@ -1852,7 +1731,7 @@
               {
                 "fields": [
                   {
-                    "type": 32
+                    "type": 28
                   }
                 ],
                 "index": 0,
@@ -1873,7 +1752,7 @@
         "params": [
           {
             "name": "T",
-            "type": 32
+            "type": 28
           },
           {
             "name": "E",
@@ -1886,7 +1765,40 @@
       }
     },
     {
-      "id": 32,
+      "id": 28,
+      "type": {
+        "def": {
+          "variant": {
+            "variants": [
+              {
+                "index": 0,
+                "name": "None"
+              },
+              {
+                "fields": [
+                  {
+                    "type": 1
+                  }
+                ],
+                "index": 1,
+                "name": "Some"
+              }
+            ]
+          }
+        },
+        "params": [
+          {
+            "name": "T",
+            "type": 1
+          }
+        ],
+        "path": [
+          "Option"
+        ]
+      }
+    },
+    {
+      "id": 29,
       "type": {
         "def": {
           "variant": {
@@ -1894,7 +1806,49 @@
               {
                 "fields": [
                   {
-                    "type": 1
+                    "type": 30
+                  }
+                ],
+                "index": 0,
+                "name": "Ok"
+              },
+              {
+                "fields": [
+                  {
+                    "type": 12
+                  }
+                ],
+                "index": 1,
+                "name": "Err"
+              }
+            ]
+          }
+        },
+        "params": [
+          {
+            "name": "T",
+            "type": 30
+          },
+          {
+            "name": "E",
+            "type": 12
+          }
+        ],
+        "path": [
+          "Result"
+        ]
+      }
+    },
+    {
+      "id": 30,
+      "type": {
+        "def": {
+          "variant": {
+            "variants": [
+              {
+                "fields": [
+                  {
+                    "type": 31
                   }
                 ],
                 "index": 0,
@@ -1915,7 +1869,7 @@
         "params": [
           {
             "name": "T",
-            "type": 1
+            "type": 31
           },
           {
             "name": "E",
@@ -1925,6 +1879,52 @@
         "path": [
           "Result"
         ]
+      }
+    },
+    {
+      "id": 31,
+      "type": {
+        "def": {
+          "variant": {
+            "variants": [
+              {
+                "index": 0,
+                "name": "None"
+              },
+              {
+                "fields": [
+                  {
+                    "type": 32
+                  }
+                ],
+                "index": 1,
+                "name": "Some"
+              }
+            ]
+          }
+        },
+        "params": [
+          {
+            "name": "T",
+            "type": 32
+          }
+        ],
+        "path": [
+          "Option"
+        ]
+      }
+    },
+    {
+      "id": 32,
+      "type": {
+        "def": {
+          "tuple": [
+            5,
+            3,
+            4,
+            4
+          ]
+        }
       }
     },
     {
