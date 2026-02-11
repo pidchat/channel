@@ -112,11 +112,10 @@ export const useGovernance = () => {
       const ifoAccount = await getAccountCompleteInNetWork(
         channel.value.ok?.ok?.[3].toString() || "",
       );
-
       const info: ChannelInfo = {
         id: id,
         channelAddress: channel.value.ok?.ok?.[0].toString() || "",
-        balanceSafe: channel.value.ok?.ok?.[1]?.toString() || "",
+        balanceSafe: (Number(channel.value.ok?.ok?.[1].toString())/1000000000000000000).toString() || "",
         dataCreate:
           channel.value.ok?.ok?.[2].toString().replaceAll(",", "") || "",
         addressOwner: channel.value.ok?.ok?.[3].toString() || "",
@@ -822,7 +821,6 @@ export const useGovernance = () => {
     }
   };
   const recoveryBalanceTokenChannel = async (
-    addressContract: string,
     typeToken: number = 0,
     amount: string,
     channelId: string,
@@ -839,7 +837,7 @@ export const useGovernance = () => {
         api,
       );
        const result = await contract.query.transferBalanceChannel(
-        addressContract,
+        import.meta.env.VITE_CONTRACT_TOKEN,
         typeToken,
         channelId,
         amount
@@ -851,7 +849,8 @@ export const useGovernance = () => {
         throw new Error(result.value.ok?.err.custom || "");
       }
 
-      await contract.tx.transferBalanceChannel( addressContract,
+      await contract.tx.transferBalanceChannel( 
+        import.meta.env.VITE_CONTRACT_TOKEN,
         typeToken,
         channelId,
         amount);

@@ -15,19 +15,27 @@ import {
   IonIcon,
   IonSpinner,
 } from "@ionic/react";
-import { chatbubbleOutline, flagOutline, skullOutline } from "ionicons/icons";
+import {
+  cashOutline,
+  chatbubbleOutline,
+  flagOutline,
+  happyOutline,
+  skullOutline,
+} from "ionicons/icons";
 import ModalChatPost from "../components/News/ModalChatPost";
 import useContract from "../hooks/useContract";
-import useGovernance, { ChannelInfo } from "../hooks/useGovernance";
+import useGovernance, { ChannelInfo, IEmoji } from "../hooks/useGovernance";
 import { getDateView, truncateText } from "../utils";
 import Identicon from "@polkadot/react-identicon";
 import ShareChannelModal from "../components/Modals/ShareChannelModal";
 import { useTranslation } from "react-i18next";
 import ModalReportPost from "../components/News/ModalReportPost";
 import ModalVotePost from "../components/News/ModalVotePost";
+import ModalEmoji from "../components/News/ModalEmoji";
+import ModalTip from "../components/News/ModalTip";
 
 const Post: React.FC = () => {
-  const { t,i18n } = useTranslation();
+  const { t, i18n } = useTranslation();
   const { account, apiReady, alert, isDarkMode } = useContract();
   const {
     getMessageDefaultChannel,
@@ -35,6 +43,7 @@ const Post: React.FC = () => {
     getNewsId,
     getPriceGuardian,
     getReasonReport,
+    getEmotions,
   } = useGovernance();
   const [details, setDetails] = useState<ChannelInfo>();
   const [modal, setModal] = useState(false);
@@ -46,6 +55,9 @@ const Post: React.FC = () => {
   const [priceGuardian, setPriceGuardian] = useState(0);
   const [reason, setReason] = useState("");
   const [priceStr, setPriceStr] = useState("");
+  const [emotions, setEmotions] = useState<IEmoji[]>([]);
+  const [openEmojiModal, setOpenEmojiModal] = useState(false);
+  const [openTipModal, setOpenTipModal] = useState(false);
   useEffect(() => {
     if (apiReady) {
       const params = window.location.pathname.split("/");
@@ -93,11 +105,32 @@ const Post: React.FC = () => {
       }
     });
   }, [addressChannel]);
-
+  useEffect(() => {
+    if (!details) return;
+    loadingEmojis();
+  }, [details]);
+  const loadingEmojis = () => {
+    if (!details) return;
+    getEmotions(details.channelAddress).then((res) => {
+      if (res) {
+        setEmotions(res);
+      }
+    });
+  };
   return (
     <IonPage>
-      <meta name="description" content={messages.map((message) => message).join(" ")} />
-      <meta name="keywords" content={details?.info?.twitter ? `${details.info.twitter}, ${t("TEXT_POST_KEYWORDS")}` : t("TEXT_POST_KEYWORDS")} />
+      <meta
+        name="description"
+        content={messages.map((message) => message).join(" ")}
+      />
+      <meta
+        name="keywords"
+        content={
+          details?.info?.twitter
+            ? `${details.info.twitter}, ${t("TEXT_POST_KEYWORDS")}`
+            : t("TEXT_POST_KEYWORDS")
+        }
+      />
       <div className={account ? "contentNews" : "contentFull"}>
         {details ? (
           <>
@@ -172,6 +205,38 @@ const Post: React.FC = () => {
                     <div key={index}>{message}</div>
                   ))}
                 </IonCardContent>
+                <IonFooter>
+                  <IonButton
+                    fill="clear"
+                    title="emoji"
+                    size="small"
+                    onClick={() => setOpenEmojiModal(true)}
+                    style={{ color: "#536471", margin: "0 auto" }}
+                  >
+                    {emotions.length > 0 ? (
+                      <>
+                        {emotions.slice(0, 5).map((emoji, idx) => (
+                          <span key={idx} style={{ marginRight: 2 }}>
+                            {emoji.emoji}
+                          </span>
+                        ))}
+                        <span>
+                          {emotions.reduce((sum, e) => sum + e.quantity, 0)}
+                        </span>
+                      </>
+                    ) : (
+                      <IonIcon icon={happyOutline} />
+                    )}
+                  </IonButton>
+                  <IonButton
+                    fill="clear"
+                    size="small"
+                    style={{ color: "#536471", float: "right" }}
+                    onClick={() => setOpenTipModal(true)}
+                  >
+                    <IonIcon icon={cashOutline} />
+                  </IonButton>
+                </IonFooter>
               </IonCard>
             </IonContent>
           </>
@@ -211,7 +276,11 @@ const Post: React.FC = () => {
                 </span>
               </div>
             </IonButton>
-            <IonButton fill="clear" color="danger" onClick={() => setOpenReportPostModal(true)}>
+            <IonButton
+              fill="clear"
+              color="danger"
+              onClick={() => setOpenReportPostModal(true)}
+            >
               <div
                 style={{
                   display: "flex",
@@ -221,12 +290,16 @@ const Post: React.FC = () => {
               >
                 <IonIcon icon={flagOutline} style={{ fontSize: "24px" }} />
                 <span style={{ fontSize: "10px", marginTop: "4px" }}>
-                   {t("TEXT_REPORT")}
+                  {t("TEXT_REPORT")}
                 </span>
               </div>
             </IonButton>
             {reason && (
-              <IonButton fill="clear" color="warning" onClick={() => setOpenVotePostModal(true)}>
+              <IonButton
+                fill="clear"
+                color="warning"
+                onClick={() => setOpenVotePostModal(true)}
+              >
                 <div
                   style={{
                     display: "flex",
@@ -262,6 +335,7 @@ const Post: React.FC = () => {
         channelId={details?.id || 0}
         dataLimit={details?.dataCreate || ""}
         isOwner={account === details?.addressOwner}
+        enableRecoveryAndOpenVotes={Number(details?.balanceSafe || 0) > 0}
         modalToggle={() => {
           setOpenReportPostModal(!openReportPostModal);
           getReasonReport(Number(details?.id || 0)).then((res) => {
@@ -279,6 +353,22 @@ const Post: React.FC = () => {
           setOpenVotePostModal(!openVotePostModal);
           console.log("closeModal");
         }}
+      />
+      <ModalEmoji
+        modal={openEmojiModal}
+        modalToggle={() => {
+          setOpenEmojiModal(!openEmojiModal);
+        }}
+        emojis={emotions}
+        reload={() => loadingEmojis()}
+        address={details?.channelAddress || ""}
+      />
+      <ModalTip
+        modal={openTipModal}
+        modalToggle={() => {
+          setOpenTipModal(!openTipModal);
+        }}
+        address={details?.addressOwner || ""}
       />
     </IonPage>
   );

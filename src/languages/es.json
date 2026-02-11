@@ -155,5 +155,9 @@
   "TEXT_DECENTRALIZED_MESSAGE":"Mensajes privadas con seguridad on-chain",
   "TEXT_EMOJI":"Emoji",
   "TEXT_ERROR_EMOJI":"Informe um emoji",
-  "TEXT_SEARCH":"Buscar"
+  "TEXT_SEARCH":"Buscar",
+  "TEXT_CHOOSE_COIN":"Elija la moneda",
+  "TEXT_TIP":"Gorgeta",
+  "TEXT_RECEIVE":"Recibir",
+  "TEXT_ERROR":"Error de transacción"
 }

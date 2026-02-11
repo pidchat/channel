@@ -16,6 +16,7 @@ import {
   skullOutline,
   copyOutline,
   happyOutline,
+  cashOutline,
 } from "ionicons/icons";
 
 import useContract from "../../hooks/useContract";
@@ -27,6 +28,7 @@ import ModalVotePost from "./ModalVotePost";
 import useGovernance, { ChannelInfo, IEmoji } from "../../hooks/useGovernance";
 import { useTranslation } from "react-i18next";
 import ModalEmoji from "./ModalEmoji";
+import ModalTip from "./ModalTip";
 interface CardItemPostProps {
   channelId: number;
 }
@@ -56,6 +58,7 @@ const CardItemPost: React.FC<CardItemPostProps> = ({ channelId }) => {
   const [image, setImage] = useState<string>();
   const [emotions, setEmotions] = useState<IEmoji[]>([]);
   const [openEmojiModal, setOpenEmojiModal] = useState(false);
+  const [openTipModal, setOpenTipModal] = useState(false);
   useEffect(() => {
     if (!details || messages.length == 0) return;
     if (typeChannel != "String") {
@@ -64,8 +67,7 @@ const CardItemPost: React.FC<CardItemPostProps> = ({ channelId }) => {
         img += messages[i];
       }
       setImage(img);
-    }
-    console.log("details", details);
+    }    
   }, [typeChannel]);
   useEffect(() => {
     getNewsId(channelId).then((res) => {
@@ -283,7 +285,14 @@ const CardItemPost: React.FC<CardItemPostProps> = ({ channelId }) => {
             >
               <IonIcon icon={alertCircle} />
             </IonButton>
-            
+            <IonButton
+              fill="clear"
+              size="small"
+              style={{ color: "#536471" }}
+              onClick={() => setOpenTipModal(true)}
+            >
+              <IonIcon icon={cashOutline} />
+            </IonButton>            
 
             {reason && (
               <IonButton
@@ -340,6 +349,13 @@ const CardItemPost: React.FC<CardItemPostProps> = ({ channelId }) => {
           emojis={emotions}
           reload={() => loadingEmojis()}
           address={details?.channelAddress || ""}
+        />
+        <ModalTip
+          modal={openTipModal}
+          modalToggle={() => {
+            setOpenTipModal(!openTipModal);
+          }}
+          address={details?.addressOwner || ""}
         />
       </IonCardContent>
     </IonCard>
